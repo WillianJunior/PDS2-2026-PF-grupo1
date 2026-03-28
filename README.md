@@ -5,19 +5,19 @@ Backend de uma rede social educacional estilo Twitter/X, desenvolvido em C++17 c
 
 ## O que e este projeto
 
-O edu-social-backend e a API de uma plataforma social focada em ambiente educacional. A proposta e permitir interacao entre usuarios por meio de publicacoes curtas, comentarios, curtidas e relacoes de seguir, com autenticacao por token e persistencia em banco local SQLite.
+O edu-social-backend e a API de uma plataforma social focada em ambiente educacional. A proposta e permitir interação entre usuários por meio de publicacões curtas, comentários, curtidas e relaçoes de seguir, com autenticação por token e persistência em banco local SQLite.
 
-O projeto foi pensado para ser simples de executar em laboratorio e facil de evoluir em etapas. Por isso, ele usa stack enxuta, arquitetura em camadas e scripts de bootstrap para reduzir friccao no setup.
+O projeto foi pensado para ser simples de executar e fácil de evoluir em etapas. Por isso, ele usa stack enxuta, arquitetura em camadas e scripts de bootstrap para reduzir fricção no setup.
 
 ## Como o sistema e organizado
 
-O backend segue separacao de responsabilidades para manter o codigo limpo e escalavel:
+O backend segue separação de responsabilidades para manter o codigo limpo e escalável:
 
 - routes: registra endpoints e metodo HTTP
 - controllers: recebe request e monta response
-- services: concentra regra de negocio
-- repositories: executa operacoes de banco
-- database: camada de conexao SQLite e aplicacao de schema
+- services: concentra regra de negócio
+- repositories: executa operacões de banco
+- database: camada de conexão SQLite e aplicacao de schema
 
 Fluxo esperado de uma requisicao:
 
@@ -29,11 +29,11 @@ Fluxo esperado de uma requisicao:
 
 ## Stack tecnica
 
-- C++17 como base da aplicacao
+- C++17 como base da aplicaçao
 - Crow para API HTTP
 - SQLite como banco em arquivo local
-- CMake para configuracao e compilacao
-- FetchContent para obter dependencias no configure
+- CMake para configuraçao e compilação
+- FetchContent para obter dependências no configure
 
 Dependencias externas principais:
 
@@ -77,7 +77,7 @@ edu-social-backend/
 
 ## Modelo de dados do MVP
 
-O schema ja foi desenhado para suportar as funcionalidades principais da rede social. Tabelas previstas:
+O schema foi desenhado para suportar as funcionalidades principais da rede social. Tabelas previstas:
 
 - users
 - auth_tokens
@@ -91,7 +91,7 @@ Relacionamentos e constraints no schema garantem integridade entre usuario, post
 
 ## Como executar o projeto
 
-### Pre-requisitos
+### Prá-requisitos
 
 Windows:
 
@@ -109,7 +109,7 @@ Linux ou Git Bash:
 
 ### Comandos de bootstrap e execucao
 
-Opcao 1 (atalho padrao):
+Opção 1 (atalho padrão):
 
 ```bash
 make run
@@ -127,7 +127,7 @@ Opcao 3 (Linux/Git Bash):
 ./scripts/setup.sh
 ```
 
-Para apenas subir o servidor ja compilado:
+Para apenas subir o servidor já compilado:
 
 ```bash
 make serve
@@ -158,9 +158,9 @@ Resposta esperada:
 
 ### Fase 1 - Auth e Users
 
-- cadastro de usuario
+- cadastro de usuário
 - login com token persistido
-- logout com revogacao de token
+- logout com revogação de token
 - endpoint de perfil autenticado
 
 ### Fase 2 - Posts
@@ -172,7 +172,7 @@ Resposta esperada:
 ### Fase 3 - Comments
 
 - comentar em post
-- remover comentario
+- remover comentário
 
 ### Fase 4 - Likes
 
@@ -181,13 +181,13 @@ Resposta esperada:
 
 ### Fase 5 - Follows
 
-- seguir usuario
-- deixar de seguir usuario
+- seguir usuário
+- deixar de seguir usuário
 
 ### Fase 6 - Feed
 
 - feed personalizado por follows
-- paginacao basica
+- paginação básica
 
 ### Fase 7 - Reset de senha
 
@@ -197,8 +197,8 @@ Resposta esperada:
 ### Fase 8 - Qualidade e fechamento
 
 - smoke tests dos endpoints principais
-- padronizacao de erros HTTP/JSON
-- revisao final da documentacao da API
+- padronização de erros HTTP/JSON
+- revisao final da documentação da API
 
 ## Checklist de progresso
 
@@ -207,15 +207,15 @@ Resposta esperada:
 - [x] Crow integrado via FetchContent
 - [x] Asio integrado via FetchContent
 - [x] SQLite integrado via FetchContent
-- [x] Binario minimo compilando
-- [x] Conexao SQLite implementada
-- [x] Aplicacao automatica de schema.sql
+- [x] Binário minimo compilando
+- [x] Conexão SQLite implementada
+- [x] Aplicação automática de schema.sql
 - [x] Endpoint GET /health implementado
 - [x] Scripts setup/run/reset-db (Windows e Linux)
-- [ ] Fase 1 - Auth e Users concluida
-- [ ] Fase 2 - Posts concluida
-- [ ] Fase 3 - Comments concluida
-- [ ] Fase 4 - Likes concluida
+- [ ] Fase 1 - Auth e Users concluída
+- [ ] Fase 2 - Posts concluída
+- [ ] Fase 3 - Comments concluída
+- [ ] Fase 4 - Likes concluída
 - [ ] Fase 5 - Follows concluida
 - [ ] Fase 6 - Feed concluida
 - [ ] Fase 7 - Reset de senha concluida
