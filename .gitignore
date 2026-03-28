@@ -1,0 +1,14 @@
+build/
+cmake-build-*/
+out/
+database/app.db
+.vscode/
+third_party/crow/
+third_party/sqlite/
+*.obj
+*.o
+*.exe
+*.pdb
+*.ilk
+*.log
+*.cache
