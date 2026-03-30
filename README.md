@@ -91,7 +91,7 @@ Relacionamentos e constraints no schema garantem integridade entre usuario, post
 
 ## Como executar o projeto
 
-### Prá-requisitos
+### Pré-requisitos
 
 Windows:
 
@@ -107,7 +107,7 @@ Linux ou Git Bash:
 - g++ ou clang++ com suporte a C++17
 - bash
 
-### Comandos de bootstrap e execucao
+### Comandos de bootstrap e execução
 
 Opção 1 (atalho padrão):
 
@@ -115,13 +115,13 @@ Opção 1 (atalho padrão):
 make run
 ```
 
-Opcao 2 (Windows PowerShell):
+Opção 2 (Windows PowerShell):
 
 ```powershell
 ./scripts/setup.ps1
 ```
 
-Opcao 3 (Linux/Git Bash):
+Opção 3 (Linux/Git Bash):
 
 ```bash
 ./scripts/setup.sh
@@ -139,7 +139,9 @@ Para resetar o banco local:
 make reset-db
 ```
 
-## Endpoint de validacao
+Observação: recomenda-se a limpeza do banco de dados para que testes sejam feitos com qualidade.
+
+## Endpoint de validação
 
 Endpoint de health check:
 
@@ -154,7 +156,7 @@ Resposta esperada:
 }
 ```
 
-## Roadmap de implementacao
+## Roadmap de implementação
 
 ### Fase 1 - Auth e Users
 
@@ -198,7 +200,7 @@ Resposta esperada:
 
 - smoke tests dos endpoints principais
 - padronização de erros HTTP/JSON
-- revisao final da documentação da API
+- revisão final da documentação da API
 
 ## Checklist de progresso
 
@@ -216,8 +218,9 @@ Resposta esperada:
 - [ ] Fase 2 - Posts concluída
 - [ ] Fase 3 - Comments concluída
 - [ ] Fase 4 - Likes concluída
-- [ ] Fase 5 - Follows concluida
-- [ ] Fase 6 - Feed concluida
-- [ ] Fase 7 - Reset de senha concluida
-- [ ] Fase 8 - Qualidade e fechamento concluida
-- [ ] Documentacao final de endpoints publicada
+- [ ] Fase 5 - Follows concluída
+- [ ] Fase 6 - Feed concluída
+- [ ] Fase 7 - Reset de senha concluída
+- [ ] Fase 8 - Qualidade e fechamento concluída
+- [ ] Documentação final de endpoints publicada
+
