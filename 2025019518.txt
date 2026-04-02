@@ -1,5 +1,5 @@
-Nome: Maria Clara Agostini Ferreira
-Matrícula: 2025019704
+Nome: Lucas Guimarães Grama
+Matrícula: 2025019518
 
 Estou ciente que a avaliação da participação final será baseada única e exclusivamente na
 quantidade de commits realizada por mim. Entendo que não serão contabilizados commits feitos em
