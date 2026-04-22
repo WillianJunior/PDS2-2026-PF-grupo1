@@ -15,7 +15,7 @@ log_info() {
 }
 
 log_fail() {
-	echo "[erro]  $1" >&2
+	echo "[error] $1" >&2
 }
 
 command_exists() {
@@ -100,7 +100,7 @@ ensure_local_intellisense_config() {
     {
       "name": "Linux",
       "includePath": [
-        "${workspaceFolder}/src",
+        "${workspaceFolder}/include",
         "${workspaceFolder}/build/_deps/sqlite_amalgamation-src",
         "${workspaceFolder}/build/_deps/crow-src/include",
         "${workspaceFolder}/build/_deps/asio-src/asio/include"
@@ -122,8 +122,8 @@ main() {
 	cd "$PROJECT_ROOT"
 
 	if ! command_exists cmake; then
-		log_fail "CMake nao encontrado no PATH."
-		log_fail "Instale o CMake e abra um novo terminal antes de rodar novamente."
+		log_fail "CMake was not found in PATH."
+		log_fail "Install CMake and open a new terminal before running this script again."
 		exit 1
 	fi
 
@@ -149,7 +149,7 @@ main() {
 	invoke_cmd "Compilando binario" cmake --build "$BUILD_DIR" --config Debug
 
 	if [[ ! -f "$BINARY_PATH" ]]; then
-		log_fail "Binario nao encontrado apos a compilacao: $BINARY_PATH"
+		log_fail "Binary was not found after compilation: $BINARY_PATH"
 		exit 1
 	fi
 

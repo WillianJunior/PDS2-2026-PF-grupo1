@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "database/sqlite_connection.h"
+#include "edu_social/database/sqlite_connection.h"
 
 namespace edu_social {
 
@@ -16,4 +16,4 @@ private:
     SQLiteConnection& connection_;
 };
 
-} 
+}

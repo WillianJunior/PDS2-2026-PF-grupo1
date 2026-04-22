@@ -1,4 +1,4 @@
-#include "database/migration_runner.h"
+#include "edu_social/database/migration_runner.h"
 
 #include <fstream>
 #include <sstream>
@@ -19,7 +19,7 @@ std::string read_text_file(const std::string& file_path) {
     return buffer.str();
 }
 
-}  // namespace
+}
 
 MigrationRunner::MigrationRunner(SQLiteConnection& connection) : connection_(connection) {}
 
@@ -32,4 +32,4 @@ void MigrationRunner::apply_schema(const std::string& schema_path) const {
     connection_.execute(schema_sql);
 }
 
-} 
+}

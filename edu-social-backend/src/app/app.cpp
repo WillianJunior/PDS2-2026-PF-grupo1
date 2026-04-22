@@ -1,4 +1,4 @@
-#include "app/app.h"
+#include "edu_social/app/app.h"
 
 #include <cstdint>
 #include <filesystem>
@@ -8,8 +8,8 @@
 
 #include <crow.h>
 
-#include "database/migration_runner.h"
-#include "database/sqlite_connection.h"
+#include "edu_social/database/migration_runner.h"
+#include "edu_social/database/sqlite_connection.h"
 
 namespace edu_social {
 
@@ -46,4 +46,4 @@ int App::run() {
     return 0;
 }
 
-}  
+}

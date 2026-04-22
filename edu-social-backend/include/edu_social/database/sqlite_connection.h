@@ -25,4 +25,4 @@ private:
     sqlite3* handle_ = nullptr;
 };
 
-}  
+}

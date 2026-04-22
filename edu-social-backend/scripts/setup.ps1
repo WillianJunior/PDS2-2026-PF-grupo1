@@ -13,7 +13,7 @@ function Write-Info {
 
 function Write-Fail {
 	param([string]$Message)
-	Write-Host "[erro]  $Message" -ForegroundColor Red
+	Write-Host "[error] $Message" -ForegroundColor Red
 }
 
 function Test-CommandExists {
@@ -21,15 +21,47 @@ function Test-CommandExists {
 	return $null -ne (Get-Command $CommandName -ErrorAction SilentlyContinue)
 }
 
+function Get-KnownCommandPaths {
+	param([string]$CommandName)
+
+	return @(
+		(Join-Path $env:ProgramFiles "CMake\bin\$CommandName.exe"),
+		(Join-Path ${env:ProgramFiles(x86)} "CMake\bin\$CommandName.exe"),
+		(Join-Path $env:LOCALAPPDATA "Programs\CMake\bin\$CommandName.exe"),
+		"C:\msys64\ucrt64\bin\$CommandName.exe",
+		"C:\msys64\mingw64\bin\$CommandName.exe",
+		"C:\msys64\usr\bin\$CommandName.exe"
+	)
+}
+
 function Get-CommandPathOrNull {
 	param([string]$CommandName)
 
 	$command = Get-Command $CommandName -ErrorAction SilentlyContinue
-	if ($null -eq $command) {
-		return $null
+	if ($null -ne $command) {
+		return $command.Source
 	}
 
-	return $command.Source
+	foreach ($candidate in (Get-KnownCommandPaths -CommandName $CommandName)) {
+		if ((-not [string]::IsNullOrWhiteSpace($candidate)) -and (Test-Path $candidate)) {
+			return $candidate
+		}
+	}
+
+	return $null
+}
+
+function Add-ToolDirectoryToPath {
+	param([string]$ToolPath)
+
+	if ([string]::IsNullOrWhiteSpace($ToolPath)) {
+		return
+	}
+
+	$toolDirectory = Split-Path -Parent $ToolPath
+	if ($env:PATH -notlike "*$toolDirectory*") {
+		$env:PATH = "$toolDirectory;$env:PATH"
+	}
 }
 
 function Invoke-ExternalCommand {
@@ -45,23 +77,24 @@ function Invoke-ExternalCommand {
 	& $Command @Arguments
 	$exitCode = $LASTEXITCODE
 	if ($exitCode -ne 0) {
-		throw ("Falha ao executar '{0}'. Exit code: {1}" -f $Command, $exitCode)
+		throw ("Failed to run '{0}'. Exit code: {1}" -f $Command, $exitCode)
 	}
 }
 
 function Ensure-CMake {
 	Write-Step 'Validando CMake no ambiente'
 
-	$cmakeCommand = Get-Command cmake -ErrorAction SilentlyContinue
-	if ($null -eq $cmakeCommand) {
-		Write-Fail 'CMake nao encontrado no PATH.'
-		Write-Info 'Instale o CMake e abra um novo terminal antes de rodar novamente.'
-		throw 'CMake nao encontrado.'
+	$cmakePath = Get-CommandPathOrNull 'cmake'
+	if ($null -eq $cmakePath) {
+		Write-Fail 'CMake was not found in PATH.'
+		Write-Info 'Install CMake and open a new terminal before running this script again.'
+		throw 'CMake was not found.'
 	}
 
-	$versionLine = (& $cmakeCommand.Source --version | Select-Object -First 1)
+	Add-ToolDirectoryToPath -ToolPath $cmakePath
+	$versionLine = (& $cmakePath --version | Select-Object -First 1)
 	Write-Info ("CMake encontrado: {0}" -f $versionLine)
-	return $cmakeCommand.Source
+	return $cmakePath
 }
 
 function Resolve-ToolchainArguments {
@@ -82,15 +115,22 @@ function Resolve-ToolchainArguments {
 	Write-Info ("cl: {0}" -f ($(if ($clPath) { $clPath } else { 'NAO_ENCONTRADO' })))
 
 	if (($null -ne $ninjaPath) -and ($null -ne $gccPath) -and ($null -ne $gxxPath)) {
+		Add-ToolDirectoryToPath -ToolPath $ninjaPath
+		Add-ToolDirectoryToPath -ToolPath $gccPath
+		Add-ToolDirectoryToPath -ToolPath $gxxPath
 		Write-Info 'Estrategia selecionada: Ninja + GCC/G++'
 		return @(
 			'-G', 'Ninja',
+			("-DCMAKE_MAKE_PROGRAM={0}" -f $ninjaPath),
 			("-DCMAKE_C_COMPILER={0}" -f $gccPath),
 			("-DCMAKE_CXX_COMPILER={0}" -f $gxxPath)
 		)
 	}
 
 	if (($null -ne $mingwMakePath) -and ($null -ne $gccPath) -and ($null -ne $gxxPath)) {
+		Add-ToolDirectoryToPath -ToolPath $mingwMakePath
+		Add-ToolDirectoryToPath -ToolPath $gccPath
+		Add-ToolDirectoryToPath -ToolPath $gxxPath
 		Write-Info 'Estrategia selecionada: MinGW Makefiles + GCC/G++'
 		return @(
 			'-G', 'MinGW Makefiles',
@@ -105,7 +145,7 @@ function Resolve-ToolchainArguments {
 		return @('-G', 'NMake Makefiles')
 	}
 
-	throw 'Nao foi possivel identificar um toolchain C/C++ valido. Instale MinGW/GCC, Ninja ou Visual Studio Build Tools.'
+	throw 'Could not detect a valid C/C++ toolchain. Install MinGW/GCC, Ninja, or Visual Studio Build Tools.'
 }
 
 function Get-SelectedGenerator {
@@ -175,7 +215,7 @@ function Ensure-LocalIntelliSenseConfig {
 		{
 			"name": "Win32",
 			"includePath": [
-				"${workspaceFolder}/src",
+				"${workspaceFolder}/include",
 				"${workspaceFolder}/build/_deps/sqlite_amalgamation-src",
 				"${workspaceFolder}/build/_deps/crow-src/include",
 				"${workspaceFolder}/build/_deps/asio-src/asio/include"
@@ -227,7 +267,7 @@ try {
 	Invoke-ExternalCommand -Command $cmakeExecutable -Arguments @('--build', $buildDirectory, '--config', 'Debug') -Description 'Compilando binario'
 
 	if (-not (Test-Path $binaryPath)) {
-		throw ("Binario nao encontrado apos a compilacao: {0}" -f $binaryPath)
+		throw ("Binary was not found after compilation: {0}" -f $binaryPath)
 	}
 
 	Write-Step 'Inicializando servidor'

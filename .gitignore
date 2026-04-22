@@ -1,7 +1,8 @@
-build/
+edu-social-backend/build/*
+!edu-social-backend/build/.gitkeep
 cmake-build-*/
 out/
-database/app.db
+edu-social-backend/database/app.db
 .vscode/
 third_party/crow/
 third_party/sqlite/

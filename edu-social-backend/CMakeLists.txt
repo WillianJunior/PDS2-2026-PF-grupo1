@@ -13,7 +13,6 @@ set(CROW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(CROW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(CROW_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
 
-# Crow requires standalone Asio when not using Boost.Asio.
 FetchContent_Declare(
     asio
     URL https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-30-2.tar.gz
@@ -51,11 +50,15 @@ endif()
 file(GLOB_RECURSE APP_SOURCES CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 add_executable(edu_social_backend ${APP_SOURCES})
-target_include_directories(edu_social_backend PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src ${SQLITE_DIR})
+target_include_directories(
+    edu_social_backend
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${SQLITE_DIR}
+)
 target_link_libraries(edu_social_backend PRIVATE Crow::Crow sqlite_local Threads::Threads)
 
 if(WIN32)
-    # Asio/Crow use Winsock APIs on Windows.
     target_link_libraries(edu_social_backend PRIVATE ws2_32 mswsock)
 endif()
 
