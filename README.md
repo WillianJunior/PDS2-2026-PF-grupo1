@@ -66,32 +66,48 @@ O projeto foi pensado para ser simples de executar e facil de evoluir em etapas.
 Conforme novas funcionalidades forem implementadas, o projeto deve evoluir para a seguinte organizacao modular:
 
 ```txt
-edu-social-backend/src/
-|-- main.cpp
-|-- app/
-|-- config/
-|-- controllers/
-|-- database/
-|-- dto/
-|-- middleware/
-|-- models/
-|-- repositories/
-|-- routes/
-|-- services/
-`-- utils/
-
-edu-social-backend/include/edu_social/
-|-- app/
-|-- config/
-|-- controllers/
-|-- database/
-|-- dto/
-|-- middleware/
-|-- models/
-|-- repositories/
-|-- routes/
-|-- services/
-`-- utils/
+.
+|-- README.md
+|-- Makefile
+|-- edu-social-backend/
+|   |-- CMakeLists.txt
+|   |-- Makefile
+|   |-- src/
+|   |   |-- main.cpp
+|   |   |-- app/
+|   |   |   `-- app.cpp
+|   |   `-- database/
+|   |       |-- migration_runner.cpp
+|   |       `-- sqlite_connection.cpp
+|   |-- include/
+|   |   `-- edu_social/
+|   |       |-- app/
+|   |       |   |-- Comment.hpp
+|   |       |   |-- Community.hpp
+|   |       |   |-- Feed.hpp
+|   |       |   |-- Post.hpp
+|   |       |   |-- Search.hpp
+|   |       |   |-- User.hpp
+|   |       |   `-- app.h
+|   |       `-- database/
+|   |           |-- migration_runner.h
+|   |           `-- sqlite_connection.h
+|   |-- tests/
+|   |   `-- .gitkeep
+|   |-- design/
+|   |   `-- README.md
+|   |-- build/
+|   |   `-- .gitkeep
+|   |-- database/
+|   |   `-- schema.sql
+|   `-- scripts/
+|       |-- setup.ps1
+|       |-- setup.sh
+|       |-- run.ps1
+|       |-- run.sh
+|       |-- reset_db.ps1
+|       `-- reset_db.sh
+`-- 2025*.txt
 ```
 
 As pastas futuras devem ser criadas quando houver codigo real para elas. Isso evita estruturas vazias sem responsabilidade definida.
