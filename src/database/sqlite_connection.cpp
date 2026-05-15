@@ -1,4 +1,4 @@
-#include "edu_social/database/sqlite_connection.h"
+#include "database/sqlite_connection.h"
 
 #include <stdexcept>
 #include <string>

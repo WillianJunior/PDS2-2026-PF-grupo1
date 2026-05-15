@@ -7,9 +7,9 @@ DATABASE_PATH="$PROJECT_ROOT/database/app.db"
 
 if [[ -f "$DATABASE_PATH" ]]; then
 	rm -f "$DATABASE_PATH"
-	echo "Banco removido com sucesso."
+	echo "Database removed successfully."
 else
-	echo "Nenhum banco existente para remover."
+	echo "No existing database file was found."
 fi
 
-echo "O schema sera recriado automaticamente na proxima execucao."
+echo "The schema will be recreated automatically on the next run."

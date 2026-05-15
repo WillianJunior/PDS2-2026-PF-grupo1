@@ -12,5 +12,5 @@ if [[ ! -f "$BINARY_PATH" ]]; then
 	exit 1
 fi
 
-echo "Iniciando servidor em http://localhost:18080 ..."
+echo "Starting server at http://localhost:18080 ..."
 "$BINARY_PATH"

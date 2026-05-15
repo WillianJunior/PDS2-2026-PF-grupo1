@@ -1,5 +1,8 @@
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
+if (Get-Variable -Name PSNativeCommandUseErrorActionPreference -ErrorAction SilentlyContinue) {
+	$PSNativeCommandUseErrorActionPreference = $false
+}
 
 function Write-Step {
 	param([string]$Message)
@@ -51,6 +54,27 @@ function Get-CommandPathOrNull {
 	return $null
 }
 
+function Get-PreferredCMakePathOrNull {
+	foreach ($candidate in (Get-KnownCommandPaths -CommandName 'cmake')) {
+		if ((-not [string]::IsNullOrWhiteSpace($candidate)) -and (Test-Path $candidate) -and ($candidate -notlike 'C:\msys64\*')) {
+			return $candidate
+		}
+	}
+
+	$command = Get-Command cmake -ErrorAction SilentlyContinue
+	if ($null -ne $command) {
+		return $command.Source
+	}
+
+	foreach ($candidate in (Get-KnownCommandPaths -CommandName 'cmake')) {
+		if ((-not [string]::IsNullOrWhiteSpace($candidate)) -and (Test-Path $candidate)) {
+			return $candidate
+		}
+	}
+
+	return $null
+}
+
 function Add-ToolDirectoryToPath {
 	param([string]$ToolPath)
 
@@ -81,10 +105,25 @@ function Invoke-ExternalCommand {
 	}
 }
 
+function Clear-FetchContentSubbuilds {
+	param([string]$BuildDirectory)
+
+	$depsDirectory = Join-Path $BuildDirectory '_deps'
+	if (-not (Test-Path $depsDirectory)) {
+		return
+	}
+
+	$subbuildDirectories = Get-ChildItem -Path $depsDirectory -Directory -Filter '*-subbuild' -ErrorAction SilentlyContinue
+	foreach ($directory in $subbuildDirectories) {
+		Remove-Item -LiteralPath $directory.FullName -Recurse -Force
+		Write-Info ("Removed stale FetchContent subbuild: {0}" -f $directory.Name)
+	}
+}
+
 function Ensure-CMake {
 	Write-Step 'Validando CMake no ambiente'
 
-	$cmakePath = Get-CommandPathOrNull 'cmake'
+	$cmakePath = Get-PreferredCMakePathOrNull
 	if ($null -eq $cmakePath) {
 		Write-Fail 'CMake was not found in PATH.'
 		Write-Info 'Install CMake and open a new terminal before running this script again.'
@@ -94,6 +133,7 @@ function Ensure-CMake {
 	Add-ToolDirectoryToPath -ToolPath $cmakePath
 	$versionLine = (& $cmakePath --version | Select-Object -First 1)
 	Write-Info ("CMake encontrado: {0}" -f $versionLine)
+	Write-Info ("CMake em uso: {0}" -f $cmakePath)
 	return $cmakePath
 }
 
@@ -176,70 +216,82 @@ function Get-CachedGenerator {
 	return ($line -replace '^CMAKE_GENERATOR:INTERNAL=', '')
 }
 
-function Clear-CMakeConfigureCache {
+function Clear-BuildArtifacts {
 	param([string]$BuildDirectory)
 
-	Write-Step 'Limpando cache de configuracao do CMake'
+	Write-Step 'Cleaning build artifacts for generator switch'
 
-	$cacheFile = Join-Path $BuildDirectory 'CMakeCache.txt'
-	$cacheDir = Join-Path $BuildDirectory 'CMakeFiles'
-
-	if (Test-Path $cacheFile) {
-		Remove-Item $cacheFile -Force
-		Write-Info 'Arquivo removido: build/CMakeCache.txt'
-	}
-
-	if (Test-Path $cacheDir) {
-		Remove-Item $cacheDir -Recurse -Force
-		Write-Info 'Diretorio removido: build/CMakeFiles'
-	}
-}
-
-function Ensure-LocalIntelliSenseConfig {
-	param([string]$ProjectRoot)
-
-	$vscodeDir = Join-Path $ProjectRoot '.vscode'
-	$configPath = Join-Path $vscodeDir 'c_cpp_properties.json'
-
-	Write-Step 'Garantindo configuracao local do IntelliSense'
-	if (Test-Path $configPath) {
-		Write-Info 'c_cpp_properties.json ja existe. Nenhuma alteracao necessaria.'
+	if (-not (Test-Path $BuildDirectory)) {
 		return
 	}
 
-	New-Item -ItemType Directory -Force -Path $vscodeDir | Out-Null
-
-	$json = @'
-{
-	"configurations": [
-		{
-			"name": "Win32",
-			"includePath": [
-				"${workspaceFolder}/include",
-				"${workspaceFolder}/build/_deps/sqlite_amalgamation-src",
-				"${workspaceFolder}/build/_deps/crow-src/include",
-				"${workspaceFolder}/build/_deps/asio-src/asio/include"
-			],
-			"defines": [],
-			"compileCommands": "${workspaceFolder}/build/compile_commands.json",
-			"cppStandard": "c++17",
-			"cStandard": "c17",
-			"intelliSenseMode": "windows-msvc-x64"
-		}
-	],
-	"version": 4
+	Get-ChildItem -Force -Path $BuildDirectory | Where-Object { $_.Name -ne '.gitkeep' } | Remove-Item -Recurse -Force
+	Write-Info 'Removed generated contents from build/'
 }
-'@
 
-	Set-Content -Path $configPath -Value $json -Encoding UTF8
-	Write-Info 'Arquivo .vscode/c_cpp_properties.json criado.'
+function Invoke-CMakeConfigure {
+	param(
+		[string]$CMakeExecutable,
+		[string[]]$Arguments,
+		[string]$BuildDirectory
+	)
+
+	Write-Step 'Configurando projeto com CMake'
+	Write-Info ("Executando: {0} {1}" -f $CMakeExecutable, ($Arguments -join ' '))
+	Write-Info 'Dependency resolution may take some time during the first configure step.'
+
+	Clear-FetchContentSubbuilds -BuildDirectory $BuildDirectory
+
+	$logPath = Join-Path $BuildDirectory 'cmake-configure.log'
+	if (Test-Path $logPath) {
+		Remove-Item -LiteralPath $logPath -Force
+	}
+
+	$commandOutput = @()
+	& $CMakeExecutable @Arguments 2>&1 |
+		ForEach-Object { $_.ToString() } |
+		Tee-Object -FilePath $logPath |
+		Tee-Object -Variable commandOutput | Out-Host
+	$exitCode = $LASTEXITCODE
+
+	if ($exitCode -eq 0) {
+		return
+	}
+
+	$joinedOutput = ($commandOutput | Out-String)
+	if ($joinedOutput -like '*Does not match the generator used previously*') {
+		Write-Info 'Generator mismatch detected during configure. Cleaning build directory and retrying once.'
+		Clear-BuildArtifacts -BuildDirectory $BuildDirectory
+
+		$retryOutput = @()
+		& $CMakeExecutable @Arguments 2>&1 |
+			ForEach-Object { $_.ToString() } |
+			Tee-Object -FilePath $logPath |
+			Tee-Object -Variable retryOutput | Out-Host
+		$retryExitCode = $LASTEXITCODE
+
+		if ($retryExitCode -eq 0) {
+			return
+		}
+
+		if ((($retryOutput | Out-String)) -like '*Could not connect to server*') {
+			Write-Info 'Dependency download failed. Check network access to github.com and sqlite.org.'
+		}
+
+		throw ("Failed to run '{0}'. Exit code: {1}" -f $CMakeExecutable, $retryExitCode)
+	}
+
+	if ($joinedOutput -like '*Could not connect to server*') {
+		Write-Info 'Dependency download failed. Check network access to github.com and sqlite.org.'
+	}
+
+	throw ("Failed to run '{0}'. Exit code: {1}" -f $CMakeExecutable, $exitCode)
 }
 
 try {
 	$scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 	$projectRoot = Split-Path -Parent $scriptDirectory
 	$buildDirectory = Join-Path $projectRoot 'build'
-	$binaryPath = Join-Path $buildDirectory 'bin\edu_social_backend.exe'
 
 	Write-Step 'Bootstrap iniciado'
 	Write-Info ("Data/Hora: {0}" -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'))
@@ -256,24 +308,18 @@ try {
 	if (($null -ne $selectedGenerator) -and ($null -ne $cachedGenerator) -and ($selectedGenerator -ne $cachedGenerator)) {
 		Write-Info ("Gerador em cache detectado: {0}" -f $cachedGenerator)
 		Write-Info ("Gerador atual selecionado: {0}" -f $selectedGenerator)
-		Clear-CMakeConfigureCache -BuildDirectory $buildDirectory
+		Clear-BuildArtifacts -BuildDirectory $buildDirectory
 	}
 
-	$configureArguments = @('-S', $projectRoot, '-B', $buildDirectory) + $toolchainArguments
-	Invoke-ExternalCommand -Command $cmakeExecutable -Arguments $configureArguments -Description 'Configurando projeto com CMake'
-
-	Ensure-LocalIntelliSenseConfig -ProjectRoot $projectRoot
+	$configureArguments = @(
+		'-S', $projectRoot,
+		'-B', $buildDirectory
+	) + $toolchainArguments
+	Invoke-CMakeConfigure -CMakeExecutable $cmakeExecutable -Arguments $configureArguments -BuildDirectory $buildDirectory
 
 	Invoke-ExternalCommand -Command $cmakeExecutable -Arguments @('--build', $buildDirectory, '--config', 'Debug') -Description 'Compilando binario'
-
-	if (-not (Test-Path $binaryPath)) {
-		throw ("Binary was not found after compilation: {0}" -f $binaryPath)
-	}
-
-	Write-Step 'Inicializando servidor'
-	Write-Info ("Executavel: {0}" -f $binaryPath)
-	Write-Info 'Endpoint health esperado: http://localhost:18080/health'
-	& $binaryPath
+	Write-Step 'Bootstrap finalizado'
+	Write-Info 'Use scripts/run.ps1 or make serve to start the server.'
 }
 catch {
 	Write-Fail $_.Exception.Message

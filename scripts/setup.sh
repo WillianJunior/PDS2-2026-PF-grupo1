@@ -31,6 +31,15 @@ invoke_cmd() {
 	"$@"
 }
 
+clear_fetchcontent_subbuilds() {
+	local deps_dir="$BUILD_DIR/_deps"
+	if [[ ! -d "$deps_dir" ]]; then
+		return
+	fi
+
+	find "$deps_dir" -mindepth 1 -maxdepth 1 -type d -name '*-subbuild' -exec rm -rf {} +
+}
+
 resolve_toolchain_args() {
 	TOOLCHAIN_ARGS=()
 
@@ -77,45 +86,56 @@ get_cached_generator() {
 	grep -m1 '^CMAKE_GENERATOR:INTERNAL=' "$cache_path" | sed 's/^CMAKE_GENERATOR:INTERNAL=//'
 }
 
-clear_cmake_configure_cache() {
-	log_step "Limpando cache de configuracao do CMake"
-	rm -f "$BUILD_DIR/CMakeCache.txt"
-	rm -rf "$BUILD_DIR/CMakeFiles"
-}
-
-ensure_local_intellisense_config() {
-	local vscode_dir="$PROJECT_ROOT/.vscode"
-	local config_path="$vscode_dir/c_cpp_properties.json"
-
-	log_step "Garantindo configuracao local do IntelliSense"
-	if [[ -f "$config_path" ]]; then
-		log_info "c_cpp_properties.json ja existe. Nenhuma alteracao necessaria."
+clear_build_artifacts() {
+	log_step "Cleaning build artifacts for generator switch"
+	if [[ ! -d "$BUILD_DIR" ]]; then
 		return
 	fi
 
-	mkdir -p "$vscode_dir"
-	cat > "$config_path" << 'EOF'
-{
-  "configurations": [
-    {
-      "name": "Linux",
-      "includePath": [
-        "${workspaceFolder}/include",
-        "${workspaceFolder}/build/_deps/sqlite_amalgamation-src",
-        "${workspaceFolder}/build/_deps/crow-src/include",
-        "${workspaceFolder}/build/_deps/asio-src/asio/include"
-      ],
-      "defines": [],
-      "compileCommands": "${workspaceFolder}/build/compile_commands.json",
-      "cppStandard": "c++17",
-      "cStandard": "c17",
-      "intelliSenseMode": "linux-gcc-x64"
-    }
-  ],
-  "version": 4
+	find "$BUILD_DIR" -mindepth 1 -maxdepth 1 ! -name '.gitkeep' -exec rm -rf {} +
 }
-EOF
-	log_info "Arquivo .vscode/c_cpp_properties.json criado."
+
+invoke_cmake_configure() {
+	log_step "Configurando projeto com CMake"
+	log_info "Executando: cmake -S $PROJECT_ROOT -B $BUILD_DIR ${TOOLCHAIN_ARGS[*]}"
+	log_info "Dependency resolution may take some time during the first configure step."
+
+	clear_fetchcontent_subbuilds
+
+	local log_file="$BUILD_DIR/cmake-configure.log"
+	rm -f "$log_file"
+
+	local configure_output
+	cmake -S "$PROJECT_ROOT" -B "$BUILD_DIR" "${TOOLCHAIN_ARGS[@]}" 2>&1 | tee "$log_file"
+	local configure_status=${PIPESTATUS[0]}
+	configure_output="$(cat "$log_file")"
+	if [[ $configure_status -eq 0 ]]; then
+		return
+	fi
+
+	if [[ "$configure_output" == *"Does not match the generator used previously"* ]]; then
+		log_info "Generator mismatch detected during configure. Cleaning build directory and retrying once."
+		clear_build_artifacts
+		cmake -S "$PROJECT_ROOT" -B "$BUILD_DIR" "${TOOLCHAIN_ARGS[@]}" 2>&1 | tee "$log_file"
+		local retry_status=${PIPESTATUS[0]}
+		if [[ $retry_status -eq 0 ]]; then
+			return
+		fi
+
+		local retry_output
+		retry_output="$(cat "$log_file")"
+		if [[ "$retry_output" == *"Could not connect to server"* ]]; then
+			log_info "Dependency download failed. Check network access to github.com and sqlite.org."
+		fi
+
+		return $retry_status
+	fi
+
+	if [[ "$configure_output" == *"Could not connect to server"* ]]; then
+		log_info "Dependency download failed. Check network access to github.com and sqlite.org."
+	fi
+
+	return $configure_status
 }
 
 main() {
@@ -141,22 +161,13 @@ main() {
 	if [[ -n "$selected_generator" && -n "$cached_generator" && "$selected_generator" != "$cached_generator" ]]; then
 		log_info "Gerador em cache detectado: $cached_generator"
 		log_info "Gerador atual selecionado: $selected_generator"
-		clear_cmake_configure_cache
+		clear_build_artifacts
 	fi
 
-	invoke_cmd "Configurando projeto com CMake" cmake -S "$PROJECT_ROOT" -B "$BUILD_DIR" "${TOOLCHAIN_ARGS[@]}"
-	ensure_local_intellisense_config
+	invoke_cmake_configure
 	invoke_cmd "Compilando binario" cmake --build "$BUILD_DIR" --config Debug
-
-	if [[ ! -f "$BINARY_PATH" ]]; then
-		log_fail "Binary was not found after compilation: $BINARY_PATH"
-		exit 1
-	fi
-
-	log_step "Inicializando servidor"
-	log_info "Executavel: $BINARY_PATH"
-	log_info "Endpoint health esperado: http://localhost:18080/health"
-	"$BINARY_PATH"
+	log_step "Bootstrap finalizado"
+	log_info "Use scripts/run.sh or make serve to start the server."
 }
 
 main "$@"

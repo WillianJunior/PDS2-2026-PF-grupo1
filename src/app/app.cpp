@@ -1,15 +1,15 @@
-#include "edu_social/app/app.h"
+#include "app/app.h"
 
 #include <cstdint>
 #include <filesystem>
 #include <iostream>
-#include <stdexcept>
-#include <string>
 
 #include <crow.h>
 
-#include "edu_social/database/migration_runner.h"
-#include "edu_social/database/sqlite_connection.h"
+#include "database/migration_runner.h"
+#include "database/sqlite_connection.h"
+#include "http/api_routes.h"
+#include "http/health_routes.h"
 
 namespace edu_social {
 
@@ -28,14 +28,8 @@ int App::run() {
     migration_runner.apply_schema(schema_path.string());
 
     crow::SimpleApp app;
-    const std::string database_status = connection.is_open() ? "connected" : "disconnected";
-
-    CROW_ROUTE(app, "/health")([database_status]() {
-        crow::json::wvalue response;
-        response["status"] = "ok";
-        response["database"] = database_status;
-        return response;
-    });
+    http::register_health_routes(app, connection.is_open());
+    http::register_api_routes(app);
 
     constexpr std::uint16_t port = 18080;
 

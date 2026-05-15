@@ -1,2 +1,0 @@
-- Não tem basicamente nada no doxygen. 
-- Vocês querem mesmo criar um sistema com SQLite + HTTP como UI? Acho complexo para o projeto, mas fica a critério de vocês.

@@ -10,5 +10,5 @@ if (-not (Test-Path $binaryPath)) {
 	throw 'Binary was not found. Run scripts/setup.ps1 first.'
 }
 
-Write-Host 'Iniciando servidor em http://localhost:18080 ...'
+Write-Host 'Starting server at http://localhost:18080 ...'
 & $binaryPath

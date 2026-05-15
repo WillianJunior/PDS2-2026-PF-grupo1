@@ -1,4 +1,4 @@
-#include "edu_social/database/migration_runner.h"
+#include "database/migration_runner.h"
 
 #include <fstream>
 #include <sstream>

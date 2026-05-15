@@ -6,10 +6,10 @@ $databasePath = Join-Path $projectRoot 'database\app.db'
 
 if (Test-Path $databasePath) {
 	Remove-Item $databasePath -Force
-	Write-Host 'Banco removido com sucesso.'
+	Write-Host 'Database removed successfully.'
 }
 else {
-	Write-Host 'Nenhum banco existente para remover.'
+	Write-Host 'No existing database file was found.'
 }
 
-Write-Host 'O schema sera recriado automaticamente na proxima execucao.'
+Write-Host 'The schema will be recreated automatically on the next run.'
