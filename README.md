@@ -1348,6 +1348,110 @@ curl -X POST http://localhost:18080/posts/100/likes \
 ```
 
 ---
+## Funcionamento do Sistema
+
+### Feed inical
+Ao iniciar o programa e fazer o login com sucesso, o terminal limpa a tela (clear) e exibe o Feed Principal baseado no endpoint /feed.
+O que o usuário vê: Um cabeçalho e uma lista vertical de posts enumerados para fácil seleção.
+
+Layout sugerido no terminal:
+
+
+```
+======================================================================
+                     EDU SOCIAL - FEED                     
+======================================================================
+Comunidades integradas: [PDS II] [Cálculo I]
+
+[1] TÍTULO: Tipos Abstratos de Dados
+    Usuário: @aluno_de_sistemas | COMUNIDADE: PDS II
+    "Pessoal, vocês poderiam me explicar o que diferencia um TADs de uma classe ?"
+    👍 14 curtidas | 💬 3 comentários
+
+[2] TÍTULO: Derivada de log(x)
+    AUTOR: @aluno_de_computação | COMUNIDADE: Cálculo I
+    "Alguém sabe calcular o log(x)..."
+    👍 4 curtidas | 💬 1 comentário
+
+======================================================================
+[V] Ver Post (Ex: V 1) | [C] Ver Comunidades | [P] Pesquisar | [S] Sair
+Digite sua opção: _
+```
+
+### Navegação por Comunidades (Listagem e Telas Internas)
+
+Quando o usuário digita C no menu principal, o sistema limpa a tela e chama o endpoint /communities.
+#### Listar Comunidades (GET /communities)
+
+O terminal exibe uma tabela limpa e organizada com as disciplinas disponíveis:
+```
+======================================================================
+                    COMUNIDADES ACADÊMICAS
+======================================================================
+ID   | Nome do Grupo          | Membros | Posts | Criador
+-----+------------------------+---------+-------+---------------------
+10   | PDS II                 | 12      | 5     | @professor_alex
+12   | Estruturas de Dados    | 45      | 18    | @prof_ana
+20   | Álgebra Linear         | 8       | 0     | @monitor_lucas
+
+======================================================================
+[E] Entrar em Comunidade (Ex: E 10) | [V] Voltar
+Digite sua opção: _
+```
+#### Visão de uma Comunidade Específica (GET /communities/{id})
+
+Se o usuário digitar E 10, o terminal exibe o painel daquela disciplina específica e os posts dela:
+
+```shell
+======================================================================
+                     EDU SOCIAL - COMUNIDADE                 
+======================================================================
+COMUNIDADE: PDS II (ID: 10)
+Descrição: Discução sobre a matéria de PDS II
+Membros: 12 | Status: [Você é Membro]
+
+[100] TÍTULO: Dúvida sobre polimorfismo
+    AUTOR: @aluno_de_controle
+    "Pesoal estou em dúvida sobre o que é polimorfismo..."
+    👍 4 curtidas | 💬 2 comentários
+
+[105] TÍTULO: Dica de exercício
+    AUTOR: @professor_de_pds
+    "Pessoal uma ideais de exercício aqui..."
+    👍 1 curtida | 💬 0 comentários
+
+======================================================================
+[V] Ver Post (Ex: V 100) | [N] Novo Post | [P] Sair da Comunidade | [Voltar]
+Digite sua opção: _
+```
+
+### Visualização Detalhada do Post
+
+Se o usuário estiver no feed ou na comunidade e digitar `V 100` (Ver Post 100), o terminal foca inteiramente na discussão daquela pergunta
+
+```
+======================================================================
+ POST #100
+ Autor: @professor_de_pds
+ Título: Dica de exercício
+----------------------------------------------------------------======
+ "Pessoal uma ideais de exercício aqui: defina oq é o princípio de Liskov"
+ 
+ [ 👍 4 Curtidas ]
+======================================================================
+ COMENTÁRIOS E RESPOSTAS:
+----------------------------------------------------------------------
+ #201 por @aluno_de_sistemas:
+ "Obrigado por compartilhar"
+ 
+ #202 por @monitor_lucas:
+ "Acho que a galera ainda está com dúvidas nisso."
+======================================================================
+[L] Curtir Post | [R] Responder (Comentar) | [V] Voltar
+Digite sua opção: _
+```
+
+
 
 ## Endpoint: Remove Post Like
 
