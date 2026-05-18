@@ -29,7 +29,7 @@ int App::run() {
 
     crow::SimpleApp app;
     http::register_health_routes(app, connection.is_open());
-    http::register_api_routes(app);
+    http::register_api_routes(app, connection);
 
     constexpr std::uint16_t port = 18080;
 

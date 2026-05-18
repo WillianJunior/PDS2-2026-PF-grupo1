@@ -300,6 +300,13 @@ try {
 
 	Set-Location $projectRoot
 
+	$binaryPath = Join-Path $buildDirectory 'bin\edu_social_backend.exe'
+	if (Test-Path $binaryPath) {
+		Write-Info 'Binary already exists, skipping build.'
+		Write-Info 'Use scripts/run.ps1 or make serve to start the server.'
+		exit 0
+	}
+
 	$cmakeExecutable = Ensure-CMake
 	$toolchainArguments = Resolve-ToolchainArguments
 

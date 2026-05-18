@@ -2,6 +2,8 @@
 
 #include <crow.h>
 
+#include "database/sqlite_connection.h"
+
 namespace edu_social::http {
 
 /**
@@ -17,7 +19,8 @@ namespace edu_social::http {
  * checkpoint.
  *
  * @param app Crow application that receives the routes.
+ * @param db SQLite connection used by the route handlers.
  */
-void register_api_routes(crow::SimpleApp& app);
+void register_api_routes(crow::SimpleApp& app, edu_social::SQLiteConnection& db);
 
 }
