@@ -294,6 +294,16 @@ make test
 make docs
 ```
 
+> **Nota:** `make run` executa `setup` + `serve`. O `setup` pula a compilacao automaticamente se o binario ja existir em `build/bin/`. Para forcar um rebuild, delete o binario antes de rodar `make run`.
+
+### Aviso: Smart App Control (Windows 11)
+
+O Windows 11 pode bloquear a execucao de binarios compilados localmente via **Smart App Control**. Se isso ocorrer, desative-o em:
+
+**Settings > Privacy & Security > Windows Security > App & Browser Control > Smart App Control > Off**
+
+Essa configuracao e por conta do usuario e nao requer permissao de administrador.
+
 Artefato gerado:
 
 ```txt
@@ -374,6 +384,85 @@ Todos os endpoints ja registrados que ainda nao possuem regra de negocio respond
 
 - `implemented`
 - `available, returns 501`
+
+---
+
+## Endpoint: Create User
+
+- **Metodo:** `POST`
+- **Rota:** `/users`
+- **Objetivo:** cadastrar um novo usuario no sistema
+- **Autenticacao:** nao
+- **Parametros de rota:** nenhum
+- **Parametros de query:** nenhum
+- **Body esperado:** sim
+- **Status de implementacao:** `implemented`
+
+### Request schema
+
+```json
+{
+  "username": "user-example",
+  "full_name": "User Example",
+  "email": "user@example.com",
+  "password": "super-secret",
+  "bio": "Student profile"
+}
+```
+
+> Os campos `username`, `full_name`, `email` e `password` sao obrigatorios. `bio` e opcional.
+
+### Success response schema
+
+```json
+{
+  "id": 1,
+  "username": "user-example",
+  "full_name": "User Example",
+  "email": "user@example.com",
+  "bio": "Student profile",
+  "created_at": "2026-05-18T18:40:22Z"
+}
+```
+
+### Error response schemas
+
+**Campos ausentes (422):**
+```json
+{ "error": "Fields username, full_name, email and password are required." }
+```
+
+**Username ou email ja em uso (409):**
+```json
+{ "error": "Username or email already in use." }
+```
+
+**Body invalido (400):**
+```json
+{ "error": "Invalid JSON body." }
+```
+
+### Status codes
+
+- `201 Created`
+- `400 Bad Request`
+- `409 Conflict`
+- `422 Unprocessable Entity`
+- `500 Internal Server Error`
+
+### curl minimo
+
+```bash
+curl -X POST http://localhost:18080/users
+```
+
+### curl com body JSON
+
+```bash
+curl -X POST http://localhost:18080/users \
+  -H "Content-Type: application/json" \
+  -d "{\"username\":\"user-example\",\"full_name\":\"User Example\",\"email\":\"user@example.com\",\"password\":\"super-secret\",\"bio\":\"Student profile\"}"
+```
 
 ---
 
