@@ -1,102 +1,148 @@
-# CRC Cards
+# CRC - Classes e Responsabilidades
 
-## Content
+## Usuário
 
-**Responsabilidades**
-- Manter id, autor, corpo e timestamps.
-- Manter contagem de curtidas.
-- Permitir edicao do corpo.
-- Expor um resumo textual.
-- Informar o tipo concreto em tempo de execucao.
+### Responsabilidades
+- Realizar cadastro
+- Editar informações do perfil
+- Excluir a própria conta
+- Seguir outros usuários
+- Deixar de seguir outros usuários
+- Visualizar seguidores e seguidos
+- Publicar posts
+- Curtir posts e comentários
+- Comentar em posts
+- Buscar perfis e conteúdos
 
-**Colaboracoes**
+### Colaboradores
+- Sistema
+- Perfil
 - Post
-- Comment
+- Comentário
+- Comunidade
+- Curtida
+
+
+
+## Perfil
+
+### Responsabilidades
+- Armazenar informações acadêmicas
+- Mostrar curso, instituição e período
+- Atualizar dados sensíveis mediante senha
+
+### Colaboradores
+- Usuário
+
+
 
 ## Post
 
-**Responsabilidades**
-- Representar uma publicacao dentro de uma comunidade.
-- Herdar o comportamento comum de Content.
-- Manter o titulo do post.
-- Manter o identificador da comunidade.
-- Compor a colecao de comentarios.
-- Adicionar e remover comentarios.
-- Expor resumo para feed e busca.
+### Responsabilidades
+- Armazenar conteúdo textual
+- Associar publicação a uma comunidade
+- Registrar autor do post
+- Gerenciar comentários e curtidas
+- Permitir exclusão pelo autor
+- Impedir edição após publicação
+- Exibir data/hora da publicação
 
-**Colaboracoes**
-- Content
-- Comment
-- Community
+### Colaboradores
+- Usuário
+- Comunidade
+- Comentário
+- Curtida
+- Sistema
 
-## Comment
 
-**Responsabilidades**
-- Representar uma resposta vinculada a um post.
-- Herdar o comportamento comum de Content.
-- Manter o identificador do post pai.
-- Expor resumo textual com contexto do post.
-- Participar da composicao do Post.
 
-**Colaboracoes**
-- Content
+## Comentário
+
+### Responsabilidades
+- Armazenar texto do comentário
+- Registrar autor do comentário
+- Associar comentário a um post
+- Gerenciar curtidas em comentários
+
+### Colaboradores
+- Usuário
+- Post
+- Curtida
+
+
+
+## Curtida
+
+### Responsabilidades
+- Registrar curtida em posts
+- Registrar curtida em comentários
+- Remover curtida
+
+### Colaboradores
+- Usuário
+- Post
+- Comentário
+
+
+
+## Comunidade
+
+### Responsabilidades
+- Criar comunidade com nome único
+- Manter lista de membros
+- Manter lista de posts
+- Definir administrador
+- Permitir entrada de membros
+- Validar permissão para publicar
+- Exibir feed da comunidade
+
+### Colaboradores
+- Usuário
 - Post
 
-## Community
 
-**Responsabilidades**
-- Representar o espaco academico central da plataforma.
-- Manter owner, nome e descricao.
-- Compor membros da comunidade.
-- Compor posts da comunidade.
-- Permitir entrada e saida de membros.
-- Publicar e remover posts.
-- Expor posts como PostSource.
 
-**Colaboracoes**
-- User
+## Sistema
+
+### Responsabilidades
+- Validar unicidade de e-mails
+- Validar unicidade de comunidades
+- Validar segurança de senhas
+- Realizar buscas por perfis e posts
+- Filtrar resultados de busca
+- Gerar feed principal
+- Ordenar posts por ordem de publicação
+
+### Colaboradores
+- Usuário
+- Comunidade
 - Post
-- PostSource
+
+
 
 ## Feed
 
-**Responsabilidades**
-- Agregar posts de multiplas fontes.
-- Registrar as fontes ja importadas.
-- Expor posts agregados como PostSource.
-- Limpar e reconstruir a timeline.
-- Servir como visao consolidada para o usuario.
+### Responsabilidades
+- Exibir posts das comunidades do usuário
+- Ordenar publicações cronologicamente
+- Agregar conteúdos relevantes
 
-**Colaboracoes**
+### Colaboradores
+- Comunidade
 - Post
-- PostSource
-- Community
+- Usuário
 
-## User
 
-**Responsabilidades**
-- Representar a conta principal do usuario.
-- Manter username, nome, email e bio.
-- Manter comunidades das quais participa.
-- Manter usuarios seguidos.
-- Atualizar bio.
-- Entrar e sair de comunidades.
-- Seguir e deixar de seguir usuarios.
 
-**Colaboracoes**
-- Community
-- Feed
+## Busca
+
+### Responsabilidades
+- Buscar posts por palavras-chave
+- Buscar perfis de usuários
+- Filtrar resultados por tipo (comunidade/perfil)
+- Exibir lista de resultados
+
+### Colaboradores
 - Post
-
-## SearchService
-
-**Responsabilidades**
-- Buscar comunidades por nome.
-- Buscar posts por palavra-chave.
-- Filtrar posts por autor.
-- Operar sobre agregados sem possuir estado proprio.
-- Reforcar a separacao entre entidade e servico.
-
-**Colaboracoes**
-- Community
-- Post
+- Sistema
+- Usuário
