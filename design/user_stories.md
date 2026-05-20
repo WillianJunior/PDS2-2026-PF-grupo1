@@ -1,67 +1,113 @@
-# User Stories
+# Rede Social Educacional (Grupo 1) - User Stories Corrigidas
 
-## US01 - Entrar em uma comunidade academica
 
-**Descricao**  
-Como estudante eu quero entrar em uma comunidade academica para acompanhar discussoes, materiais e avisos da disciplina.
+## Cadastro de usuário
 
-**Criterios de aceitacao**
-- O sistema deve permitir que um usuario entre em uma comunidade existente.
-- O sistema deve impedir cadastro duplicado do mesmo usuario na mesma comunidade.
-- O sistema deve registrar a data de entrada do usuario na comunidade.
-- O sistema deve permitir consultar a lista de membros da comunidade.
+### Descrição
+Como usuário, quero me cadastrar na plataforma para interagir com outros usuários acadêmicos.
 
-## US02 - Criar uma comunidade
+### Critérios de aceitação
+- Permitir cadastro com nome, e-mail e senha;
+- Garantir unicidade do e-mail;
+- Validar segurança da senha;
+- Exibir mensagem de sucesso ou erro.
 
-**Descricao**  
-Como professor eu quero criar uma comunidade para centralizar postagens e interacoes de uma turma.
 
-**Criterios de aceitacao**
-- O sistema deve permitir informar nome e descricao da comunidade.
-- O criador deve ser registrado como owner da comunidade.
-- O nome da comunidade deve ser unico.
-- A comunidade criada deve poder receber membros e posts depois.
 
-## US03 - Publicar um post em comunidade
+## Personalizar perfil
 
-**Descricao**  
-Como membro de comunidade eu quero publicar um post para compartilhar conteudo relevante com os demais participantes.
+### Descrição
+Como usuário, quero personalizar meu perfil com informações acadêmicas para me apresentar melhor.
 
-**Criterios de aceitacao**
-- O sistema deve vincular o post a um autor e a uma comunidade.
-- O sistema deve armazenar titulo, corpo e timestamps do post.
-- O sistema deve permitir listar posts por comunidade.
-- O sistema deve manter os comentarios do post como parte da sua composicao.
+### Critérios de aceitação
+- Permitir informar curso, instituição e período;
+- Exigir senha para alterar dados sensíveis;
+- Permitir exclusão da própria conta;
+- Remover posts e comentários ao deletar conta.
 
-## US04 - Comentar um post
 
-**Descricao**  
-Como membro de comunidade eu quero comentar um post para responder, perguntar ou complementar a discussao.
 
-**Criterios de aceitacao**
-- O comentario deve ser associado a um post existente.
-- O comentario deve armazenar autor, corpo e timestamps.
-- Um post deve conseguir listar seus comentarios.
-- A remocao de um post deve remover seus comentarios associados.
+## Publicar conteúdo
 
-## US05 - Visualizar o feed consolidado
+### Descrição
+Como aluno, quero publicar conteúdos educacionais para compartilhar conhecimento com outros usuários.
 
-**Descricao**  
-Como usuario eu quero visualizar um feed consolidado para acompanhar rapidamente o conteudo das comunidades que sigo.
+### Critérios de aceitação
+- Permitir inserir texto na publicação;
+- O objeto `Post` deve manter uma referência à `Comunidade` em que foi publicado;
+- Permitir o autor deletar o próprio post;
+- Não permitir edição do post após publicação.
 
-**Criterios de aceitacao**
-- O feed deve agregar posts vindos de uma ou mais comunidades.
-- O feed deve registrar de quais fontes os posts vieram.
-- O feed deve permitir listar posts agregados sem alterar as comunidades de origem.
-- O feed deve ser modelado como fonte de posts para evidenciar polimorfismo.
 
-## US06 - Buscar comunidades e posts
 
-**Descricao**  
-Como usuario eu quero buscar comunidades e posts por palavra-chave para encontrar rapidamente assuntos de interesse.
+## Interagir com posts
 
-**Criterios de aceitacao**
-- A busca deve localizar comunidades pelo nome.
-- A busca deve localizar posts por titulo e corpo.
-- A busca deve permitir filtrar posts por autor.
-- A busca deve ser modelada em um servico independente do armazenamento.
+### Descrição
+Como usuário, quero curtir e comentar posts para interagir com outros alunos.
+
+### Critérios de aceitação
+- Permitir curtir um post e remover a curtida;
+- Permitir adicionar comentários;
+- Permitir curtir comentários;
+- O post deve possuir internamente uma coleção (como uma lista ou vetor) de objetos do tipo `Comentario` e de objetos do tipo `Curtida`;
+- A destruição do post deve resultar na destruição de seus comentários.
+
+
+
+## Seguir pessoas
+
+### Descrição
+Como usuário, quero seguir outros estudantes para formar uma rede acadêmica.
+
+### Critérios de aceitação
+- Permitir seguir usuários;
+- Permitir deixar de seguir usuários;
+- Listar seguidores e perfis seguidos.
+
+
+
+## Buscar conteúdos e perfis
+
+### Descrição
+Como usuário, quero buscar conteúdos e perfis para encontrar informações e pessoas relevantes na rede acadêmica.
+
+### Critérios de aceitação
+- Permitir busca por palavras-chave;
+- Exibir resultados em formato de lista;
+- Permitir filtrar resultados por tipo (post ou perfil);
+- Ordenar perfis em ordem alfabética;
+- Exibir posts de comunidades das quais o usuário não participa.
+
+
+
+## Criar comunidade
+
+### Descrição
+Como usuário, quero criar uma comunidade com um tema específico, para organizar conteúdos acadêmicos.
+
+### Critérios de aceitação
+- Permitir criar comunidades garantindo a validação de um nome único no sistema;
+- O usuário criador deve ser automaticamente adicionado à lista de membros e receber a flag/permissão de `Administrador`;
+- A comunidade deve inicializar uma lista vazia de membros e uma lista vazia de posts.
+
+
+
+## Visualizar Feed da Comunidade
+
+### Descrição
+Como usuário, quero ingressar em comunidades e visualizar os conteúdos restritos àquele tema.
+
+### Critérios de aceitação
+- Permitir ingresso em comunidades existentes;
+- Permitir apenas membros publicarem na comunidade;
+- Exibir posts por ordem de publicação.
+
+
+
+## Visualizar Feed Principal
+
+### Descrição
+Como usuário, quero visualizar um feed na minha página inicial com as novidades da minha rede.
+
+### Critérios de aceitação
+- Esta visualização deve mostrar os últimos posts feitos nas comunidades que o usuário participa.
