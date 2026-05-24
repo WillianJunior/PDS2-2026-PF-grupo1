@@ -1,0 +1,2 @@
+ - usou cmake e resolveu dependências, legal :)
+ - make test só apareceu edu_social_tests, cuidado para a próxima entrega
