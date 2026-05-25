@@ -19,9 +19,9 @@ public:
     Comunidade(std::string nomeComunidade, Perfil adm);
     void entrarComunidade(Perfil perfil);
     bool podePublicar(Perfil perfil);
-    void exibirPostsComunidade();
     void exibirMembrosComunidade();
-
+    std::vector<Post> posts();
+    std::vector<Post> buscarPosts(std::string termo);
 };
 
 #endif

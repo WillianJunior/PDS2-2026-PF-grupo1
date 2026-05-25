@@ -4,17 +4,12 @@
 #include "comunidade.hpp"
 #include <vector>
 
-class Feed {
-
-private:
-
-    std::vector<Post> posts;
-
+class Feed
+{
 public:
-
-    void exibirPosts(); //fazer exibicao por ordem cronologica na implementacao
-    void exibirPostsComunidade(Comunidade& comunidade);
-
+    void exibirPosts(std::vector<Post> posts);
+    void exibirPerfis(std::vector<Perfil> perfis);
+    void exibirComunidades(std::vector<Comunidade> Comunidades);
 };
 
 #endif

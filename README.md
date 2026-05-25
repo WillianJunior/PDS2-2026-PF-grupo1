@@ -130,20 +130,11 @@ A rede social educacional foi escolhida porque permite representar agregados e c
 O sistema e organizado em quatro camadas:
 
 - `app`: bootstrap e inicializacao do processo
-- `http`: rotas e adaptadores HTTP
 - `domain`: entidades, agregados, abstrações e servicos do dominio
 - `database`: conexao SQLite e aplicacao do schema
 
 Fluxo arquitetural:
 
-```txt
-HTTP route
-  -> controller/route adapter
-    -> domain service
-      -> entity / aggregate
-        -> repository / persistence adapter
-          -> SQLite
-```
 
 Fluxo atual de bootstrap:
 

@@ -2,7 +2,7 @@
 #define PERFIL_HPP
 #include <string>
 #include <vector>
-
+#include "comunidade.hpp"
 class Perfil {
 
 private:
@@ -17,7 +17,7 @@ private:
 
     std::vector<Perfil> seguidores;
     std::vector<Perfil> seguindo;
-
+    std::vector<Comunidade> comunidadesQueFazParte;
 public:
 
     Perfil(std::string email, std::string senha, std::string nomeUser, std::string curso, std::string instituicao, int periodo);
@@ -29,10 +29,10 @@ public:
     std::string getEmail();
     std::string getNome();
 
-    void seguir(Perfil& perfil);
-    void deixarDeSeguir(Perfil& perfil);
-    void listarSeguidores();
-    void listarSeguindo();
+    void seguir(int idPerfil);
+    void deixarDeSeguir(int idPerfil);
+    std::vector<Perfil> listarSeguidores();
+    std::vector<Perfil> listarSeguindo();
 
 };
 
