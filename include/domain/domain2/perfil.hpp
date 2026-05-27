@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "comunidade.hpp"
+
 class Perfil {
 
 private:
@@ -18,6 +19,7 @@ private:
     std::vector<Perfil> seguidores;
     std::vector<Perfil> seguindo;
     std::vector<Comunidade> comunidadesQueFazParte;
+    
 public:
 
     Perfil(std::string email, std::string senha, std::string nomeUser, std::string curso, std::string instituicao, int periodo);
