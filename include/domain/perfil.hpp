@@ -8,7 +8,6 @@ class Perfil {
 
 private:
 
-
     std::string curso;
     std::string instituicao;
     int periodo;
