@@ -8,11 +8,6 @@
 
 class Busca {
 
-private:
-
-    std::vector<Perfil> perfis;
-    std::vector<Comunidade> comunidades;
-    std::vector<Feed> feed;
 
 public:
 

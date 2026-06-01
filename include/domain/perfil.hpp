@@ -2,7 +2,6 @@
 #define PERFIL_HPP
 #include <string>
 #include <vector>
-#include "comunidade.hpp"
 
 class Perfil {
 
@@ -12,18 +11,19 @@ private:
     std::string instituicao;
     int periodo;
 
-    std::vector<Perfil> seguidores;
-    std::vector<Perfil> seguindo;
-    std::vector<Comunidade> comunidadesQueFazParte;
+    std::vector<int> idsSeguidores;
+    std::vector<int> idsSeguidos;
+    std::vector<int> idsComunidadesQueFazParte;
     
 public:
 
+    Perfil();
     Perfil(std::string curso, std::string instituicao, int periodo);
 
     void seguir(int idPerfil);
     void deixarDeSeguir(int idPerfil);
-    std::vector<Perfil> listarSeguidores();
-    std::vector<Perfil> listarSeguindo();
+    std::vector<int> listarIdSeguidores();
+    std::vector<int> listarIdSeguidos();
 
 };
 

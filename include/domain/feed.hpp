@@ -10,6 +10,7 @@ public:
     void exibirPosts(std::vector<Post> posts);
     void exibirPerfis(std::vector<Perfil> perfis);
     void exibirComunidades(std::vector<Comunidade> Comunidades);
+    
 };
 
 #endif

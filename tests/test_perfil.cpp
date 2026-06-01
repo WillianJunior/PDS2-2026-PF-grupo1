@@ -9,19 +9,25 @@ TEST_CASE("Construtor nao lanca excecao") {
 
 TEST_CASE("Novo perfil tem listas de seguidores e seguindo vazias") {
     Perfil p("Computacao", "UFMG", 3);
-    CHECK(p.listarSeguidores().empty());
-    CHECK(p.listarSeguindo().empty());
+    CHECK(p.listarIdSeguidores().empty());
+    CHECK(p.listarIdSeguidos().empty());
 }
 
-TEST_CASE("seguir nao lanca excecao") {
+TEST_CASE("Consigo seguir outro perfil e listarIdSeguidos retorna o perfil seguido") {
     Perfil p("Computacao", "UFMG", 3);
-    CHECK_NOTHROW(p.seguir(42));
+    const int idOutro = 2;
+    CHECK(p.listarIdSeguidos().size() == 0);
+    p.seguir(idOutro);
+    CHECK(p.listarIdSeguidos().size() == 1);
 }
 
-TEST_CASE("deixarDeSeguir em id existente nao lanca excecao") {
+TEST_CASE("Consigo deixar de seguir um perfil e listarIdSeguidos nao retorna mais o perfil seguido") {
     Perfil p("Computacao", "UFMG", 3);
-    p.seguir(42);
-    CHECK_NOTHROW(p.deixarDeSeguir(42));
+    const int idOutro = 2;
+    p.seguir(idOutro);
+    CHECK(p.listarIdSeguidos().size() == 1);
+    p.deixarDeSeguir(idOutro);
+    CHECK(p.listarIdSeguidos().size() == 0);    
 }
 
 TEST_CASE("deixarDeSeguir em id inexistente nao lanca excecao") {

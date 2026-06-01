@@ -10,15 +10,15 @@ class Comunidade {
 private:
 
     std::vector<Post> postagensComunidade;
-    std::vector<Perfil> membrosComunidade;
-    Perfil adm;
+    std::vector<int> idsMembrosComunidade;
+    int idAdministrador;
     std::string nomeComunidade;
 
 public:
 
-    Comunidade(std::string nomeComunidade, Perfil adm);
-    void entrarComunidade(Perfil perfil);
-    bool podePublicar(Perfil perfil);
+    Comunidade(std::string nomeComunidade, int idAdministrador);
+    void entrarComunidade(int idPerfil);
+    bool podePublicar(int idPerfil);
     void exibirMembrosComunidade();
     std::vector<Post> posts();
     std::vector<Post> buscarPosts(std::string termo);

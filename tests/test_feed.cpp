@@ -13,18 +13,18 @@ TEST_CASE("exibirPosts com lista vazia nao lanca excecao") {
 
 TEST_CASE("exibirPosts com um post nao lanca excecao") {
     Feed f;
-    Perfil autor("Computacao", "UFMG", 3);
-    std::vector<Post> lista = { Post("Introducao a grafos", autor) };
+    const int idAutor = 1;
+    std::vector<Post> lista = { Post("Introducao a grafos", idAutor) };
     CHECK_NOTHROW(f.exibirPosts(lista));
 }
 
 TEST_CASE("exibirPosts com multiplos posts nao lanca excecao") {
     Feed f;
-    Perfil autor("Computacao", "UFMG", 3);
+    const int idAutor = 1;
     std::vector<Post> lista = {
-        Post("Post 1", autor),
-        Post("Post 2", autor),
-        Post("Post 3", autor)
+        Post("Post 1", idAutor),
+        Post("Post 2", idAutor),
+        Post("Post 3", idAutor)
     };
     CHECK_NOTHROW(f.exibirPosts(lista));
 }
@@ -50,10 +50,10 @@ TEST_CASE("exibirComunidades com lista vazia nao lanca excecao") {
 
 TEST_CASE("exibirComunidades com comunidades nao lanca excecao") {
     Feed f;
-    Perfil adm("Computacao", "UFMG", 5);
+    const int idAdministrador = 1;
     std::vector<Comunidade> lista = {
-        Comunidade("IA",     adm),
-        Comunidade("DevOps", adm)
+        Comunidade("IA",     idAdministrador),
+        Comunidade("DevOps", idAdministrador)
     };
     CHECK_NOTHROW(f.exibirComunidades(lista));
 }

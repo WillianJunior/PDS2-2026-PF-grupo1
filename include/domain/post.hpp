@@ -12,16 +12,16 @@ private:
 
     std::string texto; 
     std::set<int> idsCurtidas;
+    int idAutor;
     std::vector<Comentario> comentarios;
 
 public:
 
-    Post(std::string texto, Perfil autor);
+    Post(std::string texto, int idAutor);
 
     void adicionarComentario(Comentario comentario);
-    void removerComentario(int idComentario);
-    void exibirComentarios();
-    void exibirCurtidas();
+    std::vector<Comentario> listarComentarios();
+    int quantidadeDeCurtidas();
     void curtir(int idUsuario);
 
 };

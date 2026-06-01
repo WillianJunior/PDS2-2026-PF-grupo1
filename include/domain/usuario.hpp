@@ -8,11 +8,11 @@ private:
 
     std::string senha;
     std::string email;
-    std::string nomeUser;
+    std::string nomeDeUsuario;
 
 public:
 
-    Usuario(std::string email, std::string senha, std::string nomeUser);
+    Usuario(std::string email, std::string senha, std::string nomeDeUsuario);
 
     bool alterarSenha(std::string senhaAtual, std::string novaSenha);
     bool alterarEmail(std::string senhaAtual, std::string novoEmail);;

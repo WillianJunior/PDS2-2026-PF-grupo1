@@ -123,7 +123,6 @@ if(TEST_SOURCES)
         ${DOCTEST_SOURCE_DIR}
     )
     target_link_libraries(edu_social_tests PRIVATE Threads::Threads)
-
     if(CORE_SOURCES)
         target_link_libraries(edu_social_tests PRIVATE edu_social_core)
     endif()

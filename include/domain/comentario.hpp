@@ -16,6 +16,7 @@ public:
 
     Comentario(std::string texto, Perfil autor);
     void curtir(int idUsuario);
+    int quantidadeDeCurtidas();
 
 };
 

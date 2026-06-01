@@ -26,4 +26,4 @@ public:
     std::vector<Comunidade> listarComunidade();
     
 };
-#endif ARMAZENAMENTO_HPP
+#endif
