@@ -28,36 +28,36 @@ public:
      * @param texto O conteúdo principal da postagem.
      * @param idAutor O identificador do usuário que a criou.
      */
-
     Post(std::string texto, int idAutor);
 
     /**
      * @brief Anexa um novo comentário à publicação.
      * @param comentario O objeto Comentario a ser adicionado.
      */
-
     void adicionarComentario(Comentario comentario);
 
     /**
      * @brief Retorna todos os comentários feitos nesta postagem.
      * @return Um vetor contendo os comentários.
      */
-
     std::vector<Comentario> listarComentarios();
 
     /**
      * @brief Retorna o total de curtidas recebidas pela postagem.
      * @return O número de curtidas.
      */
-
     int quantidadeDeCurtidas();
 
     /**
      * @brief Registra a curtida de um usuário na postagem.
      * @param idUsuario O identificador do usuário que curtiu.
      */
-
     void curtir(int idUsuario);
+
+   
+    std::string getConteudo() const;
+
+    std::vector<int> getIdsCurtidas() const;
 
 };
 

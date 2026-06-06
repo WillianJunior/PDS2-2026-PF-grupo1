@@ -3,6 +3,7 @@
 #include "post.hpp"
 #include "comunidade.hpp"
 #include <vector>
+#include <string>
 
 /**
  * @brief Classe responsável pela renderização/exibição de conteúdos para o usuário.
@@ -12,29 +13,32 @@
 
 class Feed
 {
+private:
+    // 🔹 Acrescentado para suportar getConteudo()
+    std::string conteudo;
+
 public:
 
     /**
      * @brief Exibe uma lista de postagens na tela.
      * @param posts O vetor de postagens a ser exibido.
      */
-
     void exibirPosts(std::vector<Post> posts);
 
     /**
      * @brief Exibe uma lista de perfis na tela (ex: resultados de busca ou sugestões).
      * @param perfis O vetor de perfis a ser exibido.
      */
-
     void exibirPerfis(std::vector<Perfil> perfis);
 
     /**
      * @brief Exibe uma lista de comunidades na tela.
      * @param Comunidades O vetor de comunidades a ser exibido.
      */
-
     void exibirComunidades(std::vector<Comunidade> Comunidades);
-    
+
+   
+    std::string getConteudo() const;
 };
 
 #endif
