@@ -65,6 +65,15 @@ public:
      */
 
     std::vector<Post> buscarPosts(std::string termo);
+
+    std::string getNomeComunidade() const;
+    int getIdAdministrador() const;
+    std::vector<int> getIdsMembros() const;
+    std::vector<Post> getPostagens() const;
+    std::string getDescricao() const; 
+    std::string getNome() const; 
+
 };
+extern std::vector<Perfil> todosPerfis;
 
 #endif

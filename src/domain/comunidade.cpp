@@ -1,5 +1,9 @@
 #include "domain/comunidade.hpp"
 #include <algorithm>
+#include <iostream>
+
+
+ std::vector<Perfil> todosPerfis;
 
 Comunidade::Comunidade(std::string nomeComunidade, int idAdministrador)
     : postagensComunidade(), idsMembrosComunidade(), idAdministrador(idAdministrador), nomeComunidade(std::move(nomeComunidade)) {}
@@ -17,23 +21,65 @@ bool Comunidade::podePublicar(int idPerfil)
            std::find(idsMembrosComunidade.begin(), idsMembrosComunidade.end(), idPerfil) != idsMembrosComunidade.end();
 }
 
+
 void Comunidade::exibirMembrosComunidade()
 {
-    // Exibição em UI não é necessária para o domínio; método presente para compatibilidade de testes.
+    std::cout << "=== Membros da Comunidade: " << nomeComunidade << " ===" << std::endl;
+    if (idsMembrosComunidade.empty()) {
+        std::cout << "Nenhum membro na comunidade." << std::endl;
+    } else {
+        for (int id : idsMembrosComunidade) {
+            auto it = std::find_if(todosPerfis.begin(), todosPerfis.end(),
+                                   [id](const Perfil& p) { return p.getId() == id; });
+
+            if (it != todosPerfis.end()) {
+                std::cout << "Membro: " << it->getNome() << " (ID: " << id << ")" << std::endl;
+            } else {
+                std::cout << "Membro com ID " << id << " não encontrado nos perfis." << std::endl;
+            }
+        }
+    }
 }
+
 
 std::vector<Post> Comunidade::posts()
 {
     return postagensComunidade;
 }
 
+
 std::vector<Post> Comunidade::buscarPosts(std::string termo)
 {
     std::vector<Post> resultado;
     for (auto &post : postagensComunidade) {
-        if (post.listarComentarios().empty()) {
-            (void)post;
+        
+        if (post.getConteudo().find(termo) != std::string::npos) {
+            resultado.push_back(post);
         }
     }
     return resultado;
+}
+
+
+std::string Comunidade::getNomeComunidade() const {
+    return nomeComunidade;
+}
+
+
+int Comunidade::getIdAdministrador() const {
+    return idAdministrador;
+}
+
+
+std::vector<int> Comunidade::getIdsMembros() const {
+    return idsMembrosComunidade;
+}
+
+
+std::vector<Post> Comunidade::getPostagens() const {
+    return postagensComunidade;
+}
+
+std::string Comunidade::getNome() const {
+    return nomeComunidade;
 }
