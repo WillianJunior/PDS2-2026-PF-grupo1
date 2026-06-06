@@ -1,4 +1,4 @@
-# Rede Social Educacional (Grupo 1) - User Stories Corrigidas
+# Rede Social Educacional (Grupo 1) - User Stories
 
 
 ## Cadastro de usuário
@@ -34,7 +34,6 @@ Como aluno, quero publicar conteúdos educacionais para compartilhar conheciment
 
 ### Critérios de aceitação
 - Permitir inserir texto na publicação;
-- O objeto `Post` deve manter uma referência à `Comunidade` em que foi publicado;
 - Permitir o autor deletar o próprio post;
 - Não permitir edição do post após publicação.
 
@@ -95,7 +94,7 @@ Como usuário, quero criar uma comunidade com um tema específico, para organiza
 ## Visualizar Feed da Comunidade
 
 ### Descrição
-Como usuário, quero ingressar em comunidades e visualizar os conteúdos restritos àquele tema.
+Como usuário, quero ingressar em comunidades e visualizar os conteúdos referentes ao tema da comunidade.
 
 ### Critérios de aceitação
 - Permitir ingresso em comunidades existentes;

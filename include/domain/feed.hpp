@@ -1,90 +1,40 @@
-#pragma once
-
-#include <string>
+#ifndef FEED_HPP
+#define FEED_HPP
+#include "post.hpp"
+#include "comunidade.hpp"
 #include <vector>
 
-#include "domain/post.hpp"
-#include "domain/post_source.hpp"
-
-namespace edu_social::domain {
-
 /**
- * @brief Represents the personalized aggregation of posts shown to a user.
- *
- * Feed is another PostSource implementation. It demonstrates polymorphism by
- * consuming other sources and republishing their posts as a single timeline.
- *
- * Feed does not own communities. It only aggregates snapshots provided by
- * PostSource implementations.
+ * @brief Classe responsável pela renderização/exibição de conteúdos para o usuário.
+ * * Atua como a interface visual da linha do tempo, listando postagens,
+ * sugerindo perfis e comunidades.
  */
-class Feed final : public PostSource {
+
+class Feed
+{
 public:
-    /**
-     * @brief Builds an empty feed for a user.
-     *
-     * @param owner_id Identifier of the feed owner.
-     * @param title Display title of the feed.
-     */
-    Feed(int owner_id, std::string title);
 
     /**
-     * @brief Returns the user that owns the feed.
-     *
-     * @return Feed owner identifier.
+     * @brief Exibe uma lista de postagens na tela.
+     * @param posts O vetor de postagens a ser exibido.
      */
-    int owner_id() const;
+
+    void exibirPosts(std::vector<Post> posts);
 
     /**
-     * @brief Returns the list of sources already aggregated by the feed.
-     *
-     * @return Immutable reference to the source labels.
+     * @brief Exibe uma lista de perfis na tela (ex: resultados de busca ou sugestões).
+     * @param perfis O vetor de perfis a ser exibido.
      */
-    const std::vector<std::string>& source_labels() const;
+
+    void exibirPerfis(std::vector<Perfil> perfis);
 
     /**
-     * @brief Imports the current snapshot of a source into the feed.
-     *
-     * The operation records the source label and appends the posts exposed by
-     * that source at the time of ingestion.
-     *
-     * @param source Source that provides posts.
+     * @brief Exibe uma lista de comunidades na tela.
+     * @param Comunidades O vetor de comunidades a ser exibido.
      */
-    void ingest(const PostSource& source);
 
-    /**
-     * @brief Removes every aggregated post and source label.
-     */
-    void clear();
-
-    /**
-     * @brief Returns the total number of posts currently aggregated.
-     *
-     * @return Number of posts available in the feed.
-     */
-    std::size_t post_count() const;
-
-    /**
-     * @brief Returns the title used to identify the feed as a source.
-     *
-     * @return Feed title.
-     */
-    std::string source_name() const override;
-
-    /**
-     * @brief Returns a snapshot of the posts aggregated by the feed.
-     *
-     * The returned copy allows polymorphic consumers to inspect the feed
-     * without mutating its internal timeline.
-     *
-     * @return Copy of the timeline.
-     */
-    std::vector<Post> list_posts() const override;
-
-private:
-    int owner_id_;
-    std::string title_;
-    std::vector<std::string> source_labels_;
-    std::vector<Post> timeline_;
+    void exibirComunidades(std::vector<Comunidade> Comunidades);
+    
 };
 
-}
+#endif
