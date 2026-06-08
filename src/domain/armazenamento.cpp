@@ -8,8 +8,23 @@ bool Armazenamento::emailUnico(std::string email) {
 }
 
 bool Armazenamento::senhaSegura(std::string senha) {
-    (void)senha; // evita warning
-    return true; // ajuste conforme a lógica real depois
+    bool temMaiuscula = false;
+    bool temMinuscula = false;
+    bool temNumero = false;
+
+    for (char c : senha) {
+        if (std::isupper(static_cast<unsigned char>(c)))
+            temMaiuscula = true;
+        else if (std::islower(static_cast<unsigned char>(c)))
+            temMinuscula = true;
+        else if (std::isdigit(static_cast<unsigned char>(c)))
+            temNumero = true;
+    }
+
+    return senha.length() >= 8 &&
+           temMaiuscula &&
+           temMinuscula &&
+           temNumero;
 }
 
 void Armazenamento::mensagemSucessoErro() {}
