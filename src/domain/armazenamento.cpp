@@ -1,4 +1,4 @@
-#include "armazenamento.hpp"
+#include "../../include/domain/armazenamento.hpp"
 
 Armazenamento::Armazenamento() : emailLogado(""), idPerfilLogado(0) {}
 

@@ -1,42 +1,32 @@
 #include <doctest/doctest.h>
 #include "domain/comentario.hpp"
-#include "domain/perfil.hpp"
 
 TEST_SUITE("Comentario")
 {
-
-    TEST_CASE("Construtor nao lanca excecao")
+    TEST_CASE("Criar Comentario nao lanca excecao")
     {
-        Perfil autor("Computacao", "UFMG", 2);
-        CHECK_NOTHROW(Comentario("Otimo post!", autor));
+        // Novo construtor: Comentario(id, idPost, idAutor, texto)
+        CHECK_NOTHROW(Comentario(1, 100, 2, "Otimo post!"));
     }
 
-    TEST_CASE("Consigo curtir um comentario")
+    TEST_CASE("getTexto retorna o texto correto")
     {
-        Perfil autor("Computacao", "UFMG", 2);
-        Comentario c("Texto", autor);
-        c.curtir(1);
-        CHECK(c.quantidadeDeCurtidas() == 1);
+        Comentario c(1, 100, 2, "Texto de teste");
+        CHECK(c.getTexto() == "Texto de teste");
     }
 
-    TEST_CASE("curtir com usuarios diferentes nao lanca excecao")
+    TEST_CASE("quantidadeDeCurtidas inicial deve ser 0")
     {
-        Perfil autor("Computacao", "UFMG", 2);
-        Comentario c("Texto", autor);
-        c.curtir(1);
-        c.curtir(2);
-        c.curtir(3);
-        CHECK_NOTHROW(c.curtir(4));
-    }
-
-    TEST_CASE("curtir mesmo usuario duas vezes remove curtida")
-    {
-        Perfil autor("Computacao", "UFMG", 2);
-        Comentario c("Texto", autor);
-        c.curtir(1);
-        CHECK(c.quantidadeDeCurtidas() == 1);
-        c.curtir(1);
+        Comentario c(1, 100, 2, "Texto");
         CHECK(c.quantidadeDeCurtidas() == 0);
     }
-    
+
+    TEST_CASE("curtir adiciona e remove curtida corretamente")
+    {
+        Comentario c(1, 100, 2, "Texto");
+        c.curtir(5); 
+        CHECK(c.quantidadeDeCurtidas() == 1);
+        c.curtir(5); 
+        CHECK(c.quantidadeDeCurtidas() == 0);
+    }
 }

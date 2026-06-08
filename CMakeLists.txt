@@ -69,6 +69,11 @@ if(CORE_SOURCES)
     target_include_directories(edu_social_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_link_libraries(edu_social_core PUBLIC Threads::Threads)
 
+    # Adicione esta linha logo após o add_library
+    target_include_directories(edu_social_core PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/domain
+)
+
     if(ENABLE_COVERAGE AND NOT MSVC)
         target_compile_options(edu_social_core PUBLIC --coverage)
         target_link_options(edu_social_core PUBLIC --coverage)

@@ -3,7 +3,6 @@
 
 TEST_SUITE("Usuario")
 {
-
     TEST_CASE("Construtor armazena email e nome")
     {
         Usuario u("ana@uni.br", "Senha123", "Ana");
