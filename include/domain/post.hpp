@@ -2,63 +2,61 @@
 #define POST_HPP
 #include <string>
 #include <vector>
-#include <set>
-#include "comentario.hpp"
-#include "perfil.hpp"
 
 /**
- * @brief Classe que representa uma publicação no sistema.
- * * Um post contém texto, uma lista de quem o curtiu, seu autor, 
- * e uma coleção de comentários associados a ele.
+ * @brief Classe que representa uma publicação de texto no sistema.
+ * * Um post contém o texto principal, o identificador de quem o escreveu, 
+ * a comunidade à qual pertence (se houver) e a lista de usuários que o curtiram.
  */
-
 class Post {
-
 private:
-
-    std::string texto; 
-    std::set<int> idsCurtidas;
+    int id;
     int idAutor;
-    std::vector<Comentario> comentarios;
+    int idComunidade; // 0 significa que é um post no feed geral
+    std::string texto;
+    std::vector<int> idsCurtidas;
 
 public:
-
     /**
      * @brief Constrói uma nova postagem.
-     * @param texto O conteúdo principal da postagem.
-     * @param idAutor O identificador do usuário que a criou.
+     * @param id O identificador único numérico da postagem.
+     * @param idAutor O identificador do perfil do usuário que a criou.
+     * @param idComunidade O identificador da comunidade (0 se for Feed Geral).
+     * @param texto O conteúdo em texto da publicação.
      */
-    Post(std::string texto, int idAutor);
+    Post(int id, int idAutor, int idComunidade, std::string texto);
 
     /**
-     * @brief Anexa um novo comentário à publicação.
-     * @param comentario O objeto Comentario a ser adicionado.
-     */
-    void adicionarComentario(Comentario comentario);
-
-    /**
-     * @brief Retorna todos os comentários feitos nesta postagem.
-     * @return Um vetor contendo os comentários.
-     */
-    std::vector<Comentario> listarComentarios();
-
-    /**
-     * @brief Retorna o total de curtidas recebidas pela postagem.
-     * @return O número de curtidas.
-     */
-    int quantidadeDeCurtidas();
-
-    /**
-     * @brief Registra a curtida de um usuário na postagem.
-     * @param idUsuario O identificador do usuário que curtiu.
+     * @brief Registra ou remove a curtida de um usuário na postagem (efeito Toggle).
+     * @param idUsuario O identificador do perfil do usuário que interagiu com o post.
      */
     void curtir(int idUsuario);
 
-   
+    /**
+     * @brief Retorna o total de curtidas recebidas pela postagem.
+     * @return O número de usuários que curtiram o post.
+     */
+    int quantidadeDeCurtidas() const;
+
+    /**
+     * @name Getters
+     * @brief Métodos de acesso para leitura dos dados da postagem.
+     * @{
+     */
+    int getId() const;
+    int getIdAutor() const;
+    int getIdComunidade() const;
     std::string getConteudo() const;
-
     std::vector<int> getIdsCurtidas() const;
+    /** @} */
 
+    /**
+     * @name Setters (Persistência)
+     * @brief Métodos utilizados exclusivamente pelo GerenciadorCSV para carregar curtidas.
+     * @{
+     */
+    void setIdsCurtidas(const std::vector<int>& ids);
+    /** @} */
 };
 
 #endif
