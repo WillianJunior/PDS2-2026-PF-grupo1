@@ -23,15 +23,15 @@ void Armazenamento::salvarDados() {
     GerenciadorCSV::salvarComentarios(comentarios, "comentarios.csv");
 }
 
+bool Armazenamento::emailUnico(const std::string& email) {
+    for (const auto& u : usuarios) if (u.getEmail() == email) return false;
+    return true;
+}
+
 bool Armazenamento::nomeUsuarioUnico(const std::string& nome) {
     for (const auto& u : usuarios) {
         if (u.getNome() == nome) return false;
     }
-    return true;
-}
-
-bool Armazenamento::emailUnico(const std::string& email) {
-    for (const auto& u : usuarios) if (u.getEmail() == email) return false;
     return true;
 }
 
@@ -50,22 +50,27 @@ bool Armazenamento::fazerLogin(const std::string& email, const std::string& senh
     return false;
 }
 
-void Armazenamento::deslogar() { 
-    emailLogado = ""; 
-    idPerfilLogado = 0; 
-}
-
-int Armazenamento::getIdPerfilLogado() const { 
-    return idPerfilLogado; 
-}
+void Armazenamento::deslogar() { emailLogado = ""; idPerfilLogado = 0; }
+int Armazenamento::getIdPerfilLogado() const { return idPerfilLogado; }
 
 void Armazenamento::criarUsuarioEPerfil(std::string email, std::string senha, std::string nome) {
     usuarios.push_back(Usuario(email, senha, nome));
     perfis.push_back(Perfil(proxIdPerfil++, email, nome, "", "", "", 0));
 }
 
+void Armazenamento::criarComentarioGlobal(int idPost, int idAutor, std::string texto) {
+    comentarios.push_back(Comentario(proxIdComentario++, idPost, idAutor, std::move(texto)));
+}
+
 Perfil* Armazenamento::getPerfil(int id) {
     for (auto& p : perfis) if (p.getId() == id) return &p;
+    return nullptr;
+}
+
+Usuario* Armazenamento::getUsuario(std::string email) {
+    for (auto& u : usuarios) {
+        if (u.getEmail() == email) return &u;
+    }
     return nullptr;
 }
 
