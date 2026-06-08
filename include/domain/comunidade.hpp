@@ -1,79 +1,69 @@
 #ifndef COMUNIDADE_HPP
 #define COMUNIDADE_HPP
-#include <vector>
 #include <string>
-#include "post.hpp"
-#include "perfil.hpp"
+#include <vector>
 
 /**
  * @brief Classe que representa um grupo ou fórum dentro da rede social.
- * * Comunidades agregam usuários (membros) em torno de um tema comum e 
- * possuem postagens próprias.
+ * * Comunidades agregam usuários (membros) em torno de um tema comum.
+ * * Elas possuem um administrador responsável e regras de permissão para postagens.
  */
-
 class Comunidade {
-
 private:
-
-    std::vector<Post> postagensComunidade;
-    std::vector<int> idsMembrosComunidade;
+    int id;
+    std::string nome;
+    std::string descricao;
     int idAdministrador;
-    std::string nomeComunidade;
+    std::vector<int> idsMembros;
 
 public:
-
     /**
      * @brief Constrói uma nova Comunidade.
-     * @param nomeComunidade O nome de exibição da comunidade.
-     * @param idAdministrador O identificador do perfil criador/dono da comunidade.
+     * @param id O identificador único numérico da comunidade.
+     * @param nome O nome de exibição do grupo.
+     * @param descricao O texto explicativo sobre o propósito do grupo.
+     * @param idAdministrador O ID do perfil do usuário criador/dono da comunidade.
      */
-
-    Comunidade(std::string nomeComunidade, int idAdministrador);
+    Comunidade(int id, std::string nome, std::string descricao, int idAdministrador);
 
     /**
-     * @brief Adiciona um novo membro à comunidade.
+     * @brief Adiciona o ID de um perfil à lista de membros da comunidade.
      * @param idPerfil O identificador do usuário que está ingressando.
      */
-
-    void entrarComunidade(int idPerfil);
-
-    /**
-     * @brief Verifica se um usuário tem permissão para publicar nesta comunidade.
-     * @param idPerfil O identificador do usuário a ser verificado.
-     * @return true se o usuário puder publicar, false caso contrário.
-     */
-
-    bool podePublicar(int idPerfil);
+    void adicionarMembro(int idPerfil);
 
     /**
-     * @brief Exibe na tela a lista de membros que participam da comunidade.
+     * @brief Remove o ID de um perfil da lista de membros.
+     * @param idPerfil O identificador do usuário que está deixando a comunidade.
      */
-
-    void exibirMembrosComunidade();
+    void removerMembro(int idPerfil);
 
     /**
-     * @brief Retorna todas as postagens feitas dentro da comunidade.
-     * @return Um vetor contendo as postagens.
+     * @brief Verifica se um usuário tem permissão para realizar publicações na comunidade.
+     * @param idPerfil O identificador do usuário que está tentando postar.
+     * @return true se o usuário for o admin ou um membro ativo, false caso contrário.
      */
-
-    std::vector<Post> posts();
+    bool podePublicar(int idPerfil) const;
 
     /**
-     * @brief Busca postagens dentro da comunidade que correspondam a um termo.
-     * @param termo A palavra-chave a ser pesquisada.
-     * @return Um vetor de postagens que contêm o termo buscado.
+     * @name Getters
+     * @brief Métodos de acesso para leitura das propriedades da comunidade.
+     * @{
      */
-
-    std::vector<Post> buscarPosts(std::string termo);
-
-    std::string getNomeComunidade() const;
+    int getId() const;
+    std::string getNome() const;
+    std::string getDescricao() const;
     int getIdAdministrador() const;
     std::vector<int> getIdsMembros() const;
-    std::vector<Post> getPostagens() const;
-    std::string getDescricao() const; 
-    std::string getNome() const; 
+    /** @} */
 
+    /**
+     * @name Setters (Persistência)
+     * @brief Métodos utilizados exclusivamente pelo GerenciadorCSV para carregar os membros.
+     * @{
+     */
+    void setIdsMembros(const std::vector<int>& ids);
+    /** @} */
 };
-extern std::vector<Perfil> todosPerfis;
 
 #endif
