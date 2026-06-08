@@ -15,23 +15,9 @@ set(FETCHCONTENT_QUIET OFF)
 
 option(ENABLE_COVERAGE "Enable coverage instrumentation" ON)
 
-set(CROW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(CROW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(CROW_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
-
-FetchContent_Declare(
-    asio
-    URL https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-30-2.tar.gz
-)
-FetchContent_Declare(
-    crow
-    URL https://github.com/CrowCpp/Crow/archive/refs/tags/v1.2.1.tar.gz
-)
-
-FetchContent_MakeAvailable(asio)
-set(ASIO_INCLUDE_DIR "${asio_SOURCE_DIR}/asio/include" CACHE PATH "Standalone Asio include directory" FORCE)
-FetchContent_MakeAvailable(crow)
-
+# -----------------------------------------------------------------------------
+# Doctest
+# -----------------------------------------------------------------------------
 set(DOCTEST_SOURCE_DIR "${CMAKE_BINARY_DIR}/_deps/doctest-src")
 set(DOCTEST_BINARY_DIR "${CMAKE_BINARY_DIR}/_deps/doctest-build")
 set(DOCTEST_SUBBUILD_DIR "${CMAKE_BINARY_DIR}/_deps/doctest-subbuild")
@@ -49,7 +35,7 @@ endif()
 find_package(Threads REQUIRED)
 
 # -----------------------------------------------------------------------------
-# Coleta de fontes — usa o que existir em src/ e tests/
+# Coleta de fontes
 # -----------------------------------------------------------------------------
 file(GLOB_RECURSE CORE_SOURCES CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/domain/*.cpp
@@ -57,17 +43,28 @@ file(GLOB_RECURSE CORE_SOURCES CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/app/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/http/*.cpp
 )
+
 file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp
 )
 
 # -----------------------------------------------------------------------------
-# edu_social_core — criado apenas se houver fontes
+# Biblioteca principal
 # -----------------------------------------------------------------------------
 if(CORE_SOURCES)
     add_library(edu_social_core STATIC ${CORE_SOURCES})
-    target_include_directories(edu_social_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    target_link_libraries(edu_social_core PUBLIC Threads::Threads)
+
+    target_include_directories(
+        edu_social_core
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+    )
+
+    target_link_libraries(
+        edu_social_core
+        PUBLIC
+        Threads::Threads
+    )
 
     if(ENABLE_COVERAGE AND NOT MSVC)
         target_compile_options(edu_social_core PUBLIC --coverage)
@@ -85,15 +82,34 @@ endif()
 # Executável principal
 # -----------------------------------------------------------------------------
 add_executable(edu_social_backend src/main.cpp)
-target_include_directories(edu_social_backend PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(edu_social_backend PRIVATE Crow::Crow Threads::Threads)
+
+target_include_directories(
+    edu_social_backend
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_link_libraries(
+    edu_social_backend
+    PRIVATE
+    Threads::Threads
+)
 
 if(CORE_SOURCES)
-    target_link_libraries(edu_social_backend PRIVATE edu_social_core)
+    target_link_libraries(
+        edu_social_backend
+        PRIVATE
+        edu_social_core
+    )
 endif()
 
 if(WIN32)
-    target_link_libraries(edu_social_backend PRIVATE ws2_32 mswsock)
+    target_link_libraries(
+        edu_social_backend
+        PRIVATE
+        ws2_32
+        mswsock
+    )
 endif()
 
 if(MSVC)
@@ -102,29 +118,47 @@ else()
     target_compile_options(edu_social_backend PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
-set_target_properties(edu_social_backend PROPERTIES
+set_target_properties(
+    edu_social_backend
+    PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
 
 foreach(CONFIG_TYPE Debug Release RelWithDebInfo MinSizeRel)
     string(TOUPPER ${CONFIG_TYPE} CONFIG_TYPE_UPPER)
-    set_target_properties(edu_social_backend PROPERTIES
+
+    set_target_properties(
+        edu_social_backend
+        PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY_${CONFIG_TYPE_UPPER} ${CMAKE_BINARY_DIR}/bin
     )
 endforeach()
 
 # -----------------------------------------------------------------------------
-# Testes — criados apenas se houver fontes em tests/
+# Testes
 # -----------------------------------------------------------------------------
 if(TEST_SOURCES)
     add_executable(edu_social_tests ${TEST_SOURCES})
-    target_include_directories(edu_social_tests PRIVATE
+
+    target_include_directories(
+        edu_social_tests
+        PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${DOCTEST_SOURCE_DIR}
     )
-    target_link_libraries(edu_social_tests PRIVATE Threads::Threads)
+
+    target_link_libraries(
+        edu_social_tests
+        PRIVATE
+        Threads::Threads
+    )
+
     if(CORE_SOURCES)
-        target_link_libraries(edu_social_tests PRIVATE edu_social_core)
+        target_link_libraries(
+            edu_social_tests
+            PRIVATE
+            edu_social_core
+        )
     endif()
 
     if(ENABLE_COVERAGE AND NOT MSVC)
@@ -138,13 +172,18 @@ if(TEST_SOURCES)
         target_compile_options(edu_social_tests PRIVATE -Wall -Wextra -Wpedantic)
     endif()
 
-    set_target_properties(edu_social_tests PROPERTIES
+    set_target_properties(
+        edu_social_tests
+        PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     )
 
     foreach(CONFIG_TYPE Debug Release RelWithDebInfo MinSizeRel)
         string(TOUPPER ${CONFIG_TYPE} CONFIG_TYPE_UPPER)
-        set_target_properties(edu_social_tests PROPERTIES
+
+        set_target_properties(
+            edu_social_tests
+            PROPERTIES
             RUNTIME_OUTPUT_DIRECTORY_${CONFIG_TYPE_UPPER} ${CMAKE_BINARY_DIR}/bin
         )
     endforeach()
