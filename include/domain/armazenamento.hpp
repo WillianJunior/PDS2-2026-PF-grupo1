@@ -10,7 +10,7 @@
 #include <string>
 
 /**
- * @brief Classe núcleo (Engine) responsável por centralizar o gerenciamento de dados do sistema.
+ * @brief Classe núcleo responsável por centralizar o gerenciamento de dados do sistema.
  * * Funciona como o Banco de Dados em memória RAM durante a execução do programa, controlando
  * os índices auto-incrementais, sessões de usuário ativo e orquestrando as chamadas de persistência.
  */
@@ -24,6 +24,8 @@ private:
 
     std::string emailLogado;
     int idPerfilLogado;
+
+    // Gerenciadores de IDs únicos (Auto-incremento)
     int proxIdPerfil = 1;
     int proxIdComunidade = 1;
     int proxIdPost = 1;
@@ -45,8 +47,8 @@ public:
     /** @} */
 
     /**
-     * @name Autenticação e Sessão
-     * @brief Métodos para validação, login e gerenciamento de estado do usuário ativo.
+     * @name Autenticação, Sessão e Validação
+     * @brief Métodos para checar duplicidades, login e gerenciamento de estado do usuário ativo.
      * @{
      */
     bool emailUnico(const std::string& email);
@@ -59,12 +61,13 @@ public:
 
     /**
      * @name Operações de Escrita (Criar Entidades)
-     * @brief Regras de negócio complexas para inserção segura de novos registros no sistema.
+     * @brief Regras de negócio para inserção segura de novos registros no sistema.
      * @{
      */
     void criarUsuarioEPerfil(std::string email, std::string senha, std::string nome);
     void criarPost(std::string texto, int idComunidade = 0);
     void criarComunidade(std::string nome, std::string descricao);
+    void criarComentarioGlobal(int idPost, int idAutor, std::string texto);
     /** @} */
     
     /**
@@ -80,12 +83,21 @@ public:
 
     /**
      * @name Acesso Global (Apenas Leitura)
-     * @brief Fornece acesso controlado aos vetores para fins de busca e renderização externa.
+     * @brief Fornece acesso controlado aos vetores para fins de busca sem risco de alteração.
      * @{
      */
     const std::vector<Perfil>& getTodosPerfis() const;
     const std::vector<Comunidade>& getTodasComunidades() const;
     const std::vector<Post>& getTodosPosts() const;
+    /** @} */
+
+    /**
+     * @name Acesso Global Mutável (Interface Interativa)
+     * @brief Expõe as listas internamente para que o controlador visual (Main) possa aplicar curtidas.
+     * @{
+     */
+    std::vector<Post>& getTodosPostsMutavel() { return posts; }
+    std::vector<Comentario>& getTodosComentariosMutavel() { return comentarios; }
     /** @} */
 };
 #endif
