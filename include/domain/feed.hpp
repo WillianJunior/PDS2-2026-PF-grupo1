@@ -1,40 +1,38 @@
 #ifndef FEED_HPP
 #define FEED_HPP
 #include "post.hpp"
+#include "perfil.hpp"
 #include "comunidade.hpp"
+#include "armazenamento.hpp"
 #include <vector>
 
 /**
- * @brief Classe responsável pela renderização/exibição de conteúdos para o usuário.
- * * Atua como a interface visual da linha do tempo, listando postagens,
- * sugerindo perfis e comunidades.
+ * @brief Classe de interface visual encarregada de exibir dados e gerenciar os menus interativos.
+ * * Atua como a View interativa do Feed, processando navegação, curtidas e comentários.
  */
-
-class Feed
-{
+class Feed {
 public:
+    /**
+     * @brief Renderiza a linha do tempo principal de forma cronológica inversa e gerencia o menu de seleção de posts.
+     * @param db Referência ao banco de dados do sistema.
+     */
+    static void verFeed(Armazenamento& db);
 
     /**
-     * @brief Exibe uma lista de postagens na tela.
-     * @param posts O vetor de postagens a ser exibido.
+     * @name Métodos de Renderização Legados
+     * @{
      */
+    static void exibirPosts(const std::vector<Post>& posts, Armazenamento& db);
+    static void exibirPerfis(const std::vector<Perfil>& perfis);
+    static void exibirComunidades(const std::vector<Comunidade>& comunidades);
+    /** @} */
 
-    void exibirPosts(std::vector<Post> posts);
-
+private:
     /**
-     * @brief Exibe uma lista de perfis na tela (ex: resultados de busca ou sugestões).
-     * @param perfis O vetor de perfis a ser exibido.
+     * @brief Renderiza a tela interna de um Post específico, exibindo seu conteúdo, curtidas e seção de comentários.
+     * @param post Referência mutável ao post selecionado.
+     * @param db Referência ao banco de dados do sistema.
      */
-
-    void exibirPerfis(std::vector<Perfil> perfis);
-
-    /**
-     * @brief Exibe uma lista de comunidades na tela.
-     * @param Comunidades O vetor de comunidades a ser exibido.
-     */
-
-    void exibirComunidades(std::vector<Comunidade> Comunidades);
-    
+    static void exibirPostDetalhado(Post& post, Armazenamento& db);
 };
-
 #endif

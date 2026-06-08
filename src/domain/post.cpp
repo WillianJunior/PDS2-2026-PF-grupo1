@@ -1,29 +1,19 @@
-#include "domain/post.hpp"
+#include "post.hpp"
+#include <algorithm>
 
-Post::Post(std::string texto, int Idautor)
-    : texto(std::move(texto)), idsCurtidas(), idAutor(Idautor), comentarios() {}
+Post::Post(int id, int idAutor, int idComunidade, std::string texto)
+    : id(id), idAutor(idAutor), idComunidade(idComunidade), texto(std::move(texto)) {}
 
-void Post::adicionarComentario(Comentario comentario)
-{
-    comentarios.push_back(std::move(comentario));
+void Post::curtir(int idUsuario) {
+    auto it = std::find(idsCurtidas.begin(), idsCurtidas.end(), idUsuario);
+    if (it == idsCurtidas.end()) idsCurtidas.push_back(idUsuario);
+    else idsCurtidas.erase(it);
 }
 
-std::vector<Comentario> Post::listarComentarios()
-{
-    return comentarios;
-}
-
-int Post::quantidadeDeCurtidas()
-{
-    return static_cast<int>(idsCurtidas.size());
-}
-
-void Post::curtir(int idUsuario)
-{
-    auto it = idsCurtidas.find(idUsuario);
-    if (it == idsCurtidas.end()) {
-        idsCurtidas.insert(idUsuario);
-    } else {
-        idsCurtidas.erase(it);
-    }
-}
+int Post::quantidadeDeCurtidas() const { return idsCurtidas.size(); }
+int Post::getId() const { return id; }
+int Post::getIdAutor() const { return idAutor; }
+int Post::getIdComunidade() const { return idComunidade; }
+std::string Post::getConteudo() const { return texto; }
+std::vector<int> Post::getIdsCurtidas() const { return idsCurtidas; }
+void Post::setIdsCurtidas(const std::vector<int>& ids) { idsCurtidas = ids; }

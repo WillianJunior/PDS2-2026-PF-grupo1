@@ -1,39 +1,27 @@
-#include "domain/comunidade.hpp"
+#include "comunidade.hpp"
 #include <algorithm>
 
-Comunidade::Comunidade(std::string nomeComunidade, int idAdministrador)
-    : postagensComunidade(), idsMembrosComunidade(), idAdministrador(idAdministrador), nomeComunidade(std::move(nomeComunidade)) {}
+Comunidade::Comunidade(int id, std::string nome, std::string descricao, int idAdministrador)
+    : id(id), nome(std::move(nome)), descricao(std::move(descricao)), idAdministrador(idAdministrador) {}
 
-void Comunidade::entrarComunidade(int idPerfil)
-{
-    if (std::find(idsMembrosComunidade.begin(), idsMembrosComunidade.end(), idPerfil) == idsMembrosComunidade.end()) {
-        idsMembrosComunidade.push_back(idPerfil);
+void Comunidade::adicionarMembro(int idPerfil) {
+    if (std::find(idsMembros.begin(), idsMembros.end(), idPerfil) == idsMembros.end()) {
+        idsMembros.push_back(idPerfil);
     }
 }
 
-bool Comunidade::podePublicar(int idPerfil)
-{
-    return idPerfil == idAdministrador ||
-           std::find(idsMembrosComunidade.begin(), idsMembrosComunidade.end(), idPerfil) != idsMembrosComunidade.end();
+void Comunidade::removerMembro(int idPerfil) {
+    auto it = std::find(idsMembros.begin(), idsMembros.end(), idPerfil);
+    if (it != idsMembros.end()) idsMembros.erase(it);
 }
 
-void Comunidade::exibirMembrosComunidade()
-{
-    // Exibição em UI não é necessária para o domínio; método presente para compatibilidade de testes.
+bool Comunidade::podePublicar(int idPerfil) const {
+    return idPerfil == idAdministrador || std::find(idsMembros.begin(), idsMembros.end(), idPerfil) != idsMembros.end();
 }
 
-std::vector<Post> Comunidade::posts()
-{
-    return postagensComunidade;
-}
-
-std::vector<Post> Comunidade::buscarPosts(std::string termo)
-{
-    std::vector<Post> resultado;
-    for (auto &post : postagensComunidade) {
-        if (post.listarComentarios().empty()) {
-            (void)post;
-        }
-    }
-    return resultado;
-}
+int Comunidade::getId() const { return id; }
+std::string Comunidade::getNome() const { return nome; }
+std::string Comunidade::getDescricao() const { return descricao; }
+int Comunidade::getIdAdministrador() const { return idAdministrador; }
+std::vector<int> Comunidade::getIdsMembros() const { return idsMembros; }
+void Comunidade::setIdsMembros(const std::vector<int>& ids) { idsMembros = ids; }

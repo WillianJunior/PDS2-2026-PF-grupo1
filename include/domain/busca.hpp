@@ -1,44 +1,29 @@
 #ifndef BUSCA_HPP
 #define BUSCA_HPP
-#include <vector>
 #include <string>
-#include "comunidade.hpp"
-#include "perfil.hpp"
-#include "feed.hpp"
+#include <vector>
+#include "armazenamento.hpp"
 
 /**
- * @brief Classe responsável por orquestrar as pesquisas dentro da rede social.
- * * Permite encontrar postagens, perfis e comunidades com base em palavras-chave.
+ * @brief Classe responsável pelo mecanismo de busca textual dentro da rede social.
+ * * Percorre dinamicamente todas as entidades indexadas para encontrar correspondências.
  */
-
 class Busca {
+private:
+    std::vector<std::string> resultados;
 
 public:
+    /**
+     * @brief Realiza a varredura no sistema em busca de uma palavra-chave.
+     * * Pesquisa em nomes e descrições de perfis/comunidades, bem como no texto dos posts.
+     * @param palavraChave O termo textual desejado para a pesquisa.
+     * @param db Referência constante ao banco de dados para leitura segura das informações.
+     */
+    void buscarPalavraChave(const std::string& palavraChave, const Armazenamento& db);
 
     /**
-     * @brief Realiza uma busca no sistema baseada em uma palavra-chave.
-     * * Pesquisa postagens (mesmo de comunidades ou usuários que o usuário não segue), 
-     * perfis e comunidades que correspondam ao termo.
-     * * @param palavraChave O termo que deseja buscar.
+     * @brief Apresenta os resultados coletados na última busca formatados na tela.
      */
-
-    void buscarPalavraChave(std::string palavraChave);
-
-    /**
-     * @brief Apresenta os resultados da pesquisa formatados na tela.
-     * * Exibe um cabeçalho e, em seguida, mostra os resultados integrados a um Feed.
-     */
-
-    void exibirResultadosPesquisa();
-
-    /**
-     * @brief Filtra os resultados da busca por categoria.
-     * * Os resultados filtrados podem ser exibidos em ordem alfabética.
-     * * @param tipo O tipo de filtro a ser aplicado (ex: "post", "perfil", "comunidade").
-     */
-
-    void filtrarResultados(std::string tipo);
-
+    void exibirResultadosPesquisa() const;
 };
-
 #endif

@@ -1,50 +1,98 @@
-#include "domain/armazenamento.hpp"
-#include <algorithm>
-#include <cctype>
+#include "armazenamento.hpp"
 
-bool Armazenamento::emailUnico(std::string email)
-{
+Armazenamento::Armazenamento() : emailLogado(""), idPerfilLogado(0) {}
+
+void Armazenamento::carregarDados() {
+    usuarios = GerenciadorCSV::carregarUsuarios("usuarios.csv");
+    perfis = GerenciadorCSV::carregarPerfis("perfis.csv");
+    comunidades = GerenciadorCSV::carregarComunidades("comunidades.csv");
+    posts = GerenciadorCSV::carregarPosts("posts.csv");
+    comentarios = GerenciadorCSV::carregarComentarios("comentarios.csv");
+
+    for (const auto& p : perfis) if (p.getId() >= proxIdPerfil) proxIdPerfil = p.getId() + 1;
+    for (const auto& c : comunidades) if (c.getId() >= proxIdComunidade) proxIdComunidade = c.getId() + 1;
+    for (const auto& p : posts) if (p.getId() >= proxIdPost) proxIdPost = p.getId() + 1;
+    for (const auto& c : comentarios) if (c.getId() >= proxIdComentario) proxIdComentario = c.getId() + 1;
+}
+
+void Armazenamento::salvarDados() {
+    GerenciadorCSV::salvarUsuarios(usuarios, "usuarios.csv");
+    GerenciadorCSV::salvarPerfis(perfis, "perfis.csv");
+    GerenciadorCSV::salvarComunidades(comunidades, "comunidades.csv");
+    GerenciadorCSV::salvarPosts(posts, "posts.csv");
+    GerenciadorCSV::salvarComentarios(comentarios, "comentarios.csv");
+}
+
+bool Armazenamento::emailUnico(const std::string& email) {
+    for (const auto& u : usuarios) if (u.getEmail() == email) return false;
+    return true;
+}
+
+bool Armazenamento::nomeUsuarioUnico(const std::string& nome) {
+    for (const auto& u : usuarios) {
+        if (u.getNome() == nome) return false;
+    }
+    return true;
+}
+
+bool Armazenamento::fazerLogin(const std::string& email, const std::string& senha) {
+    for (const auto& u : usuarios) {
+        if (u.fazerLogin(email, senha)) {
+            emailLogado = email;
+            for (const auto& p : perfis) {
+                if (p.getEmailUsuario() == email) {
+                    idPerfilLogado = p.getId();
+                    return true;
+                }
+            }
+        }
+    }
     return false;
 }
 
-bool Armazenamento::senhaSegura(std::string senha)
-{
-    return false;
+void Armazenamento::deslogar() { emailLogado = ""; idPerfilLogado = 0; }
+int Armazenamento::getIdPerfilLogado() const { return idPerfilLogado; }
+
+void Armazenamento::criarUsuarioEPerfil(std::string email, std::string senha, std::string nome) {
+    usuarios.push_back(Usuario(email, senha, nome));
+    perfis.push_back(Perfil(proxIdPerfil++, email, nome, "", "", "", 0));
 }
 
-void Armazenamento::mensagemSucessoErro() {}
-
-Perfil Armazenamento::getUsuarioLogado()
-{
-    return usuarioLogado;
+void Armazenamento::criarComentarioGlobal(int idPost, int idAutor, std::string texto) {
+    comentarios.push_back(Comentario(proxIdComentario++, idPost, idAutor, std::move(texto)));
 }
 
-void Armazenamento::criarPerfil(Perfil perfil)
-{
-    perfis.push_back(std::move(perfil));
+Perfil* Armazenamento::getPerfil(int id) {
+    for (auto& p : perfis) if (p.getId() == id) return &p;
+    return nullptr;
 }
 
-Perfil Armazenamento::deletarPerfil(int id)
-{
-    return Perfil("", "", 0);
+Usuario* Armazenamento::getUsuario(std::string email) {
+    for (auto& u : usuarios) {
+        if (u.getEmail() == email) return &u;
+    }
+    return nullptr;
 }
 
-std::vector<Perfil> Armazenamento::listarPerfis()
-{
-    return perfis;
+Comunidade* Armazenamento::getComunidade(int id) {
+    for (auto& c : comunidades) if (c.getId() == id) return &c;
+    return nullptr;
 }
 
-void Armazenamento::criarComunidade(Comunidade comunidade)
-{
-    comunidades.push_back(std::move(comunidade));
+std::vector<Post> Armazenamento::getPostsFeed() {
+    std::vector<Post> feed;
+    for (const auto& p : posts) if (p.getIdComunidade() == 0) feed.push_back(p);
+    return feed;
 }
 
-Comunidade Armazenamento::deletarComunidade(int id)
-{
-    return Comunidade("", 0);
+void Armazenamento::criarPost(std::string texto, int idComunidade) {
+    if (idPerfilLogado > 0) posts.push_back(Post(proxIdPost++, idPerfilLogado, idComunidade, texto));
 }
 
-std::vector<Comunidade> Armazenamento::listarComunidade()
-{
-    return comunidades;
+void Armazenamento::criarComunidade(std::string nome, std::string descricao) {
+    if (idPerfilLogado > 0) comunidades.push_back(Comunidade(proxIdComunidade++, nome, descricao, idPerfilLogado));
 }
+
+const std::vector<Perfil>& Armazenamento::getTodosPerfis() const { return perfis; }
+const std::vector<Comunidade>& Armazenamento::getTodasComunidades() const { return comunidades; }
+const std::vector<Post>& Armazenamento::getTodosPosts() const { return posts; }
