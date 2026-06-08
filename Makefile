@@ -13,15 +13,15 @@ configure:
 
 build: configure
 	@echo "[make] Compilando com $(JOBS) thread(s)..."
-	@cmake --build $(BUILD_DIR) --parallel $(JOBS)
+	@cmake --build $(BUILD_DIR) --config $(BUILD_TYPE) --parallel $(JOBS)
 
 run: build
 	@echo "[run] Iniciando servidor..."
-	@cmake --build $(BUILD_DIR) --target edu_social_backend
+	@cmake --build $(BUILD_DIR) --config $(BUILD_TYPE) --target edu_social_backend
 
 test: build
 	@echo "[test] Executando testes..."
-	@ctest --test-dir $(BUILD_DIR) --output-on-failure --parallel $(JOBS)
+	@ctest --test-dir $(BUILD_DIR) -C $(BUILD_TYPE) --output-on-failure --parallel $(JOBS)
 
 docs:
 	@echo "[docs] Gerando documentação com Doxygen..."
