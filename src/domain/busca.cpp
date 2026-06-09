@@ -1,42 +1,29 @@
 #include "domain/busca.hpp"
 #include <iostream>
-#include <vector>
-#include <string>
 #include <algorithm>
-
-
-static std::vector<std::string> resultados;
-static std::vector<std::string> resultadosFiltrados;
-
 
 static bool contemPalavra(const std::string& texto, const std::string& chave) {
     return texto.find(chave) != std::string::npos;
 }
 
-void Busca::buscarPalavraChave(std::string palavraChave) {
+// A assinatura agora bate perfeitamente com o .hpp
+void Busca::buscarPalavraChave(const std::string& palavraChave, const Armazenamento& db) {
     resultados.clear();
 
-    
-    extern std::vector<Perfil> todosPerfis;
-    extern std::vector<Comunidade> todasComunidades;
-    extern std::vector<Feed> todosPosts;
-
-   
-    for (const auto& perfil : todosPerfis) {
+    // Usamos o objeto db (Armazenamento) para acessar os dados, nada de extern!
+    for (const auto& perfil : db.getTodosPerfis()) {
         if (contemPalavra(perfil.getNome(), palavraChave) || contemPalavra(perfil.getDescricao(), palavraChave)) {
             resultados.push_back("Perfil: " + perfil.getNome());
         }
     }
 
-    
-    for (const auto& comunidade : todasComunidades) {
+    for (const auto& comunidade : db.getTodasComunidades()) {
         if (contemPalavra(comunidade.getNome(), palavraChave) || contemPalavra(comunidade.getDescricao(), palavraChave)) {
             resultados.push_back("Comunidade: " + comunidade.getNome());
         }
     }
 
-    
-    for (const auto& post : todosPosts) {
+    for (const auto& post : db.getTodosPosts()) {
         if (contemPalavra(post.getConteudo(), palavraChave)) {
             resultados.push_back("Post: " + post.getConteudo());
         }
@@ -47,15 +34,16 @@ void Busca::buscarPalavraChave(std::string palavraChave) {
     }
 }
 
-void Busca::exibirResultadosPesquisa() {
+// Assinatura agora inclui o 'const' para bater com o .hpp
+void Busca::exibirResultadosPesquisa() const {
     std::cout << "=== Resultados da Pesquisa ===" << std::endl;
     for (const auto& r : resultados) {
         std::cout << r << std::endl;
     }
 }
 
-void Busca::filtrarResultados(std::string tipo) {
-    resultadosFiltrados.clear();
+void Busca::filtrarResultados(const std::string& tipo) {
+    std::vector<std::string> resultadosFiltrados;
 
     for (const auto& r : resultados) {
         if (r.find(tipo) != std::string::npos) {

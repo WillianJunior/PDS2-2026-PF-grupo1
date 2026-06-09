@@ -1,44 +1,48 @@
 #ifndef FEED_HPP
 #define FEED_HPP
 #include "post.hpp"
+#include "perfil.hpp"
 #include "comunidade.hpp"
+#include "armazenamento.hpp"
 #include <vector>
-#include <string>
 
 /**
- * @brief Classe responsável pela renderização/exibição de conteúdos para o usuário.
- * * Atua como a interface visual da linha do tempo, listando postagens,
- * sugerindo perfis e comunidades.
+ * @class Feed
+ * @brief Classe de interface visual encarregada de exibir dados e gerenciar os menus interativos.
+ * * Atua como a View interativa do Feed, processando navegação, curtidas e comentários de maneira encapsulada.
  */
-
-class Feed
-{
-private:
-    // 🔹 Acrescentado para suportar getConteudo()
-    std::string conteudo;
-
+class Feed {
 public:
+    /**
+     * @brief Renderiza a linha do tempo principal de forma cronológica inversa e gerencia o menu de seleção de posts.
+     * @param db Referência ao banco de dados do sistema.
+     */
+    void verFeed(Armazenamento& db);
 
     /**
-     * @brief Exibe uma lista de postagens na tela.
-     * @param posts O vetor de postagens a ser exibido.
+     * @brief Exibe na tela uma lista de publicações (compatibilidade com testes).
+     * @param posts Vetor contendo os posts a serem exibidos.
      */
-    void exibirPosts(std::vector<Post> posts);
+    void exibirPosts(const std::vector<Post>& posts);
 
     /**
-     * @brief Exibe uma lista de perfis na tela (ex: resultados de busca ou sugestões).
-     * @param perfis O vetor de perfis a ser exibido.
+     * @brief Exibe na tela uma lista de perfis de usuários (compatibilidade com testes).
+     * @param perfis Vetor contendo os perfis a serem exibidos.
      */
-    void exibirPerfis(std::vector<Perfil> perfis);
+    void exibirPerfis(const std::vector<Perfil>& perfis);
 
     /**
-     * @brief Exibe uma lista de comunidades na tela.
-     * @param Comunidades O vetor de comunidades a ser exibido.
+     * @brief Exibe na tela uma lista de comunidades (compatibilidade com testes).
+     * @param comunidades Vetor contendo as comunidades a serem exibidas.
      */
-    void exibirComunidades(std::vector<Comunidade> Comunidades);
+    void exibirComunidades(const std::vector<Comunidade>& comunidades);
 
-   
-    std::string getConteudo() const;
+private:
+    /**
+     * @brief Renderiza a tela interna de um Post específico, exibindo seu conteúdo, curtidas e seção de comentários.
+     * @param post Referência mutável ao post selecionado.
+     * @param db Referência ao banco de dados do sistema.
+     */
+    void exibirPostDetalhado(Post& post, Armazenamento& db);
 };
-
 #endif

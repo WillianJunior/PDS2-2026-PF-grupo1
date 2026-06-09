@@ -1,97 +1,139 @@
 #ifndef ARMAZENAMENTO_HPP
 #define ARMAZENAMENTO_HPP
+#include "usuario.hpp"
 #include "perfil.hpp"
-#include "feed.hpp"
 #include "comunidade.hpp"
+#include "post.hpp"
+#include "comentario.hpp"
+#include "gerenciador_csv.hpp"
+#include <vector>
+#include <string>
 
 /**
- * @brief Classe responsável por gerenciar o armazenamento em memória do sistema.
- * * Atua como um "banco de dados" temporário, guardando as listas de perfis, 
- * comunidades e o estado do usuário logado atualmente.
+ * @class Armazenamento
+ * @brief Classe núcleo responsável por centralizar o gerenciamento de dados do sistema.
+ * * Funciona como o Banco de Dados em memória RAM durante a execução do programa, controlando
+ * os índices auto-incrementais, sessões de usuário ativo e orquestrando as chamadas de persistência.
  */
-
 class Armazenamento {
-
 private:
-
+    std::vector<Usuario> usuarios;
     std::vector<Perfil> perfis;
     std::vector<Comunidade> comunidades;
-    Perfil usuarioLogado;
+    std::vector<Post> posts;
+    std::vector<Comentario> comentarios;
+
+    std::string emailLogado;
+    int idPerfilLogado;
+
+    int proxIdPerfil = 1;
+    int proxIdComunidade = 1;
+    int proxIdPost = 1;
+    int proxIdComentario = 1;
 
 public:
+    /**
+     * @brief Inicializa o sistema de armazenamento temporário com valores padrões e deslogado.
+     */
+    Armazenamento();
 
     /**
-     * @brief Verifica se um e-mail já está cadastrado no sistema.
-     * @param email O e-mail a ser verificado.
-     * @return true se o e-mail for único (não cadastrado), false caso contrário.
+     * @brief Verifica se a senha atende aos requisitos mínimos de segurança (compatibilidade com testes).
+     * @param senha A senha a ser avaliada.
+     * @return true se for segura, false caso contrário.
      */
-
-    bool emailUnico(std::string email);
+    bool senhaSegura(const std::string& senha) const;
 
     /**
-     * @brief Valida se a senha atende aos critérios de segurança do sistema.
-     * @param senha A senha a ser validada.
-     * @return true se a senha for segura, false caso contrário.
+     * @brief Lista todos os perfis armazenados no sistema (compatibilidade com testes).
+     * @return Vetor contendo cópias dos perfis.
      */
-
-    bool senhaSegura(std::string senha);
+    std::vector<Perfil> listarPerfis() const;
 
     /**
-     * @brief Exibe uma mensagem genérica de sucesso ou erro no terminal.
+     * @brief Adiciona diretamente um objeto Perfil ao vetor (compatibilidade com testes).
+     * @param p O perfil a ser adicionado.
      */
-
-    void mensagemSucessoErro();
+    void criarPerfil(const Perfil& p);
 
     /**
-     * @brief Obtém os dados do perfil do usuário que está atualmente logado.
-     * @return O objeto Perfil do usuário logado.
+     * @brief Lista todas as comunidades armazenadas no sistema (compatibilidade com testes).
+     * @return Vetor contendo cópias das comunidades.
      */
-
-    Perfil getUsuarioLogado();
+    std::vector<Comunidade> listarComunidade() const;
 
     /**
-     * @brief Adiciona um novo perfil ao armazenamento do sistema.
-     * @param perfil O objeto Perfil a ser salvo.
+     * @brief Adiciona diretamente um objeto Comunidade ao vetor (compatibilidade com testes).
+     * @param c A comunidade a ser adicionada.
      */
-
-    void criarPerfil(Perfil perfil);
+    void criarComunidade(const Comunidade& c);
 
     /**
-     * @brief Remove um perfil do sistema com base no seu ID.
-     * @param id O identificador do perfil a ser deletado.
-     * @return O objeto Perfil que foi deletado (para fins de log ou desfazimento).
+     * @brief Método utilitário fictício para feedbacks sem lançar exceções (compatibilidade com testes).
      */
-
-    Perfil deletarPerfil(int id);
+    void mensagemSucessoErro() const;
 
     /**
-     * @brief Retorna a lista de todos os perfis cadastrados.
-     * @return Um vetor contendo todos os objetos Perfil do sistema.
+     * @name Controle de Ciclo de Vida do Banco
+     * @brief Métodos para carregar e salvar dados invocando o GerenciadorCSV.
+     * @{
      */
-
-    std::vector<Perfil> listarPerfis();
+    void carregarDados();
+    void salvarDados();
+    /** @} */
 
     /**
-     * @brief Adiciona uma nova comunidade ao armazenamento do sistema.
-     * @param comunidade O objeto Comunidade a ser salvo.
+     * @name Autenticação, Sessão e Validação
+     * @brief Métodos para checar duplicidades, login e gerenciamento de estado do usuário ativo.
+     * @{
      */
-
-    void criarComunidade(Comunidade comunidade);
+    bool emailUnico(const std::string& email);
+    bool nomeUsuarioUnico(const std::string& nome);
+    bool fazerLogin(const std::string& email, const std::string& senha);
+    void deslogar();
+    int getIdPerfilLogado() const;
+    std::string getEmailLogado() const { return emailLogado; }
+    /** @} */
 
     /**
-     * @brief Remove uma comunidade do sistema com base no seu ID.
-     * @param id O identificador da comunidade a ser deletada.
-     * @return O objeto Comunidade que foi deletado.
+     * @name Operações de Escrita (Criar Entidades)
+     * @brief Regras de negócio para inserção segura de novos registros no sistema.
+     * @{
      */
-
-    Comunidade deletarComunidade(int id);
-
-    /**
-     * @brief Retorna a lista de todas as comunidades cadastradas.
-     * @return Um vetor contendo todos os objetos Comunidade do sistema.
-     */
-
-    std::vector<Comunidade> listarComunidade();
+    void criarUsuarioEPerfil(std::string email, std::string senha, std::string nome);
+    void criarPost(std::string texto, int idComunidade = 0);
+    void criarComunidade(std::string nome, std::string descricao);
+    void criarComentarioGlobal(int idPost, int idAutor, std::string texto);
+    /** @} */
     
+    /**
+     * @name Consultas Diretas (Ponteiros/Relacionamentos)
+     * @brief Buscam e retornam referências a objetos específicos com base em chaves primárias.
+     * @{
+     */
+    Perfil* getPerfil(int id);
+    Usuario* getUsuario(std::string email);
+    Comunidade* getComunidade(int id);
+    std::vector<Post> getPostsFeed();
+    /** @} */
+
+    /**
+     * @name Acesso Global (Apenas Leitura)
+     * @brief Fornece acesso controlado aos vetores para fins de busca sem risco de alteração.
+     * @{
+     */
+    const std::vector<Perfil>& getTodosPerfis() const;
+    const std::vector<Comunidade>& getTodasComunidades() const;
+    const std::vector<Post>& getTodosPosts() const;
+    /** @} */
+
+    /**
+     * @name Acesso Global Mutável (Interface Interativa)
+     * @brief Expõe as listas internamente para que o controlador visual (Main) possa aplicar curtidas.
+     * @{
+     */
+    std::vector<Post>& getTodosPostsMutavel() { return posts; }
+    std::vector<Comentario>& getTodosComentariosMutavel() { return comentarios; }
+    /** @} */
 };
 #endif
