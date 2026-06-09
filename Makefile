@@ -2,6 +2,13 @@ BUILD_DIR := build
 BUILD_TYPE ?= Debug
 CMAKE_ARGS := -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
 JOBS ?= 4
+APP_EXTENSION :=
+APP_PATH := $(BUILD_DIR)/bin/edu_social_backend$(APP_EXTENSION)
+
+ifeq ($(OS),Windows_NT)
+APP_EXTENSION := .exe
+APP_PATH := $(BUILD_DIR)/bin/edu_social_backend$(APP_EXTENSION)
+endif
 
 .PHONY: all configure build run test docs clean help
 
@@ -16,8 +23,8 @@ build: configure
 	@cmake --build $(BUILD_DIR) --config $(BUILD_TYPE) --parallel $(JOBS)
 
 run: build
-	@echo "[run] Iniciando servidor..."
-	@cmake --build $(BUILD_DIR) --config $(BUILD_TYPE) --target edu_social_backend
+	@echo "[run] Iniciando aplicativo..."
+	@$(APP_PATH)
 
 test: build
 	@echo "[test] Executando testes..."
@@ -39,7 +46,7 @@ help:
 	@echo "  all        Compila o projeto"
 	@echo "  configure  Configura o CMake"
 	@echo "  build      Compila o projeto"
-	@echo "  run        Compila o backend"
+	@echo "  run        Compila e executa o backend"
 	@echo "  test       Executa os testes"
 	@echo "  docs       Gera documentação"
 	@echo "  clean      Remove o diretório build"
