@@ -1,60 +1,46 @@
 #include <doctest/doctest.h>
 #include "domain/comunidade.hpp"
-#include "domain/perfil.hpp"
-#include "domain/post.hpp"
 
 TEST_SUITE("Comunidade") {
+    TEST_CASE("Construtores e Getters") {
+        Comunidade c1(10, "DevOps", "Descricao", 1);
+        CHECK(c1.getId() == 10);
+        CHECK(c1.getNome() == "DevOps");
+        CHECK(c1.getDescricao() == "Descricao");
+        CHECK(c1.getIdAdministrador() == 1);
 
-TEST_CASE("Construtor nao lanca excecao") {
-    const int idAdministrador = 5;
-    CHECK_NOTHROW(Comunidade("Banco de Dados", idAdministrador));
-}
+        Comunidade c2("IA", 2);
+        CHECK(c2.getId() == 0);
+    }
 
-TEST_CASE("posts retorna lista vazia em comunidade sem postagens") {
-    const int idAdministrador = 5;
-    Comunidade c("Vazia", idAdministrador);
-    CHECK(c.posts().empty());
-}
+    TEST_CASE("Gerenciamento de Membros") {
+        Comunidade c("Teste", 1);
+        c.adicionarMembro(10);
+        c.entrarComunidade(10); 
+        CHECK(c.getIdsMembros().size() == 1);
+        
+        c.removerMembro(10);
+        CHECK(c.getIdsMembros().size() == 0);
+        CHECK_NOTHROW(c.removerMembro(99));
 
-TEST_CASE("entrarComunidade nao lanca excecao") {
-    const int idAdministrador = 5;
-    const int idNovoPerfil = 2;
-    Comunidade c("Algebra", idAdministrador);
-    CHECK_NOTHROW(c.entrarComunidade(idNovoPerfil));
-}
+        c.setIdsMembros({5, 6});
+        CHECK(c.getIdsMembros().size() == 2);
+    }
 
-TEST_CASE("podePublicar nao lanca excecao") {
-    const int idAdministrador = 5;
-    const int idMembro = 3;
-    Comunidade c("Fisica Moderna", idAdministrador);
-    c.entrarComunidade(idMembro);
-    CHECK_NOTHROW(c.podePublicar(idMembro));
-}
+    TEST_CASE("Permissao para publicar e Posts Locais") {
+        Comunidade c("Teste", 1); 
+        c.adicionarMembro(2);     
+        CHECK(c.podePublicar(1) == true);
+        CHECK(c.podePublicar(2) == true);
+        CHECK(c.podePublicar(3) == false); 
 
-TEST_CASE("buscarPosts retorna lista vazia quando nao ha posts") {
-    const int idAdministrador = 5;
-    Comunidade c("IA", idAdministrador);
-    CHECK(c.buscarPosts("qualquer").empty());
-}
+        CHECK(c.posts().empty());
+        CHECK(c.buscarPosts("algo").empty());
+    }
 
-TEST_CASE("buscarPosts retorna vazio quando termo nao existe nos posts") {
-    const int idAdministrador = 5;
-    Comunidade c("IA", idAdministrador);
-    CHECK(c.buscarPosts("blockchain").empty());
-}
-
-TEST_CASE("exibirMembrosComunidade nao lanca excecao") {
-    const int idAdministrador = 5;
-    Comunidade c("Teste", idAdministrador);
-    CHECK_NOTHROW(c.exibirMembrosComunidade());
-}
-
-TEST_CASE("exibirMembrosComunidade com multiplos membros nao lanca excecao") {
-    const int idAdministrador = 5;
-    Comunidade c("Teste", idAdministrador);
-    c.entrarComunidade(1);
-    c.entrarComunidade(2);
-    CHECK_NOTHROW(c.exibirMembrosComunidade());
-}
-
+    TEST_CASE("exibirMembrosComunidade") {
+        Comunidade c("Teste", 1);
+        c.adicionarMembro(2);
+        CHECK_NOTHROW(c.exibirMembrosComunidade());
+    }
 }

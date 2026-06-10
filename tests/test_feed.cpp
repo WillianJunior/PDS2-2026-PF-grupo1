@@ -1,61 +1,57 @@
 #include <doctest/doctest.h>
 #include "domain/feed.hpp"
-#include "domain/perfil.hpp"
-#include "domain/post.hpp"
-#include "domain/comunidade.hpp"
+#include "domain/armazenamento.hpp"
+#include <sstream>
+#include <iostream>
+#include <functional> 
 
-TEST_SUITE("Feed") {
-
-TEST_CASE("exibirPosts com lista vazia nao lanca excecao") {
-    Feed f;
-    CHECK_NOTHROW(f.exibirPosts({}));
+static void simularInteracaoFeed(const std::string& inputsProgramados, std::function<void()> menuContexto) {
+    std::stringstream inputReal(inputsProgramados);
+    std::stringstream outputDescartavel;
+    std::streambuf* backupCin = std::cin.rdbuf(inputReal.rdbuf());
+    std::streambuf* backupCout = std::cout.rdbuf(outputDescartavel.rdbuf());
+    
+    menuContexto();
+    
+    std::cin.rdbuf(backupCin);
+    std::cout.rdbuf(backupCout);
 }
 
-TEST_CASE("exibirPosts com um post nao lanca excecao") {
-    Feed f;
-    const int idAutor = 1;
-    std::vector<Post> lista = { Post("Introducao a grafos", idAutor) };
-    CHECK_NOTHROW(f.exibirPosts(lista));
-}
+TEST_SUITE("Feed Interativo") {
+    TEST_CASE("Exibir Listagens Diretas") {
+        Feed f;
+        CHECK_NOTHROW(f.exibirPosts({}));
+        CHECK_NOTHROW(f.exibirPerfis({}));
+        CHECK_NOTHROW(f.exibirComunidades({}));
+    }
 
-TEST_CASE("exibirPosts com multiplos posts nao lanca excecao") {
-    Feed f;
-    const int idAutor = 1;
-    std::vector<Post> lista = {
-        Post("Post 1", idAutor),
-        Post("Post 2", idAutor),
-        Post("Post 3", idAutor)
-    };
-    CHECK_NOTHROW(f.exibirPosts(lista));
-}
-
-TEST_CASE("exibirPerfis com lista vazia nao lanca excecao") {
-    Feed f;
-    CHECK_NOTHROW(f.exibirPerfis({}));
-}
-
-TEST_CASE("exibirPerfis com perfis nao lanca excecao") {
-    Feed f;
-    std::vector<Perfil> lista = {
-        Perfil("Fisica",     "USP",  2),
-        Perfil("Matematica", "UFMG", 4)
-    };
-    CHECK_NOTHROW(f.exibirPerfis(lista));
-}
-
-TEST_CASE("exibirComunidades com lista vazia nao lanca excecao") {
-    Feed f;
-    CHECK_NOTHROW(f.exibirComunidades({}));
-}
-
-TEST_CASE("exibirComunidades com comunidades nao lanca excecao") {
-    Feed f;
-    const int idAdministrador = 1;
-    std::vector<Comunidade> lista = {
-        Comunidade("IA",     idAdministrador),
-        Comunidade("DevOps", idAdministrador)
-    };
-    CHECK_NOTHROW(f.exibirComunidades(lista));
-}
-
+    TEST_CASE("Navegacao Completa e Inputs Invalidos Feed") {
+        Armazenamento db;
+        db.criarUsuarioEPerfil("a@b.c", "123456", "UserA");
+        db.fazerLogin("a@b.c", "123456");
+        db.criarPost("Geral Post", 0);
+        db.criarComunidade("Comum", "Desc");
+        db.criarPost("Comum Post", 1);
+        db.criarComentarioGlobal(1, 1, "Coment A");
+        
+        Feed f;
+        std::string acoes = 
+            "Z\n"               
+            "A\n99\n"           
+            "A\n2\n"            
+            "A\n"               
+            "B\n1\n"          
+            "C\nNovo Teste\n"   
+            "D\n\n"             
+            "E\n"              
+            "F\n"              
+            "A\n1\n"           
+            "E\n\n"           
+            "B\n99\n"          
+            "X\n"             
+            "F\n"              
+            "B\n";              
+            
+        CHECK_NOTHROW(simularInteracaoFeed(acoes, [&](){ f.verFeed(db); }));
+    }
 }
