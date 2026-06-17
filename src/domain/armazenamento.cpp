@@ -105,6 +105,13 @@ void Armazenamento::criarComunidade(std::string nome, std::string descricao) {
     if (idPerfilLogado > 0)
         comunidades.push_back(Comunidade(proxIdComunidade++, nome, descricao, idPerfilLogado));
 }
+std::vector<Post>& Armazenamento::getTodosPostsMutavel() {
+    return posts;
+}
+
+std::vector<Comentario>& Armazenamento::getTodosComentariosMutavel() {
+    return comentarios;
+}
 
 const std::vector<Perfil>& Armazenamento::getTodosPerfis() const { return perfis; }
 const std::vector<Comunidade>& Armazenamento::getTodasComunidades() const { return comunidades; }
