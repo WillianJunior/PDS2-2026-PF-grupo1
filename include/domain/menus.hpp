@@ -20,10 +20,10 @@ void menuVisualizarPost(Post& post, Armazenamento& db);
 
 /**
  * @brief Exibe uma lista de posts e permite que o usuário selecione um deles para detalhamento.
- * @param postsList Vetor com os ponteiros dos posts a serem exibidos.
+ * @param postsList Vetor contendo os posts a serem exibidos.
  * @param db Referência ao banco de dados central.
  */
-void menuVerPostsLista(std::vector<Post*> postsList, Armazenamento& db);
+void menuVerPostsLista(const std::vector<Post>& postsList, Armazenamento& db);
 
 /**
  * @brief Exibe a interface de uma comunidade, permitindo ingresso, postagem e saída.
