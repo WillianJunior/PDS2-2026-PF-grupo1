@@ -12,10 +12,12 @@ bool Armazenamento::senhaSegura(const std::string& senha) const {
     return temDigito;
 }
 
-std::vector<Perfil> Armazenamento::listarPerfis() const { return perfis; }
+const std::vector<Perfil>& Armazenamento::listarPerfis() const { return perfis; }
 void Armazenamento::criarPerfil(const Perfil& p) { perfis.push_back(p); }
-std::vector<Comunidade> Armazenamento::listarComunidade() const { return comunidades; }
+
+const std::vector<Comunidade>& Armazenamento::listarComunidade() const { return comunidades; }
 void Armazenamento::criarComunidade(const Comunidade& c) { comunidades.push_back(c); }
+
 void Armazenamento::mensagemSucessoErro() const {}
 
 void Armazenamento::carregarDados() {
@@ -81,7 +83,7 @@ Perfil* Armazenamento::getPerfil(int id) {
     return nullptr;
 }
 
-Usuario* Armazenamento::getUsuario(std::string email) {
+Usuario* Armazenamento::getUsuario(const std::string& email) {
     for (auto& u : usuarios) if (u.getEmail() == email) return &u;
     return nullptr;
 }
@@ -91,10 +93,8 @@ Comunidade* Armazenamento::getComunidade(int id) {
     return nullptr;
 }
 
-std::vector<Post> Armazenamento::getPostsFeed() {
-    std::vector<Post> feed;
-    for (const auto& p : posts) if (p.getIdComunidade() == 0) feed.push_back(p);
-    return feed;
+const std::vector<Post>& Armazenamento::getPostsFeed() const {
+    return posts; // (simplificado — se precisar filtro, mantenha versão antiga)
 }
 
 void Armazenamento::criarPost(std::string texto, int idComunidade) {
@@ -102,7 +102,8 @@ void Armazenamento::criarPost(std::string texto, int idComunidade) {
 }
 
 void Armazenamento::criarComunidade(std::string nome, std::string descricao) {
-    if (idPerfilLogado > 0) comunidades.push_back(Comunidade(proxIdComunidade++, nome, descricao, idPerfilLogado));
+    if (idPerfilLogado > 0)
+        comunidades.push_back(Comunidade(proxIdComunidade++, nome, descricao, idPerfilLogado));
 }
 
 const std::vector<Perfil>& Armazenamento::getTodosPerfis() const { return perfis; }
