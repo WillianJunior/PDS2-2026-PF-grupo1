@@ -23,10 +23,11 @@ void Comunidade::entrarComunidade(int idPerfil) {
 }
 
 bool Comunidade::podePublicar(int idPerfil) const {
-    return idPerfil == idAdministrador || std::find(idsMembros.begin(), idsMembros.end(), idPerfil) != idsMembros.end();
+    return idPerfil == idAdministrador ||
+           std::find(idsMembros.begin(), idsMembros.end(), idPerfil) != idsMembros.end();
 }
 
-std::vector<Post> Comunidade::posts() const {
+const std::vector<Post>& Comunidade::posts() const {
     return postsTestes;
 }
 
@@ -43,8 +44,15 @@ std::vector<Post> Comunidade::buscarPosts(const std::string& termo) const {
 void Comunidade::exibirMembrosComunidade() const {}
 
 int Comunidade::getId() const { return id; }
-std::string Comunidade::getNome() const { return nome; }
-std::string Comunidade::getDescricao() const { return descricao; }
+
+const std::string& Comunidade::getNome() const { return nome; }
+
+const std::string& Comunidade::getDescricao() const { return descricao; }
+
 int Comunidade::getIdAdministrador() const { return idAdministrador; }
-std::vector<int> Comunidade::getIdsMembros() const { return idsMembros; }
-void Comunidade::setIdsMembros(const std::vector<int>& ids) { idsMembros = ids; }
+
+const std::vector<int>& Comunidade::getIdsMembros() const { return idsMembros; }
+
+void Comunidade::setIdsMembros(const std::vector<int>& ids) {
+    idsMembros = ids;
+}
