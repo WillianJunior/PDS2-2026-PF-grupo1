@@ -48,3 +48,157 @@ void menuVisualizarPost(Post& post, Armazenamento& db) {
         if (opcao == "F" || opcao == "f") break;
         else if (opcao == "A" || opcao == "a") {
             post.curtir(db.getIdPerfilLogado());
+        } else if (opcao == "B" || opcao == "b") {
+            if (coms.empty()) {
+                std::cout << "\n[ERRO] Nao existem comentarios.\n"; continue;
+            }
+            std::cout << "Qual comentario deseja Curtir/Descurtir: ";
+            int idx; std::cin >> idx; std::cin.ignore();
+            if (idx >= 1 && idx <= static_cast<int>(coms.size()))
+                coms[idx - 1].curtir(db.getIdPerfilLogado());
+            else std::cout << "\n[ERRO] Indice invalido!\n";
+        } else if (opcao == "C" || opcao == "c") {
+            std::cout << "Digite seu comentario: ";
+            std::string txt; std::getline(std::cin, txt);
+            if (!txt.empty())
+                db.criarComentarioGlobal(post.getId(), db.getIdPerfilLogado(), txt);
+        } else if (opcao == "D" || opcao == "d") {
+            menuPerfil(post.getIdAutor(), db);
+        } else if (opcao == "E" || opcao == "e") {
+            if (post.getIdComunidade() != 0)
+                menuComunidade(post.getIdComunidade(), db);
+            else
+                std::cout << "\n[AVISO] Post do Feed Geral, sem comunidade.\n";
+        }
+    }
+}
+
+void menuVerPostsLista(const std::vector<Post>& postsList, Armazenamento& db) {
+    while (true) {
+        std::cout << "\n///////////////////////////////////////\n";
+        std::cout << "              LISTA DE POSTS\n";
+        std::cout << "///////////////////////////////////////\n\n";
+        
+        if (postsList.empty()) {
+            std::cout << "Nenhum post encontrado.\n\n";
+            std::cout << "Pressione ENTER para voltar...";
+            std::cin.get();
+            break;
+        }
+
+        for (size_t i = 0; i < postsList.size(); ++i) {
+            Perfil* autor = db.getPerfil(postsList[i].getIdAutor());
+            std::string nomeAutor = autor ? autor->getNome() : "Desconhecido";
+            std::cout << (i + 1) << " - @" << nomeAutor << "\n";
+            std::cout << postsList[i].getConteudo() << "\n\n";
+        }
+
+        std::cout << "A) Selecionar Post / B) Voltar\n\n";
+        std::cout << "Digite sua opcao desejada: ";
+        std::string opcao;
+        std::getline(std::cin, opcao);
+
+        if (opcao == "B" || opcao == "b") break;
+        else if (opcao == "A" || opcao == "a") {
+            std::cout << "Qual Post deseja selecionar: ";
+            int idx; std::cin >> idx; std::cin.ignore();
+            if (idx >= 1 && idx <= static_cast<int>(postsList.size())) {
+                // ⚠️ Agora precisamos pegar o post real pelo id
+                Post* postReal = nullptr;
+                for (auto& p : db.getTodosPostsMutavel()) {
+                    if (p.getId() == postsList[idx - 1].getId()) {
+                        postReal = &p;
+                        break;
+                    }
+                }
+                if (postReal) menuVisualizarPost(*postReal, db);
+            } else std::cout << "\n[ERRO] Indice invalido!\n";
+        }
+    }
+}
+
+void menuComunidade(int idComunidade, Armazenamento& db) {
+    while (true) {
+        Comunidade* com = db.getComunidade(idComunidade);
+        if (!com) break;
+
+        Perfil* admin = db.getPerfil(com->getIdAdministrador());
+        Perfil* eu = db.getPerfil(db.getIdPerfilLogado());
+
+        const auto& membros = com->getIdsMembros();
+        bool isMember = std::find(membros.begin(), membros.end(), db.getIdPerfilLogado()) != membros.end();
+
+        std::cout << "\n///////////////////////////////////////\n";
+        std::cout << "        COMUNIDADE: " << com->getNome() << "\n";
+        std::cout << "///////////////////////////////////////\n";
+        std::cout << "Descricao: " << com->getDescricao() << "\n";
+        std::cout << "Administrador: @" << (admin ? admin->getNome() : "Desconhecido") << "\n";
+        std::cout << "Membros: " << membros.size() << "\n\n";
+
+        std::vector<Post> postsDaComunidade;
+        for (const auto& p : db.getTodosPosts()) {
+            if (p.getIdComunidade() == idComunidade)
+                postsDaComunidade.push_back(p);
+        }
+
+        std::cout << "=== POSTS RECENTES ===\n";
+        if (postsDaComunidade.empty()) std::cout << "Nenhum post.\n\n";
+        else {
+            for (size_t i = 0; i < std::min<size_t>(3, postsDaComunidade.size()); ++i) {
+                std::cout << "-> " << postsDaComunidade[i].getConteudo() << "\n";
+            }
+            std::cout << "\n";
+        }
+
+        std::cout << "\nDigite sua opcao desejada: ";
+        int opcao; std::cin >> opcao; std::cin.ignore();
+
+        if (isMember || com->getIdAdministrador() == db.getIdPerfilLogado()) {
+            if (opcao == 1) {
+                std::string txt;
+                std::getline(std::cin, txt);
+                db.criarPost(txt, com->getId());
+            } else if (opcao == 2) {
+                menuVerPostsLista(postsDaComunidade, db);
+            } else if (opcao == 4) break;
+        } else {
+            if (opcao == 1) {
+                com->adicionarMembro(eu->getId());
+                eu->entrarComunidade(com->getId());
+            } else if (opcao == 2) {
+                menuVerPostsLista(postsDaComunidade, db);
+            } else if (opcao == 3) break;
+        }
+    }
+}
+
+void menuPerfil(int idAlvo, Armazenamento& db) {
+    while (true) {
+        Perfil* alvo = db.getPerfil(idAlvo);
+        if (!alvo) break;
+
+        Perfil* eu = db.getPerfil(db.getIdPerfilLogado());
+        bool souEu = (idAlvo == db.getIdPerfilLogado());
+
+        std::vector<Post> postsDoUsuario;
+        for (const auto& p : db.getTodosPosts()) {
+            if (p.getIdAutor() == idAlvo)
+                postsDoUsuario.push_back(p);
+        }
+
+        std::cout << "\nDigite sua opcao desejada: ";
+        int opcao; std::cin >> opcao; std::cin.ignore();
+
+        if (souEu) {
+            if (opcao == 1)
+                menuVerPostsLista(postsDoUsuario, db);
+            else if (opcao == 5)
+                break;
+        } else {
+            if (opcao == 1)
+                menuVerPostsLista(postsDoUsuario, db);
+            else if (opcao == 3)
+                break;
+        }
+    }
+}
