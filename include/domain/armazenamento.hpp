@@ -48,7 +48,7 @@ public:
      * @brief Lista todos os perfis armazenados no sistema (compatibilidade com testes).
      * @return Vetor contendo cópias dos perfis.
      */
-    std::vector<Perfil> listarPerfis() const;
+    const std::vector<Perfil>& listarPerfis() const;
 
     /**
      * @brief Adiciona diretamente um objeto Perfil ao vetor (compatibilidade com testes).
@@ -60,7 +60,7 @@ public:
      * @brief Lista todas as comunidades armazenadas no sistema (compatibilidade com testes).
      * @return Vetor contendo cópias das comunidades.
      */
-    std::vector<Comunidade> listarComunidade() const;
+    const std::vector<Comunidade>& listarComunidade() const;
 
     /**
      * @brief Adiciona diretamente um objeto Comunidade ao vetor (compatibilidade com testes).
@@ -112,9 +112,15 @@ public:
      * @{
      */
     Perfil* getPerfil(int id);
-    Usuario* getUsuario(std::string email);
+    const Perfil* getPerfil(int id) const;
+
+    Usuario* getUsuario(const std::string& email);
+    const Usuario* getUsuario(const std::string& email) const;
+
     Comunidade* getComunidade(int id);
-    std::vector<Post> getPostsFeed();
+    const Comunidade* getComunidade(int id) const;
+
+    const std::vector<Post>& getPostsFeed() const;
     /** @} */
 
     /**
@@ -132,8 +138,9 @@ public:
      * @brief Expõe as listas internamente para que o controlador visual (Main) possa aplicar curtidas.
      * @{
      */
-    std::vector<Post>& getTodosPostsMutavel() { return posts; }
-    std::vector<Comentario>& getTodosComentariosMutavel() { return comentarios; }
+    std::vector<Post>& getTodosPostsMutavel();
+    std::vector<Comentario>& getTodosComentariosMutavel();
     /** @} */
 };
+
 #endif
