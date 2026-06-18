@@ -280,12 +280,114 @@ seguintes atalhos:
 make setup
 make serve
 make run
+make run-demo
+make run-demo-clean
 make reset-db
 make test
 make docs
+make commits alunos
 ```
 
 > **Nota:** `make run` executa `setup` + `serve`. O `setup` pula a compilacao automaticamente se o binario ja existir em `build/bin/`. Para forcar um rebuild, delete o binario antes de rodar `make run`.
+
+### Demo automatica e scripts de entrada
+
+O sistema CLI aceita um arquivo de comandos como argumento. Isso permite rodar um fluxo completo
+(login, comunidades, posts, feed, busca, perfil, credenciais e logout) sem digitar cada opcao
+manualmente. Util para demonstracao, testes manuais repetiveis e validacao antes da entrega.
+
+#### Conta usada na demo
+
+| Campo | Valor |
+|-------|-------|
+| Email | `demo@test.com` |
+| Senha | `senha12345` |
+| Usuario | `demo_user` |
+
+A senha precisa ter **no minimo 8 caracteres** e **pelo menos 1 digito**.
+
+#### Arquivos em `scripts/`
+
+| Arquivo | Descricao |
+|---------|-----------|
+| `scripts/demo.in` | Fluxo completo padrao da demo (comunidade `PDS II`, post, comentarios, feed, buscas, perfil, credenciais, logout) |
+| `scripts/meu_teste.in` | Mesmo fluxo de `demo.in`; util para testes locais sem alterar o script principal |
+| `scripts/criar_usuario.in` | Apenas cria a conta demo (opcao 2 na tela inicial) |
+| `scripts/alunos.json` | Emails dos integrantes para o contador de commits |
+| `scripts/count_commits_alunos.cpp` | Programa que conta commits por aluno via `git` |
+
+#### Comandos principais
+
+Demo completa (reutiliza dados existentes nos CSVs):
+
+```bash
+make run-demo
+```
+
+Demo do zero (apaga CSVs na raiz e em `build/`, cria usuario e executa):
+
+```bash
+make run-demo-clean
+```
+
+Usar outro script de entrada:
+
+```bash
+make run-demo DEMO_INPUT=scripts/meu_teste.in
+make run-demo-clean DEMO_INPUT=scripts/meu_teste.in
+```
+
+Rodar manualmente, sem Make:
+
+```bash
+# Windows (PowerShell), a partir da raiz do projeto
+.\build\bin\edu_social_backend.exe scripts\demo.in
+
+# Linux / Git Bash
+./build/bin/edu_social_backend scripts/demo.in
+```
+
+Modo interativo (sem arquivo):
+
+```bash
+make run
+```
+
+Contagem de commits por integrante:
+
+```bash
+make commits alunos
+```
+
+#### O que a demo percorre
+
+1. Login com a conta demo
+2. Criar comunidade `PDS II`
+3. Criar post, curtir e comentar na comunidade
+4. Ver feed, curtir e comentar
+5. Buscar perfil, post e comunidade
+6. Ver perfil do usuario logado
+7. Abrir menu de alterar credenciais (voltar sem alterar)
+8. Deslogar e sair
+
+#### Persistencia dos dados
+
+Os dados ficam em arquivos CSV na **pasta de onde o programa e executado** (geralmente a raiz do repositorio):
+
+- `usuarios.csv`
+- `perfis.csv`
+- `comunidades.csv`
+- `posts.csv`
+- `comentarios.csv`
+
+Se a demo for executada varias vezes sem limpar, posts e comunidades se acumulam. Prefira
+`make run-demo-clean` quando quiser uma saida limpa e previsivel.
+
+#### Observacoes (Windows)
+
+- Passe o arquivo como **argumento** (`edu_social_backend.exe scripts/demo.in`), nao use
+  redirecionamento `< scripts/demo.in` — caminhos com espaco (ex.: `PDS II`) podem falhar com `<`.
+- Se o binario estiver em uso, feche execucoes anteriores do programa antes de recompilar.
 
 ### Aviso: Smart App Control (Windows 11)
 

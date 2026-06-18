@@ -4,7 +4,7 @@
 Armazenamento::Armazenamento() : emailLogado(""), idPerfilLogado(0) {}
 
 bool Armazenamento::senhaSegura(const std::string& senha) const {
-    if (senha.length() < 6) return false;
+    if (senha.length() < 8) return false;
     bool temDigito = false;
     for (char c : senha) {
         if (std::isdigit(static_cast<unsigned char>(c))) temDigito = true;

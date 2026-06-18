@@ -26,6 +26,17 @@ void menuVisualizarPost(Post& post, Armazenamento& db);
 void menuVerPostsLista(const std::vector<Post>& postsList, Armazenamento& db);
 
 /**
+ * @brief Exibe uma lista de perfis e permite abrir um deles.
+ */
+void menuVerPerfisLista(const std::vector<Perfil>& perfisList, Armazenamento& db);
+
+/**
+ * @brief Exibe comunidades (todas ou filtradas) e permite criar/abrir.
+ * @param filtro Se nullptr, usa a lista atual do banco a cada iteracao.
+ */
+void menuVerComunidadesLista(Armazenamento& db, const std::vector<Comunidade>* filtro = nullptr);
+
+/**
  * @brief Exibe a interface de uma comunidade, permitindo ingresso, postagem e saída.
  * @param idComunidade O identificador da comunidade a ser aberta.
  * @param db Referência ao banco de dados central.

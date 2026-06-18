@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 #include "domain/armazenamento.hpp"
+#include "domain/perfil.hpp"
+#include "domain/post.hpp"
+#include "domain/comunidade.hpp"
 
 /**
  * @class Busca
@@ -30,6 +33,10 @@ public:
      * @brief Filtra os resultados da busca por tipo.
      */
     void filtrarResultados(const std::string& tipo);
+
+    std::vector<Perfil> buscarPerfis(const std::string& palavraChave, const Armazenamento& db) const;
+    std::vector<Post> buscarPosts(const std::string& palavraChave, const Armazenamento& db) const;
+    std::vector<Comunidade> buscarComunidades(const std::string& palavraChave, const Armazenamento& db) const;
 };
 
 #endif

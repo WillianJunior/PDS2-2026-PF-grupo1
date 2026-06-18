@@ -1,5 +1,21 @@
 #include "domain/feed.hpp"
 #include <iostream>
+#include <string>
+
+namespace {
+
+bool lerInteiro(const std::string& linha, int& valor) {
+    if (linha.empty()) return false;
+    try {
+        size_t pos = 0;
+        valor = std::stoi(linha, &pos);
+        return pos == linha.size();
+    } catch (...) {
+        return false;
+    }
+}
+
+}  // namespace
 
 void Feed::verFeed(Armazenamento& db) {
     while (true) {
@@ -44,8 +60,12 @@ void Feed::verFeed(Armazenamento& db) {
             }
             std::cout << "Qual Post deseja selecionar: ";
             int escolhaIdx;
-            std::cin >> escolhaIdx;
-            std::cin.ignore(); 
+            std::string linhaIdx;
+            if (!std::getline(std::cin, linhaIdx)) break;
+            if (!lerInteiro(linhaIdx, escolhaIdx)) {
+                std::cout << "\n[ERRO] Indice invalido!\n";
+                continue;
+            }
 
             if (escolhaIdx >= 1 && escolhaIdx <= static_cast<int>(todosPosts.size())) {
                 int vetorIdx = static_cast<int>(todosPosts.size()) - escolhaIdx;
@@ -114,8 +134,8 @@ void Feed::exibirPostDetalhado(Post& post, Armazenamento& db) {
             }
             std::cout << "Qual comentario deseja Curtir/Descurtir: ";
             int comIdx;
-            std::cin >> comIdx;
-            std::cin.ignore();
+            std::string linhaIdx;
+            if (!std::getline(std::cin, linhaIdx) || !lerInteiro(linhaIdx, comIdx)) break;
 
             if (comIdx >= 1 && comIdx <= static_cast<int>(comentariosDoPost.size())) {
                 comentariosDoPost[comIdx - 1]->curtir(db.getIdPerfilLogado());

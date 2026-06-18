@@ -12,7 +12,10 @@ APP_PATH := $(BUILD_DIR)/bin/edu_social_backend$(APP_EXTENSION)
 COMMITS_BIN := $(BUILD_DIR)/bin/count_commits_alunos$(APP_EXTENSION)
 endif
 
-.PHONY: all configure build run test docs clean help commits commits-alunos build-commits
+DEMO_INPUT ?= scripts/demo.in
+DATA_CSVS := usuarios.csv perfis.csv comunidades.csv posts.csv comentarios.csv
+
+.PHONY: all configure build run run-demo run-demo-clean test docs clean help commits commits-alunos build-commits
 
 all: build
 
@@ -27,6 +30,21 @@ build: configure
 run: build
 	@echo "[run] Iniciando aplicativo..."
 	@$(APP_PATH)
+
+run-demo: build
+	@echo "[run-demo] Garantindo usuario demo (ignora se ja existir)..."
+	-$(APP_PATH) scripts/criar_usuario.in
+	@echo "[run-demo] Executando demo com $(DEMO_INPUT)..."
+	@$(APP_PATH) $(DEMO_INPUT)
+
+run-demo-clean: build
+	@echo "[run-demo-clean] Apagando CSVs em . e $(BUILD_DIR)/..."
+	@-cmake -E rm -f usuarios.csv perfis.csv comunidades.csv posts.csv comentarios.csv
+	@-cmake -E rm -f $(BUILD_DIR)/usuarios.csv $(BUILD_DIR)/perfis.csv $(BUILD_DIR)/comunidades.csv $(BUILD_DIR)/posts.csv $(BUILD_DIR)/comentarios.csv
+	@echo "[run-demo-clean] Criando usuario demo..."
+	@$(APP_PATH) scripts/criar_usuario.in
+	@echo "[run-demo-clean] Executando demo com $(DEMO_INPUT)..."
+	@$(APP_PATH) $(DEMO_INPUT)
 
 test: build
 	@echo "[test] Executando testes..."
@@ -75,6 +93,8 @@ help:
 	@echo "  configure  Configura o CMake"
 	@echo "  build      Compila o projeto"
 	@echo "  run        Compila e executa o backend"
+	@echo "  run-demo   Executa demo automatica (scripts/demo.in)"
+	@echo "  run-demo-clean  Apaga CSVs e roda demo do zero"
 	@echo "  test       Executa os testes"
 	@echo "  docs       Gera documentação"
 	@echo "  clean      Remove o diretório build"
@@ -83,4 +103,6 @@ help:
 	@echo "Exemplos:"
 	@echo "  make build BUILD_TYPE=Release"
 	@echo "  make test JOBS=2"
+	@echo "  make run-demo"
+	@echo "  make run-demo DEMO_INPUT=scripts/meu_teste.in"
 	@echo "  make commits alunos"

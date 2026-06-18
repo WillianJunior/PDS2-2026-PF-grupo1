@@ -2,6 +2,27 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include "domain/perfil.hpp"
+#include "domain/comunidade.hpp"
+
+namespace {
+
+bool opcaoVoltar(const std::string& linha) {
+    return linha == "B" || linha == "b" || linha == "V" || linha == "v";
+}
+
+bool lerInteiro(const std::string& linha, int& valor) {
+    if (linha.empty()) return false;
+    try {
+        size_t pos = 0;
+        valor = std::stoi(linha, &pos);
+        return pos == linha.size();
+    } catch (...) {
+        return false;
+    }
+}
+
+}  // namespace
 
 void menuVisualizarPost(Post& post, Armazenamento& db) {
     while (true) {
@@ -53,7 +74,9 @@ void menuVisualizarPost(Post& post, Armazenamento& db) {
                 std::cout << "\n[ERRO] Nao existem comentarios.\n"; continue;
             }
             std::cout << "Qual comentario deseja Curtir/Descurtir: ";
-            int idx; std::cin >> idx; std::cin.ignore();
+            int idx;
+            std::string linhaIdx;
+            if (!std::getline(std::cin, linhaIdx) || !lerInteiro(linhaIdx, idx)) break;
             if (idx >= 1 && idx <= static_cast<int>(coms.size()))
                 coms[idx - 1].curtir(db.getIdPerfilLogado());
             else std::cout << "\n[ERRO] Indice invalido!\n";
@@ -101,7 +124,9 @@ void menuVerPostsLista(const std::vector<Post>& postsList, Armazenamento& db) {
         if (opcao == "B" || opcao == "b") break;
         else if (opcao == "A" || opcao == "a") {
             std::cout << "Qual Post deseja selecionar: ";
-            int idx; std::cin >> idx; std::cin.ignore();
+            int idx;
+            std::string linhaIdx;
+            if (!std::getline(std::cin, linhaIdx) || !lerInteiro(linhaIdx, idx)) break;
             if (idx >= 1 && idx <= static_cast<int>(postsList.size())) {
                 // ⚠️ Agora precisamos pegar o post real pelo id
                 Post* postReal = nullptr;
@@ -150,24 +175,161 @@ void menuComunidade(int idComunidade, Armazenamento& db) {
             std::cout << "\n";
         }
 
-        std::cout << "\nDigite sua opcao desejada: ";
-        int opcao; std::cin >> opcao; std::cin.ignore();
+        bool adminOuMembro =
+            isMember || com->getIdAdministrador() == db.getIdPerfilLogado();
 
-        if (isMember || com->getIdAdministrador() == db.getIdPerfilLogado()) {
+        if (adminOuMembro) {
+            std::cout << "1 - Criar Post\n2 - Ver Posts\n4 - Voltar\n\n";
+        } else {
+            std::cout << "1 - Entrar na Comunidade\n2 - Ver Posts\n3 - Voltar\n\n";
+        }
+
+        std::cout << "Digite sua opcao desejada: ";
+        std::string linha;
+        if (!std::getline(std::cin, linha)) break;
+
+        int opcao;
+        if (!lerInteiro(linha, opcao)) {
+            std::cout << "\n[ERRO] Opcao invalida.\n";
+            continue;
+        }
+
+        if (adminOuMembro) {
             if (opcao == 1) {
                 std::string txt;
-                std::getline(std::cin, txt);
-                db.criarPost(txt, com->getId());
+                std::cout << "Texto do post: ";
+                if (!std::getline(std::cin, txt)) break;
+                if (!txt.empty()) db.criarPost(txt, com->getId());
             } else if (opcao == 2) {
                 menuVerPostsLista(postsDaComunidade, db);
-            } else if (opcao == 4) break;
+            } else if (opcao == 4) {
+                break;
+            } else {
+                std::cout << "\n[ERRO] Opcao invalida.\n";
+            }
         } else {
             if (opcao == 1) {
+                if (!eu) {
+                    std::cout << "\n[ERRO] Perfil logado nao encontrado.\n";
+                    continue;
+                }
                 com->adicionarMembro(eu->getId());
                 eu->entrarComunidade(com->getId());
             } else if (opcao == 2) {
                 menuVerPostsLista(postsDaComunidade, db);
-            } else if (opcao == 3) break;
+            } else if (opcao == 3) {
+                break;
+            } else {
+                std::cout << "\n[ERRO] Opcao invalida.\n";
+            }
+        }
+    }
+}
+
+void menuVerPerfisLista(const std::vector<Perfil>& perfisList, Armazenamento& db) {
+    while (true) {
+        std::cout << "\n///////////////////////////////////////\n";
+        std::cout << "              LISTA DE PERFIS\n";
+        std::cout << "///////////////////////////////////////\n\n";
+
+        if (perfisList.empty()) {
+            std::cout << "Nenhum perfil encontrado.\n\n";
+            std::cout << "Pressione ENTER para voltar...";
+            std::cin.get();
+            break;
+        }
+
+        for (size_t i = 0; i < perfisList.size(); ++i) {
+            std::cout << (i + 1) << " - @" << perfisList[i].getNome() << "\n";
+            if (!perfisList[i].getDescricao().empty()) {
+                std::cout << perfisList[i].getDescricao() << "\n";
+            }
+            std::cout << "\n";
+        }
+
+        std::cout << "A) Selecionar Perfil / B) Voltar\n\n";
+        std::cout << "Digite sua opcao desejada: ";
+        std::string opcao;
+        std::getline(std::cin, opcao);
+
+        if (opcao == "B" || opcao == "b") break;
+        if (opcao == "A" || opcao == "a") {
+            if (perfisList.empty()) {
+                std::cout << "\n[ERRO] Nenhum perfil disponivel.\n";
+                continue;
+            }
+
+            std::cout << "Qual Perfil deseja selecionar: ";
+            int idx;
+            std::string linhaIdx;
+            if (!std::getline(std::cin, linhaIdx) || !lerInteiro(linhaIdx, idx)) break;
+            if (idx >= 1 && idx <= static_cast<int>(perfisList.size())) {
+                menuPerfil(perfisList[static_cast<size_t>(idx - 1)].getId(), db);
+            } else {
+                std::cout << "\n[ERRO] Indice invalido!\n";
+            }
+        } else if (!opcao.empty()) {
+            std::cout << "\n[ERRO] Opcao invalida.\n";
+        }
+    }
+}
+
+void menuVerComunidadesLista(Armazenamento& db, const std::vector<Comunidade>* filtro) {
+    while (true) {
+        const std::vector<Comunidade>& lista =
+            filtro != nullptr ? *filtro : db.getTodasComunidades();
+
+        std::cout << "\n///////////////////////////////////////\n";
+        std::cout << "            LISTA DE COMUNIDADES\n";
+        std::cout << "///////////////////////////////////////\n\n";
+
+        if (lista.empty()) {
+            std::cout << "Nenhuma comunidade encontrada.\n\n";
+        } else {
+            for (size_t i = 0; i < lista.size(); ++i) {
+                std::cout << (i + 1) << " - " << lista[i].getNome() << "\n";
+                std::cout << lista[i].getDescricao() << "\n\n";
+            }
+        }
+
+        std::cout << "A) Selecionar Comunidade / B) Voltar / C) Criar Comunidade\n\n";
+        std::cout << "Digite sua opcao desejada: ";
+        std::string opcao;
+        if (!std::getline(std::cin, opcao)) break;
+
+        if (opcao == "B" || opcao == "b") break;
+
+        if (opcao == "C" || opcao == "c") {
+            std::string nome;
+            std::string descricao;
+            std::cout << "Nome da comunidade: ";
+            if (!std::getline(std::cin, nome)) break;
+            std::cout << "Descricao: ";
+            if (!std::getline(std::cin, descricao)) break;
+            if (!nome.empty()) {
+                db.criarComunidade(nome, descricao);
+                std::cout << "\n[SUCESSO] Comunidade criada!\n";
+            }
+            continue;
+        }
+
+        if (opcao == "A" || opcao == "a") {
+            if (lista.empty()) {
+                std::cout << "\n[ERRO] Nenhuma comunidade disponivel.\n";
+                continue;
+            }
+
+            std::cout << "Qual Comunidade deseja selecionar: ";
+            int idx;
+            std::string linhaIdx;
+            if (!std::getline(std::cin, linhaIdx) || !lerInteiro(linhaIdx, idx)) break;
+            if (idx >= 1 && idx <= static_cast<int>(lista.size())) {
+                menuComunidade(lista[static_cast<size_t>(idx - 1)].getId(), db);
+            } else {
+                std::cout << "\n[ERRO] Indice invalido!\n";
+            }
+        } else if (!opcao.empty()) {
+            std::cout << "\n[ERRO] Opcao invalida. Use A, B ou C.\n";
         }
     }
 }
@@ -186,19 +348,32 @@ void menuPerfil(int idAlvo, Armazenamento& db) {
                 postsDoUsuario.push_back(p);
         }
 
-        std::cout << "\nDigite sua opcao desejada: ";
-        int opcao; std::cin >> opcao; std::cin.ignore();
+        std::cout << "\n1 - Ver Posts\n5 - Voltar\n";
+        std::cout << "Digite sua opcao desejada: ";
+        std::string linha;
+        if (!std::getline(std::cin, linha)) break;
+        if (opcaoVoltar(linha)) break;
+
+        int opcao;
+        if (!lerInteiro(linha, opcao)) {
+            std::cout << "\n[ERRO] Opcao invalida.\n";
+            continue;
+        }
 
         if (souEu) {
             if (opcao == 1)
                 menuVerPostsLista(postsDoUsuario, db);
             else if (opcao == 5)
                 break;
+            else
+                std::cout << "\n[ERRO] Opcao invalida.\n";
         } else {
             if (opcao == 1)
                 menuVerPostsLista(postsDoUsuario, db);
             else if (opcao == 3)
                 break;
+            else
+                std::cout << "\n[ERRO] Opcao invalida.\n";
         }
     }
 }

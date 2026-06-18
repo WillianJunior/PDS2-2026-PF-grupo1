@@ -6,27 +6,57 @@ static bool contemPalavra(const std::string& texto, const std::string& chave) {
     return texto.find(chave) != std::string::npos;
 }
 
-// A assinatura agora bate perfeitamente com o .hpp
-void Busca::buscarPalavraChave(const std::string& palavraChave, const Armazenamento& db) {
-    resultados.clear();
+std::vector<Perfil> Busca::buscarPerfis(const std::string& palavraChave, const Armazenamento& db) const {
+    std::vector<Perfil> achados;
 
-    // Usamos o objeto db (Armazenamento) para acessar os dados, nada de extern!
     for (const auto& perfil : db.getTodosPerfis()) {
-        if (contemPalavra(perfil.getNome(), palavraChave) || contemPalavra(perfil.getDescricao(), palavraChave)) {
-            resultados.push_back("Perfil: " + perfil.getNome());
+        if (contemPalavra(perfil.getNome(), palavraChave) ||
+            contemPalavra(perfil.getDescricao(), palavraChave)) {
+            achados.push_back(perfil);
         }
     }
 
-    for (const auto& comunidade : db.getTodasComunidades()) {
-        if (contemPalavra(comunidade.getNome(), palavraChave) || contemPalavra(comunidade.getDescricao(), palavraChave)) {
-            resultados.push_back("Comunidade: " + comunidade.getNome());
-        }
-    }
+    return achados;
+}
+
+std::vector<Post> Busca::buscarPosts(const std::string& palavraChave, const Armazenamento& db) const {
+    std::vector<Post> achados;
 
     for (const auto& post : db.getTodosPosts()) {
         if (contemPalavra(post.getConteudo(), palavraChave)) {
-            resultados.push_back("Post: " + post.getConteudo());
+            achados.push_back(post);
         }
+    }
+
+    return achados;
+}
+
+std::vector<Comunidade> Busca::buscarComunidades(const std::string& palavraChave, const Armazenamento& db) const {
+    std::vector<Comunidade> achados;
+
+    for (const auto& comunidade : db.getTodasComunidades()) {
+        if (contemPalavra(comunidade.getNome(), palavraChave) ||
+            contemPalavra(comunidade.getDescricao(), palavraChave)) {
+            achados.push_back(comunidade);
+        }
+    }
+
+    return achados;
+}
+
+void Busca::buscarPalavraChave(const std::string& palavraChave, const Armazenamento& db) {
+    resultados.clear();
+
+    for (const auto& perfil : buscarPerfis(palavraChave, db)) {
+        resultados.push_back("Perfil: " + perfil.getNome());
+    }
+
+    for (const auto& comunidade : buscarComunidades(palavraChave, db)) {
+        resultados.push_back("Comunidade: " + comunidade.getNome());
+    }
+
+    for (const auto& post : buscarPosts(palavraChave, db)) {
+        resultados.push_back("Post: " + post.getConteudo());
     }
 
     if (resultados.empty()) {
@@ -34,7 +64,6 @@ void Busca::buscarPalavraChave(const std::string& palavraChave, const Armazename
     }
 }
 
-// Assinatura agora inclui o 'const' para bater com o .hpp
 void Busca::exibirResultadosPesquisa() const {
     std::cout << "=== Resultados da Pesquisa ===" << std::endl;
     for (const auto& r : resultados) {
