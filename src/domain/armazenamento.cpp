@@ -93,8 +93,16 @@ Comunidade* Armazenamento::getComunidade(int id) {
     return nullptr;
 }
 
-const std::vector<Post>& Armazenamento::getPostsFeed() const {
-    return posts; // (simplificado — se precisar filtro, mantenha versão antiga)
+std::vector<Post> Armazenamento::getPostsFeed() const {
+    std::vector<Post> feed;
+
+    for (const auto& p : posts) {
+        if (p.getIdComunidade() == 0) {
+            feed.push_back(p);
+        }
+    }
+
+    return feed;
 }
 
 void Armazenamento::criarPost(std::string texto, int idComunidade) {
