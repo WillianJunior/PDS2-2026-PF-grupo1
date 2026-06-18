@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <limits>
+#include <stdexcept>
 
 void menuVisualizarPost(Post& post, Armazenamento& db) {
     while (true) {
@@ -31,11 +33,11 @@ void menuVisualizarPost(Post& post, Armazenamento& db) {
             std::cout << "Nenhum comentario nesta publicacao ainda.\n\n";
         } else {
             for (size_t i = 0; i < coms.size(); ++i) {
-                Perfil* autorCom = db.getPerfil(coms[i].getIdAutor());
+                Perfil* autorCom = db.getPerfil(coms.at(i).getIdAutor());
                 std::string nomeCom = autorCom ? autorCom->getNome() : "Desconhecido";
                 std::cout << (i + 1) << " - @" << nomeCom << "\n";
-                std::cout << coms[i].getTexto() << "\n";
-                std::cout << "Curtidas: " << coms[i].quantidadeDeCurtidas() << "\n\n";
+                std::cout << coms.at(i).getTexto() << "\n";
+                std::cout << "Curtidas: " << coms.at(i).quantidadeDeCurtidas() << "\n\n";
             }
         }
 
@@ -53,15 +55,29 @@ void menuVisualizarPost(Post& post, Armazenamento& db) {
                 std::cout << "\n[ERRO] Nao existem comentarios.\n"; continue;
             }
             std::cout << "Qual comentario deseja Curtir/Descurtir: ";
-            int idx; std::cin >> idx; std::cin.ignore();
-            if (idx >= 1 && idx <= static_cast<int>(coms.size()))
-                coms[idx - 1].curtir(db.getIdPerfilLogado());
-            else std::cout << "\n[ERRO] Indice invalido!\n";
+            int idx; 
+            std::cin >> idx; 
+            
+            if (std::cin.fail()) {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "\n[ERRO] Entrada invalida!\n";
+                continue;
+            }
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            if (idx >= 1 && idx <= static_cast<int>(coms.size())) {
+                coms.at(idx - 1).curtir(db.getIdPerfilLogado());
+            } else std::cout << "\n[ERRO] Indice invalido!\n";
         } else if (opcao == "C" || opcao == "c") {
             std::cout << "Digite seu comentario: ";
             std::string txt; std::getline(std::cin, txt);
-            if (!txt.empty())
+            try {
                 db.criarComentarioGlobal(post.getId(), db.getIdPerfilLogado(), txt);
+                std::cout << "\n[SUCESSO] Comentario adicionado!\n";
+            } catch (const std::invalid_argument& e) {
+                std::cout << "\n[ERRO] " << e.what() << "\n";
+            }
         } else if (opcao == "D" || opcao == "d") {
             menuPerfil(post.getIdAutor(), db);
         } else if (opcao == "E" || opcao == "e") {
@@ -87,10 +103,10 @@ void menuVerPostsLista(const std::vector<Post>& postsList, Armazenamento& db) {
         }
 
         for (size_t i = 0; i < postsList.size(); ++i) {
-            Perfil* autor = db.getPerfil(postsList[i].getIdAutor());
+            Perfil* autor = db.getPerfil(postsList.at(i).getIdAutor());
             std::string nomeAutor = autor ? autor->getNome() : "Desconhecido";
             std::cout << (i + 1) << " - @" << nomeAutor << "\n";
-            std::cout << postsList[i].getConteudo() << "\n\n";
+            std::cout << postsList.at(i).getConteudo() << "\n\n";
         }
 
         std::cout << "A) Selecionar Post / B) Voltar\n\n";
@@ -101,12 +117,21 @@ void menuVerPostsLista(const std::vector<Post>& postsList, Armazenamento& db) {
         if (opcao == "B" || opcao == "b") break;
         else if (opcao == "A" || opcao == "a") {
             std::cout << "Qual Post deseja selecionar: ";
-            int idx; std::cin >> idx; std::cin.ignore();
+            int idx; 
+            std::cin >> idx; 
+            
+            if (std::cin.fail()) {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "\n[ERRO] Entrada invalida!\n";
+                continue;
+            }
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
             if (idx >= 1 && idx <= static_cast<int>(postsList.size())) {
-                // ⚠️ Agora precisamos pegar o post real pelo id
                 Post* postReal = nullptr;
                 for (auto& p : db.getTodosPostsMutavel()) {
-                    if (p.getId() == postsList[idx - 1].getId()) {
+                    if (p.getId() == postsList.at(idx - 1).getId()) {
                         postReal = &p;
                         break;
                     }
@@ -145,19 +170,34 @@ void menuComunidade(int idComunidade, Armazenamento& db) {
         if (postsDaComunidade.empty()) std::cout << "Nenhum post.\n\n";
         else {
             for (size_t i = 0; i < std::min<size_t>(3, postsDaComunidade.size()); ++i) {
-                std::cout << "-> " << postsDaComunidade[i].getConteudo() << "\n";
+                std::cout << "-> " << postsDaComunidade.at(i).getConteudo() << "\n";
             }
             std::cout << "\n";
         }
 
         std::cout << "\nDigite sua opcao desejada: ";
-        int opcao; std::cin >> opcao; std::cin.ignore();
+        int opcao; 
+        std::cin >> opcao; 
+        
+        if (std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "\n[ERRO] Entrada invalida!\n";
+            continue;
+        }
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         if (isMember || com->getIdAdministrador() == db.getIdPerfilLogado()) {
             if (opcao == 1) {
+                std::cout << "Digite o texto do post para a comunidade: ";
                 std::string txt;
                 std::getline(std::cin, txt);
-                db.criarPost(txt, com->getId());
+                try {
+                    db.criarPost(txt, com->getId());
+                    std::cout << "\n[SUCESSO] Post publicado com sucesso!\n";
+                } catch (const std::invalid_argument& e) {
+                    std::cout << "\n[ERRO] " << e.what() << "\n";
+                }
             } else if (opcao == 2) {
                 menuVerPostsLista(postsDaComunidade, db);
             } else if (opcao == 4) break;
@@ -187,7 +227,16 @@ void menuPerfil(int idAlvo, Armazenamento& db) {
         }
 
         std::cout << "\nDigite sua opcao desejada: ";
-        int opcao; std::cin >> opcao; std::cin.ignore();
+        int opcao; 
+        std::cin >> opcao; 
+        
+        if (std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "\n[ERRO] Entrada invalida!\n";
+            continue;
+        }
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         if (souEu) {
             if (opcao == 1)

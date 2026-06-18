@@ -1,6 +1,7 @@
 #include "domain/gerenciador_csv.hpp"
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 std::vector<std::string> GerenciadorCSV::separarString(const std::string& linha, char delimitador) {
     std::vector<std::string> tokens;
@@ -15,7 +16,10 @@ std::vector<int> GerenciadorCSV::separarInteiros(const std::string& linha, char 
     if (linha.empty()) return inteiros;
     auto tokens = separarString(linha, delimitador);
     for (const auto& t : tokens) {
-        if (!t.empty()) inteiros.push_back(std::stoi(t));
+        try {
+            if (!t.empty()) inteiros.push_back(std::stoi(t));
+        } catch (const std::exception&) {
+        }
     }
     return inteiros;
 }
@@ -69,11 +73,14 @@ std::vector<Perfil> GerenciadorCSV::carregarPerfis(const std::string& nomeArquiv
         while (std::getline(arquivo, linha)) {
             auto dados = separarString(linha, ',');
             if (dados.size() >= 7) { 
-                Perfil p(std::stoi(dados[0]), dados[1], dados[2], dados[3], dados[4], dados[5], std::stoi(dados[6]));
-                if(dados.size() > 7) p.setIdsSeguidores(separarInteiros(dados[7], '|'));
-                if(dados.size() > 8) p.setIdsSeguidos(separarInteiros(dados[8], '|'));
-                if(dados.size() > 9) p.setIdsComunidades(separarInteiros(dados[9], '|'));
-                lista.push_back(p);
+                try {
+                    Perfil p(std::stoi(dados[0]), dados[1], dados[2], dados[3], dados[4], dados[5], std::stoi(dados[6]));
+                    if(dados.size() > 7) p.setIdsSeguidores(separarInteiros(dados[7], '|'));
+                    if(dados.size() > 8) p.setIdsSeguidos(separarInteiros(dados[8], '|'));
+                    if(dados.size() > 9) p.setIdsComunidades(separarInteiros(dados[9], '|'));
+                    lista.push_back(p);
+                } catch (const std::exception&) {
+                }
             }
         }
     }
@@ -97,9 +104,11 @@ std::vector<Comunidade> GerenciadorCSV::carregarComunidades(const std::string& n
         while (std::getline(arquivo, linha)) {
             auto dados = separarString(linha, ',');
             if (dados.size() >= 4) {
-                Comunidade c(std::stoi(dados[0]), dados[1], dados[2], std::stoi(dados[3]));
-                if(dados.size() > 4) c.setIdsMembros(separarInteiros(dados[4], '|'));
-                lista.push_back(c);
+                try {
+                    Comunidade c(std::stoi(dados[0]), dados[1], dados[2], std::stoi(dados[3]));
+                    if(dados.size() > 4) c.setIdsMembros(separarInteiros(dados[4], '|'));
+                    lista.push_back(c);
+                } catch (const std::exception&) {}
             }
         }
     }
@@ -123,9 +132,11 @@ std::vector<Post> GerenciadorCSV::carregarPosts(const std::string& nomeArquivo) 
         while (std::getline(arquivo, linha)) {
             auto dados = separarString(linha, ',');
             if (dados.size() >= 4) {
-                Post p(std::stoi(dados[0]), std::stoi(dados[1]), std::stoi(dados[2]), dados[3]);
-                if(dados.size() > 4) p.setIdsCurtidas(separarInteiros(dados[4], '|'));
-                lista.push_back(p);
+                try {
+                    Post p(std::stoi(dados[0]), std::stoi(dados[1]), std::stoi(dados[2]), dados[3]);
+                    if(dados.size() > 4) p.setIdsCurtidas(separarInteiros(dados[4], '|'));
+                    lista.push_back(p);
+                } catch (const std::exception&) {}
             }
         }
     }
@@ -149,9 +160,11 @@ std::vector<Comentario> GerenciadorCSV::carregarComentarios(const std::string& n
         while (std::getline(arquivo, linha)) {
             auto dados = separarString(linha, ',');
             if (dados.size() >= 4) {
-                Comentario c(std::stoi(dados[0]), std::stoi(dados[1]), std::stoi(dados[2]), dados[3]);
-                if(dados.size() > 4) c.setIdsCurtidas(separarInteiros(dados[4], '|'));
-                lista.push_back(c);
+                try {
+                    Comentario c(std::stoi(dados[0]), std::stoi(dados[1]), std::stoi(dados[2]), dados[3]);
+                    if(dados.size() > 4) c.setIdsCurtidas(separarInteiros(dados[4], '|'));
+                    lista.push_back(c);
+                } catch (const std::exception&) {}
             }
         }
     }

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <stdexcept>
+#include <limits>
 #include "armazenamento.hpp"
 #include "feed.hpp"
 #include "busca.hpp"
@@ -26,7 +28,14 @@ int main() {
             
             int opcao;
             std::cin >> opcao;
-            std::cin.ignore();
+            
+            if (std::cin.fail()) {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "\n[ERRO] Entrada invalida! Digite um numero.\n";
+                continue;
+            }
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
             if (opcao == 1) {
                 while(true) {
@@ -44,7 +53,12 @@ int main() {
                         std::cout << "1 - Tentar novamente / 2 - Voltar\nEscolha: ";
                         int sub;
                         std::cin >> sub;
-                        std::cin.ignore();
+                        if (std::cin.fail()) {
+                            std::cin.clear();
+                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                            continue;
+                        }
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                         if (sub == 2) break;
                     }
                 }
@@ -60,25 +74,14 @@ int main() {
                     std::cout << "Senha (minimo 8 digitos): ";
                     std::getline(std::cin, senha);
                     
-                    if (senha.length() < 8) {
-                        std::cout << "\n[ERRO] Senha invalida!\n\n";
-                        continue;
+                    try {
+                        db.criarUsuarioEPerfil(email, senha, nome);
+                        std::cout << "\n[SUCESSO] Conta criada!\n";
+                        db.salvarDados();
+                        break;
+                    } catch (const std::invalid_argument& e) {
+                        std::cout << "\n[ERRO] " << e.what() << "\n\n";
                     }
-
-                    if (!db.emailUnico(email)) {
-                        std::cout << "\n[ERRO] Email repetido!\n\n";
-                        continue;
-                    }
-
-                    if (!db.nomeUsuarioUnico(nome)) {
-                        std::cout << "\n[ERRO] Nome de usuario ja existe!\n\n";
-                        continue;
-                    }
-                    
-                    db.criarUsuarioEPerfil(email, senha, nome);
-                    std::cout << "\n[SUCESSO] Conta criada!\n";
-                    db.salvarDados();
-                    break;
                 }
 
             } else if (opcao == 3) {
@@ -99,7 +102,14 @@ int main() {
             
             int opcao;
             std::cin >> opcao;
-            std::cin.ignore();
+            
+            if (std::cin.fail()) {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "\n[ERRO] Entrada invalida!\n";
+                continue;
+            }
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
             if (opcao == 1) {
                 Feed f;
@@ -112,7 +122,12 @@ int main() {
 
                 int cat;
                 std::cin >> cat;
-                std::cin.ignore();
+                if (std::cin.fail()) {
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    continue;
+                }
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
                 if (cat >= 1 && cat <= 3) {
                     std::string termo;
@@ -127,7 +142,7 @@ int main() {
                                 achados.push_back(p);
                         }
                         for (size_t i = 0; i < achados.size(); ++i)
-                            std::cout << (i+1) << " - @" << achados[i].getNome() << "\n";
+                            std::cout << (i+1) << " - @" << achados.at(i).getNome() << "\n";
                     }
 
                     else if (cat == 2) {
