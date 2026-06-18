@@ -259,10 +259,16 @@ Resetar o banco:
 .\scripts\reset_db.ps1
 ```
 
-Executar testes e coverage:
+Executar testes:
 
 ```powershell
 .\scripts\test.ps1
+```
+
+Coverage (use WSL ou Linux):
+
+```bash
+make coverage
 ```
 
 Gerar documentacao Doxygen:
@@ -284,9 +290,36 @@ make run-demo
 make run-demo-clean
 make reset-db
 make test
+make coverage
 make docs
 make commits alunos
 ```
+
+#### Coverage (`make coverage`)
+
+No Linux ou WSL (GCC), gera o relatorio de cobertura com `gcovr`:
+
+```bash
+make coverage
+```
+
+O comando compila com instrumentacao, executa os testes e salva o HTML em
+`report/coverage.html` (pasta `report/` na raiz do projeto). No WSL, o relatorio
+abre automaticamente no navegador do Windows.
+
+Pre-requisito:
+
+```bash
+sudo apt install gcovr
+```
+
+Opcional — copiar o relatorio para outro diretorio:
+
+```bash
+make coverage COPY_REPORT_TO=/caminho/desejado/report
+```
+
+> **Nota:** `make coverage` nao funciona no PowerShell com MSVC. Use WSL ou Linux.
 
 > **Nota:** `make run` executa `setup` + `serve`. O `setup` pula a compilacao automaticamente se o binario ja existir em `build/bin/`. Para forcar um rebuild, delete o binario antes de rodar `make run`.
 
@@ -1856,10 +1889,10 @@ curl -X GET "http://localhost:18080/search?q=review&type=posts&authorId=1" \
 ### Build e testes
 
 - [x] CMake reorganizado
-- [x] Makefile com `setup`, `run`, `serve`, `reset-db`, `test`
+- [x] Makefile com `setup`, `run`, `serve`, `reset-db`, `test`, `coverage`
 - [x] suites base com `doctest`
 - [x] `ctest` passando
-- [ ] coverage executada com `gcovr`
+- [x] coverage executada com `make coverage` + `gcovr`
 
 ### Comportamentos de negocio
 

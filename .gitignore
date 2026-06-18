@@ -7,6 +7,8 @@ data/*
 !data/.gitkeep
 .vscode/
 coverage/
+coverage-report/
+report/
 build/docs/
 *.gcda
 *.gcno

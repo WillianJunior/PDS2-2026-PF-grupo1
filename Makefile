@@ -17,7 +17,9 @@ DEMO_INPUT ?= scripts/demo.in
 DATA_DIR := data
 DATA_CSVS := $(DATA_DIR)/usuarios.csv $(DATA_DIR)/perfis.csv $(DATA_DIR)/comunidades.csv $(DATA_DIR)/posts.csv $(DATA_DIR)/comentarios.csv
 
-.PHONY: all configure build run run-demo run-demo-clean test docs clean help commits commits-alunos build-commits
+GCOVR_EXCLUDE := --exclude ".*doctest\.h" --exclude ".*main\.cpp" --exclude ".*test_.*\.cpp"
+
+.PHONY: all configure build run run-demo run-demo-clean test coverage docs clean help commits commits-alunos build-commits FORCE
 
 all: build
 
@@ -50,6 +52,19 @@ run-demo-clean: build
 test: build
 	@echo "[test] Executando testes..."
 	@ctest --test-dir $(BUILD_DIR) -C $(BUILD_TYPE) --output-on-failure --parallel $(JOBS)
+
+ifneq ($(OS),Windows_NT)
+coverage: build FORCE
+	@sed -i 's/\r$$//' scripts/coverage.sh 2>/dev/null || true
+	@bash scripts/coverage.sh
+else
+coverage: FORCE
+	@echo "[coverage] gcovr requer GCC (Linux/WSL)."
+	@echo "[coverage] No Ubuntu/WSL: cd ~/PDS2-2026-PF-grupo1 && make coverage"
+	@exit 1
+endif
+
+FORCE:
 
 docs:
 	@echo "[docs] Gerando documentacao com Doxygen..."
@@ -93,6 +108,7 @@ help:
 	@echo "  run             Compila e executa o app (uso normal)"
 	@echo "  build           So compila"
 	@echo "  test            Executa os testes"
+	@echo "  coverage        Testes + relatorio HTML em report/ (Linux/WSL)"
 	@echo "  run-demo        Demo automatica (scripts/demo.in)"
 	@echo "  run-demo-clean  Apaga CSVs em data/ e roda demo do zero"
 	@echo "  clean           Remove a pasta build/"
