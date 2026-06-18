@@ -62,7 +62,7 @@ TEST_CASE("Remover membro inexistente") {
 TEST_CASE("podePublicar sem membros") {
     Comunidade c("Teste", 1);
 
-    CHECK(c.podePublicar(1) == true);  // admin sempre pode
+    CHECK(c.podePublicar(1) == true);  
     CHECK(c.podePublicar(999) == false);
 }
 TEST_CASE("setIdsMembros sobrescreve lista") {

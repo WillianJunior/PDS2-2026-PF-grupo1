@@ -1,6 +1,6 @@
 BUILD_DIR := build
 BUILD_TYPE ?= Debug
-CMAKE_ARGS := -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
+CMAKE_ARGS := -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_EXE_LINKER_FLAGS="--coverage"
 JOBS ?= 4
 APP_EXTENSION :=
 APP_PATH := $(BUILD_DIR)/bin/edu_social_backend$(APP_EXTENSION)
@@ -22,7 +22,8 @@ all: build
 
 configure:
 	@echo "[cmake] Configurando projeto (BUILD_TYPE=$(BUILD_TYPE))..."
-	@cmake -S . -B $(BUILD_DIR) $(CMAKE_ARGS)
+	@mkdir -p $(BUILD_DIR)
+	@cd $(BUILD_DIR) && cmake .. $(CMAKE_ARGS)
 
 build: configure
 	@echo "[make] Compilando com $(JOBS) thread(s)..."
@@ -51,12 +52,12 @@ test: build
 	@ctest --test-dir $(BUILD_DIR) -C $(BUILD_TYPE) --output-on-failure --parallel $(JOBS)
 
 docs:
-	@echo "[docs] Gerando documentação com Doxygen..."
+	@echo "[docs] Gerando documentacao com Doxygen..."
 	@doxygen design/Doxyfile
 
 clean:
-	@echo "[clean] Removendo diretório de build..."
-	@cmake -E remove_directory $(BUILD_DIR)
+	@echo "[clean] Removendo diretorio de build, binarios e coverage..."
+	@rm -rf $(BUILD_DIR) bin/edusocial bin/run_tests coverage/
 
 # Permite: make commits alunos
 ifneq (,$(filter commits,$(MAKECMDGOALS)))

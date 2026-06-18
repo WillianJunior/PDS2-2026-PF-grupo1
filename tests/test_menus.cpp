@@ -558,8 +558,6 @@ TEST_CASE("menuVerPostsLista entrada totalmente invalida") {
 TEST_CASE("menuVerPostsLista cobre lista vazia FORCADO") {
     Armazenamento db;
     std::vector<Post> lista;
-
-    // entra direto e tenta interagir
     std::istringstream input("A\nB\n");
     auto* old = std::cin.rdbuf(input.rdbuf());
 
