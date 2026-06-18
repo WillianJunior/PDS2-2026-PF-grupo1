@@ -1,6 +1,21 @@
 #include "domain/armazenamento.hpp"
 #include <cctype>
+#include <filesystem>
 #include <stdexcept>
+
+namespace {
+
+constexpr const char* DATA_DIR = "data";
+
+std::string caminhoCsv(const char* nomeArquivo) {
+    return std::string(DATA_DIR) + "/" + nomeArquivo;
+}
+
+void garantirDiretorioDados() {
+    std::filesystem::create_directories(DATA_DIR);
+}
+
+}  // namespace
 
 Armazenamento::Armazenamento() : emailLogado(""), idPerfilLogado(0) {}
 
@@ -22,11 +37,11 @@ void Armazenamento::criarComunidade(const Comunidade& c) { comunidades.push_back
 void Armazenamento::mensagemSucessoErro() const {}
 
 void Armazenamento::carregarDados() {
-    usuarios = GerenciadorCSV::carregarUsuarios("usuarios.csv");
-    perfis = GerenciadorCSV::carregarPerfis("perfis.csv");
-    comunidades = GerenciadorCSV::carregarComunidades("comunidades.csv");
-    posts = GerenciadorCSV::carregarPosts("posts.csv");
-    comentarios = GerenciadorCSV::carregarComentarios("comentarios.csv");
+    usuarios = GerenciadorCSV::carregarUsuarios(caminhoCsv("usuarios.csv"));
+    perfis = GerenciadorCSV::carregarPerfis(caminhoCsv("perfis.csv"));
+    comunidades = GerenciadorCSV::carregarComunidades(caminhoCsv("comunidades.csv"));
+    posts = GerenciadorCSV::carregarPosts(caminhoCsv("posts.csv"));
+    comentarios = GerenciadorCSV::carregarComentarios(caminhoCsv("comentarios.csv"));
 
     for (const auto& p : perfis) if (p.getId() >= proxIdPerfil) proxIdPerfil = p.getId() + 1;
     for (const auto& c : comunidades) if (c.getId() >= proxIdComunidade) proxIdComunidade = c.getId() + 1;
@@ -35,11 +50,12 @@ void Armazenamento::carregarDados() {
 }
 
 void Armazenamento::salvarDados() {
-    GerenciadorCSV::salvarUsuarios(usuarios, "usuarios.csv");
-    GerenciadorCSV::salvarPerfis(perfis, "perfis.csv");
-    GerenciadorCSV::salvarComunidades(comunidades, "comunidades.csv");
-    GerenciadorCSV::salvarPosts(posts, "posts.csv");
-    GerenciadorCSV::salvarComentarios(comentarios, "comentarios.csv");
+    garantirDiretorioDados();
+    GerenciadorCSV::salvarUsuarios(usuarios, caminhoCsv("usuarios.csv"));
+    GerenciadorCSV::salvarPerfis(perfis, caminhoCsv("perfis.csv"));
+    GerenciadorCSV::salvarComunidades(comunidades, caminhoCsv("comunidades.csv"));
+    GerenciadorCSV::salvarPosts(posts, caminhoCsv("posts.csv"));
+    GerenciadorCSV::salvarComentarios(comentarios, caminhoCsv("comentarios.csv"));
 }
 
 bool Armazenamento::emailUnico(const std::string& email) {

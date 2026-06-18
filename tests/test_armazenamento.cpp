@@ -3,6 +3,7 @@
 #include "domain/perfil.hpp"
 #include "domain/comunidade.hpp"
 #include <cstdio>
+#include <filesystem>
 
 TEST_SUITE("Armazenamento") {
     TEST_CASE("Autenticação e Sessão") {
@@ -77,11 +78,12 @@ TEST_SUITE("Armazenamento") {
         db.salvarDados(); 
         db.carregarDados(); 
         CHECK(db.getTodosPerfis().size() >= 1);
-        std::remove("usuarios.csv");
-        std::remove("perfis.csv");
-        std::remove("comunidades.csv");
-        std::remove("posts.csv");
-        std::remove("comentarios.csv");
+        std::remove("data/usuarios.csv");
+        std::remove("data/perfis.csv");
+        std::remove("data/comunidades.csv");
+        std::remove("data/posts.csv");
+        std::remove("data/comentarios.csv");
+        std::filesystem::remove("data");
     }
     TEST_CASE("Criacao sem login nao funciona") {
     Armazenamento db;

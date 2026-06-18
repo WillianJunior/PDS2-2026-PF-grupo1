@@ -42,15 +42,15 @@ TEST_SUITE("Feed Interativo") {
             "A\n"               
             "B\n1\n"          
             "C\nNovo Teste\n"   
-            "D\n\n"             
+            "D\n5\n"            
             "E\n"              
             "F\n"              
             "A\n1\n"           
-            "E\n\n"           
+            "E\n4\n"           
             "B\n99\n"          
             "X\n"             
             "F\n"              
-            "B\n";              
+            "B\n";
             
         CHECK_NOTHROW(simularInteracaoFeed(acoes, [&](){ f.verFeed(db); }));
     }

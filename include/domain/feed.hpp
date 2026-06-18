@@ -36,13 +36,5 @@ public:
      * @param comunidades Vetor contendo as comunidades a serem exibidas.
      */
     void exibirComunidades(const std::vector<Comunidade>& comunidades);
-
-private:
-    /**
-     * @brief Renderiza a tela interna de um Post específico, exibindo seu conteúdo, curtidas e seção de comentários.
-     * @param post Referência mutável ao post selecionado.
-     * @param db Referência ao banco de dados do sistema.
-     */
-    void exibirPostDetalhado(Post& post, Armazenamento& db);
 };
 #endif

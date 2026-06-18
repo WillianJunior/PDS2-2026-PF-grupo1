@@ -23,6 +23,78 @@ bool lerInteiro(const std::string& linha, int& valor) {
     }
 }
 
+void exibirResumoPerfil(const Perfil& alvo) {
+    std::cout << "\n====================================\n";
+    std::cout << "         PERFIL DE @" << alvo.getNome() << "\n";
+    std::cout << "====================================\n";
+    std::cout << "Curso: "
+              << (alvo.getCurso().empty() ? "(nao informado)" : alvo.getCurso()) << "\n";
+    std::cout << "Instituicao: "
+              << (alvo.getInstituicao().empty() ? "(nao informado)" : alvo.getInstituicao())
+              << "\n";
+    std::cout << "Periodo: " << alvo.getPeriodo() << " Semestre\n";
+    std::cout << "Biografia: "
+              << (alvo.getDescricao().empty() ? "(nao informado)" : alvo.getDescricao()) << "\n";
+    std::cout << "====================================\n\n";
+}
+
+void menuEditarPerfil(Perfil& alvo) {
+    while (true) {
+        std::cout << "--- EDITAR PERFIL ---\n";
+        std::cout << "1 - Biografia\n";
+        std::cout << "2 - Curso\n";
+        std::cout << "3 - Instituicao\n";
+        std::cout << "4 - Periodo\n";
+        std::cout << "5 - Voltar\n\n";
+        std::cout << "Escolha: ";
+
+        std::string linha;
+        if (!std::getline(std::cin, linha)) break;
+        if (opcaoVoltar(linha)) break;
+
+        int opcao;
+        if (!lerInteiro(linha, opcao)) {
+            std::cout << "\n[ERRO] Opcao invalida.\n";
+            continue;
+        }
+
+        if (opcao == 5) break;
+
+        if (opcao == 1) {
+            std::cout << "Nova biografia: ";
+            std::string bio;
+            if (!std::getline(std::cin, bio)) break;
+            alvo.setDescricao(bio);
+            std::cout << "\n[SUCESSO] Biografia atualizada!\n";
+        } else if (opcao == 2) {
+            std::cout << "Novo curso: ";
+            std::string curso;
+            if (!std::getline(std::cin, curso)) break;
+            alvo.setCurso(curso);
+            std::cout << "\n[SUCESSO] Curso atualizado!\n";
+        } else if (opcao == 3) {
+            std::cout << "Nova instituicao: ";
+            std::string inst;
+            if (!std::getline(std::cin, inst)) break;
+            alvo.setInstituicao(inst);
+            std::cout << "\n[SUCESSO] Instituicao atualizada!\n";
+        } else if (opcao == 4) {
+            std::cout << "Novo periodo (semestre): ";
+            std::string linhaPeriodo;
+            if (!std::getline(std::cin, linhaPeriodo)) break;
+            int periodo;
+            if (!lerInteiro(linhaPeriodo, periodo) || periodo < 1) {
+                std::cout << "\n[ERRO] Periodo invalido.\n";
+                continue;
+            }
+            alvo.setPeriodo(periodo);
+            std::cout << "\n[SUCESSO] Periodo atualizado!\n";
+        } else {
+            std::cout << "\n[ERRO] Opcao invalida.\n";
+        }
+    }
+}
+
 }  // namespace
 
 void menuVisualizarPost(Post& post, Armazenamento& db) {
@@ -359,7 +431,17 @@ void menuPerfil(int idAlvo, Armazenamento& db) {
             if (p.getIdAutor() == idAlvo) postsDoUsuario.push_back(p);
         }
 
-        std::cout << "\n1 - Ver Posts\n5 - Voltar\n";
+        exibirResumoPerfil(*alvo);
+
+        if (souEu) {
+            std::cout << "1 - Ver Posts\n";
+            std::cout << "2 - Editar Perfil\n";
+            std::cout << "5 - Voltar\n\n";
+        } else {
+            std::cout << "1 - Ver Posts\n";
+            std::cout << "3 - Voltar\n\n";
+        }
+
         std::cout << "Digite sua opcao desejada: ";
         std::string linha;
         if (!std::getline(std::cin, linha)) break;
@@ -374,6 +456,8 @@ void menuPerfil(int idAlvo, Armazenamento& db) {
         if (souEu) {
             if (opcao == 1) {
                 menuVerPostsLista(postsDoUsuario, db);
+            } else if (opcao == 2) {
+                menuEditarPerfil(*alvo);
             } else if (opcao == 5) {
                 break;
             } else {

@@ -3,6 +3,8 @@ build/*
 cmake-build-*/
 out/
 database/app.db
+data/*
+!data/.gitkeep
 .vscode/
 coverage/
 build/docs/

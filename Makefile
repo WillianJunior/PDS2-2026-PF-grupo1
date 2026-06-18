@@ -13,7 +13,8 @@ COMMITS_BIN := $(BUILD_DIR)/bin/count_commits_alunos$(APP_EXTENSION)
 endif
 
 DEMO_INPUT ?= scripts/demo.in
-DATA_CSVS := usuarios.csv perfis.csv comunidades.csv posts.csv comentarios.csv
+DATA_DIR := data
+DATA_CSVS := $(DATA_DIR)/usuarios.csv $(DATA_DIR)/perfis.csv $(DATA_DIR)/comunidades.csv $(DATA_DIR)/posts.csv $(DATA_DIR)/comentarios.csv
 
 .PHONY: all configure build run run-demo run-demo-clean test docs clean help commits commits-alunos build-commits
 
@@ -38,9 +39,8 @@ run-demo: build
 	@$(APP_PATH) $(DEMO_INPUT)
 
 run-demo-clean: build
-	@echo "[run-demo-clean] Apagando CSVs em . e $(BUILD_DIR)/..."
-	@-cmake -E rm -f usuarios.csv perfis.csv comunidades.csv posts.csv comentarios.csv
-	@-cmake -E rm -f $(BUILD_DIR)/usuarios.csv $(BUILD_DIR)/perfis.csv $(BUILD_DIR)/comunidades.csv $(BUILD_DIR)/posts.csv $(BUILD_DIR)/comentarios.csv
+	@echo "[run-demo-clean] Apagando CSVs em $(DATA_DIR)/..."
+	@-cmake -E rm -f $(DATA_CSVS)
 	@echo "[run-demo-clean] Criando usuario demo..."
 	@$(APP_PATH) scripts/criar_usuario.in
 	@echo "[run-demo-clean] Executando demo com $(DEMO_INPUT)..."
