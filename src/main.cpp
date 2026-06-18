@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <limits>
+#include <stdexcept>
 #include <string>
 #include <vector>
 #include "armazenamento.hpp"
@@ -29,6 +31,20 @@ bool lerLinha(std::string& destino) {
 void abortarEntradaAutomatica(const std::string& motivo) {
     std::cerr << "\n[demo] Entrada automatica interrompida: " << motivo << "\n";
     std::exit(1);
+}
+
+bool lerOpcaoNumerica(int& valor, bool modoAutomatico) {
+    std::cin >> valor;
+    if (std::cin.fail()) {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        if (!modoAutomatico) {
+            std::cout << "\n[ERRO] Entrada invalida! Digite um numero.\n";
+        }
+        return false;
+    }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    return true;
 }
 
 }  // namespace
@@ -65,16 +81,15 @@ int main(int argc, char* argv[]) {
             std::cout << "2 - Criar Usuario\n";
             std::cout << "3 - Sair\n\n";
             std::cout << "Digite sua opcao desejada: ";
-            
+
             int opcao;
-            if (!(std::cin >> opcao)) {
+            if (!lerOpcaoNumerica(opcao, modoAutomatico)) {
                 if (modoAutomatico) {
                     rodando = false;
                     break;
                 }
-                break;
+                continue;
             }
-            std::cin.ignore();
 
             if (opcao == 1) {
                 while (true) {
@@ -103,8 +118,7 @@ int main(int argc, char* argv[]) {
                     std::cout << "\n[ERRO] Email ou senha invalidos.\n";
                     std::cout << "1 - Tentar novamente / 2 - Voltar\nEscolha: ";
                     int sub;
-                    if (!(std::cin >> sub)) break;
-                    std::cin.ignore();
+                    if (!lerOpcaoNumerica(sub, modoAutomatico)) break;
                     if (sub == 2) break;
                 }
 
@@ -146,35 +160,26 @@ int main(int argc, char* argv[]) {
                         continue;
                     }
 
-                    if (!db.emailUnico(email)) {
+                    try {
+                        db.criarUsuarioEPerfil(email, senha, nome);
+                        std::cout << "\n[SUCESSO] Conta criada!\n";
+                        db.salvarDados();
+                        break;
+                    } catch (const std::invalid_argument& e) {
                         ++tentativas;
-                        std::cout << "\n[ERRO] Email repetido!\n\n";
+                        std::cout << "\n[ERRO] " << e.what() << "\n\n";
                         if (modoAutomatico) {
-                            std::cout << "[demo] Usuario ja existe; seguindo com login.\n";
-                            return 0;
+                            const std::string msg = e.what();
+                            if (msg.find("email") != std::string::npos) {
+                                std::cout << "[demo] Usuario ja existe; seguindo com login.\n";
+                                return 0;
+                            }
+                            abortarEntradaAutomatica(msg);
                         }
                         if (tentativas >= maxTentativas) {
                             std::cout << "[AVISO] Limite de tentativas atingido. Voltando ao menu.\n";
                         }
-                        continue;
                     }
-
-                    if (!db.nomeUsuarioUnico(nome)) {
-                        ++tentativas;
-                        std::cout << "\n[ERRO] Nome de usuario ja existe!\n\n";
-                        if (modoAutomatico) {
-                            abortarEntradaAutomatica("nome de usuario ja cadastrado.");
-                        }
-                        if (tentativas >= maxTentativas) {
-                            std::cout << "[AVISO] Limite de tentativas atingido. Voltando ao menu.\n";
-                        }
-                        continue;
-                    }
-
-                    db.criarUsuarioEPerfil(email, senha, nome);
-                    std::cout << "\n[SUCESSO] Conta criada!\n";
-                    db.salvarDados();
-                    break;
                 }
 
             } else if (opcao == 3) {
@@ -192,16 +197,15 @@ int main(int argc, char* argv[]) {
             std::cout << "5 - Alterar Credenciais\n";
             std::cout << "6 - Deslogar\n\n";
             std::cout << "Digite sua opcao desejada: ";
-            
+
             int opcao;
-            if (!(std::cin >> opcao)) {
+            if (!lerOpcaoNumerica(opcao, modoAutomatico)) {
                 if (modoAutomatico) {
                     rodando = false;
                     break;
                 }
-                break;
+                continue;
             }
-            std::cin.ignore();
 
             if (opcao == 1) {
                 Feed f;
@@ -213,8 +217,7 @@ int main(int argc, char* argv[]) {
                 std::cout << "1 - Perfil\n2 - Post\n3 - Comunidade\n4 - Voltar\nEscolha: ";
 
                 int cat;
-                std::cin >> cat;
-                std::cin.ignore();
+                if (!lerOpcaoNumerica(cat, modoAutomatico)) continue;
 
                 if (cat >= 1 && cat <= 3) {
                     std::string termo;
@@ -261,8 +264,7 @@ int main(int argc, char* argv[]) {
                 std::cout << "Escolha: ";
 
                 int sub;
-                std::cin >> sub;
-                std::cin.ignore();
+                if (!lerOpcaoNumerica(sub, modoAutomatico)) continue;
 
                 if (sub == 1) {
                     std::string atual, nova;

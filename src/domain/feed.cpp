@@ -1,5 +1,6 @@
 #include "domain/feed.hpp"
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 namespace {
@@ -30,10 +31,10 @@ void Feed::verFeed(Armazenamento& db) {
         } else {
             int exibicaoIdx = 1;
             for (int i = static_cast<int>(todosPosts.size()) - 1; i >= 0; --i) {
-                Post& p = todosPosts[i];
+                Post& p = todosPosts.at(i);
                 Perfil* autor = db.getPerfil(p.getIdAutor());
                 std::string nomeAutor = autor ? autor->getNome() : "Desconhecido";
-                
+
                 std::cout << exibicaoIdx << " - @" << nomeAutor;
                 if (p.getIdComunidade() != 0) {
                     Comunidade* com = db.getComunidade(p.getIdComunidade());
@@ -69,7 +70,11 @@ void Feed::verFeed(Armazenamento& db) {
 
             if (escolhaIdx >= 1 && escolhaIdx <= static_cast<int>(todosPosts.size())) {
                 int vetorIdx = static_cast<int>(todosPosts.size()) - escolhaIdx;
-                exibirPostDetalhado(todosPosts[vetorIdx], db);
+                try {
+                    exibirPostDetalhado(todosPosts.at(vetorIdx), db);
+                } catch (const std::out_of_range&) {
+                    std::cout << "\n[ERRO] Post nao acessivel operacionalmente.\n";
+                }
             } else {
                 std::cout << "\n[ERRO] Indice invalido!\n";
             }
@@ -84,7 +89,7 @@ void Feed::exibirPostDetalhado(Post& post, Armazenamento& db) {
         std::cout << "\n////////////////Post//////////////////\n\n";
         Perfil* autorPost = db.getPerfil(post.getIdAutor());
         std::string nomeAutorPost = autorPost ? autorPost->getNome() : "Desconhecido";
-        
+
         std::cout << "@" << nomeAutorPost;
         if (post.getIdComunidade() != 0) {
             Comunidade* com = db.getComunidade(post.getIdComunidade());
@@ -94,10 +99,10 @@ void Feed::exibirPostDetalhado(Post& post, Armazenamento& db) {
         std::cout << "Curtidas: " << post.quantidadeDeCurtidas() << "\n\n";
 
         std::cout << "/////////////Comentarios//////////////\n\n";
-        
+
         auto& todosComentarios = db.getTodosComentariosMutavel();
         std::vector<Comentario*> comentariosDoPost;
-        
+
         for (auto& c : todosComentarios) {
             if (c.getIdPost() == post.getId()) {
                 comentariosDoPost.push_back(&c);
@@ -108,7 +113,7 @@ void Feed::exibirPostDetalhado(Post& post, Armazenamento& db) {
             std::cout << "Nenhum comentario nesta publicacao ainda.\n\n";
         } else {
             for (size_t i = 0; i < comentariosDoPost.size(); ++i) {
-                Comentario* c = comentariosDoPost[i];
+                Comentario* c = comentariosDoPost.at(i);
                 Perfil* autorCom = db.getPerfil(c->getIdAutor());
                 std::string nomeAutorCom = autorCom ? autorCom->getNome() : "Desconhecido";
                 std::cout << (i + 1) << " - @" << nomeAutorCom << "\n";
@@ -138,7 +143,7 @@ void Feed::exibirPostDetalhado(Post& post, Armazenamento& db) {
             if (!std::getline(std::cin, linhaIdx) || !lerInteiro(linhaIdx, comIdx)) break;
 
             if (comIdx >= 1 && comIdx <= static_cast<int>(comentariosDoPost.size())) {
-                comentariosDoPost[comIdx - 1]->curtir(db.getIdPerfilLogado());
+                comentariosDoPost.at(comIdx - 1)->curtir(db.getIdPerfilLogado());
             } else {
                 std::cout << "\n[ERRO] Comentario nao encontrado!\n";
             }
@@ -146,10 +151,12 @@ void Feed::exibirPostDetalhado(Post& post, Armazenamento& db) {
             std::cout << "Digite seu comentario: ";
             std::string textoComentario;
             std::getline(std::cin, textoComentario);
-            
-            if (!textoComentario.empty()) {
+
+            try {
                 db.criarComentarioGlobal(post.getId(), db.getIdPerfilLogado(), textoComentario);
                 std::cout << "\n[SUCESSO] Comentario adicionado!\n";
+            } catch (const std::invalid_argument& e) {
+                std::cout << "\n[ERRO] " << e.what() << "\n";
             }
         } else if (opcao == "D" || opcao == "d") {
             if (autorPost) {
@@ -187,5 +194,9 @@ void Feed::exibirPostDetalhado(Post& post, Armazenamento& db) {
 }
 
 void Feed::exibirPosts(const std::vector<Post>& posts) { (void)posts; }
+
 void Feed::exibirPerfis(const std::vector<Perfil>& perfis) { (void)perfis; }
-void Feed::exibirComunidades(const std::vector<Comunidade>& comunidades) { (void)comunidades; }
+
+void Feed::exibirComunidades(const std::vector<Comunidade>& comunidades) {
+    (void)comunidades;
+}

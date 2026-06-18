@@ -1,5 +1,6 @@
 #include "domain/armazenamento.hpp"
 #include <cctype>
+#include <stdexcept>
 
 Armazenamento::Armazenamento() : emailLogado(""), idPerfilLogado(0) {}
 
@@ -70,11 +71,45 @@ void Armazenamento::deslogar() { emailLogado = ""; idPerfilLogado = 0; }
 int Armazenamento::getIdPerfilLogado() const { return idPerfilLogado; }
 
 void Armazenamento::criarUsuarioEPerfil(std::string email, std::string senha, std::string nome) {
+    if (nome.empty()) {
+        throw std::invalid_argument("O nome de usuario nao pode ser vazio.");
+    }
+    if (senha.length() < 8) {
+        throw std::invalid_argument("A senha deve ter no minimo 8 caracteres.");
+    }
+    if (!emailUnico(email)) {
+        throw std::invalid_argument("Este email ja esta em uso.");
+    }
+    if (!nomeUsuarioUnico(nome)) {
+        throw std::invalid_argument("Este nome de usuario ja existe.");
+    }
+    if (email.find('@') == std::string::npos) {
+        throw std::invalid_argument("Formato de email invalido. Deve conter '@'.");
+    }
+
     usuarios.push_back(Usuario(email, senha, nome));
     perfis.push_back(Perfil(proxIdPerfil++, email, nome, "", "", "", 0));
 }
 
+void Armazenamento::criarPost(std::string texto, int idComunidade) {
+    if (texto.empty()) {
+        throw std::invalid_argument("O conteudo do post nao pode ser vazio.");
+    }
+    if (idPerfilLogado > 0) posts.push_back(Post(proxIdPost++, idPerfilLogado, idComunidade, texto));
+}
+
+void Armazenamento::criarComunidade(std::string nome, std::string descricao) {
+    if (nome.empty()) {
+        throw std::invalid_argument("O nome da comunidade nao pode ser vazio.");
+    }
+    if (idPerfilLogado > 0)
+        comunidades.push_back(Comunidade(proxIdComunidade++, nome, descricao, idPerfilLogado));
+}
+
 void Armazenamento::criarComentarioGlobal(int idPost, int idAutor, std::string texto) {
+    if (texto.empty()) {
+        throw std::invalid_argument("O conteudo do comentario nao pode ser vazio.");
+    }
     comentarios.push_back(Comentario(proxIdComentario++, idPost, idAutor, std::move(texto)));
 }
 
@@ -95,32 +130,16 @@ Comunidade* Armazenamento::getComunidade(int id) {
 
 std::vector<Post> Armazenamento::getPostsFeed() const {
     std::vector<Post> feed;
-
     for (const auto& p : posts) {
         if (p.getIdComunidade() == 0) {
             feed.push_back(p);
         }
     }
-
     return feed;
 }
 
-void Armazenamento::criarPost(std::string texto, int idComunidade) {
-    if (idPerfilLogado > 0) posts.push_back(Post(proxIdPost++, idPerfilLogado, idComunidade, texto));
-}
-
-void Armazenamento::criarComunidade(std::string nome, std::string descricao) {
-    if (idPerfilLogado > 0)
-        comunidades.push_back(Comunidade(proxIdComunidade++, nome, descricao, idPerfilLogado));
-}
-std::vector<Post>& Armazenamento::getTodosPostsMutavel() {
-    return posts;
-}
-
-std::vector<Comentario>& Armazenamento::getTodosComentariosMutavel() {
-    return comentarios;
-}
-
+std::vector<Post>& Armazenamento::getTodosPostsMutavel() { return posts; }
+std::vector<Comentario>& Armazenamento::getTodosComentariosMutavel() { return comentarios; }
 const std::vector<Perfil>& Armazenamento::getTodosPerfis() const { return perfis; }
 const std::vector<Comunidade>& Armazenamento::getTodasComunidades() const { return comunidades; }
 const std::vector<Post>& Armazenamento::getTodosPosts() const { return posts; }

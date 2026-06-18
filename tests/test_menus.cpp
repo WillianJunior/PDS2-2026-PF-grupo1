@@ -36,8 +36,8 @@ TEST_SUITE("Menus") {
     TEST_CASE("menuVisualizarPost sair direto") {
         Armazenamento db;
 
-        db.criarUsuarioEPerfil("a@a.com", "123456", "A");
-        db.fazerLogin("a@a.com", "123456");
+        db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
+        db.fazerLogin("a@a.com", "senha12345");
         db.criarPost("Teste", 0);
 
         auto& posts = db.getTodosPostsMutavel();
@@ -53,8 +53,8 @@ TEST_SUITE("Menus") {
     TEST_CASE("menuPerfil sair direto") {
         Armazenamento db;
 
-        db.criarUsuarioEPerfil("a@a.com", "123456", "A");
-        db.fazerLogin("a@a.com", "123456");
+        db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
+        db.fazerLogin("a@a.com", "senha12345");
 
         std::istringstream input("5\n5\n");
         auto* old = std::cin.rdbuf(input.rdbuf());
@@ -67,8 +67,8 @@ TEST_SUITE("Menus") {
     TEST_CASE("menuComunidade sair direto") {
         Armazenamento db;
 
-        db.criarUsuarioEPerfil("a@a.com", "123456", "A");
-        db.fazerLogin("a@a.com", "123456");
+        db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
+        db.fazerLogin("a@a.com", "senha12345");
 
         db.criarComunidade("Com", "Desc");
 
@@ -82,8 +82,8 @@ TEST_SUITE("Menus") {
     TEST_CASE("menuVisualizarPost curtir e descurtir") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("a@a.com", "123456", "A");
-    db.fazerLogin("a@a.com", "123456");
+    db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
+    db.fazerLogin("a@a.com", "senha12345");
     db.criarPost("Teste", 0);
 
     auto& posts = db.getTodosPostsMutavel();
@@ -99,8 +99,8 @@ TEST_SUITE("Menus") {
 TEST_CASE("menuVisualizarPost comentar") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("a@a.com", "123456", "A");
-    db.fazerLogin("a@a.com", "123456");
+    db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
+    db.fazerLogin("a@a.com", "senha12345");
     db.criarPost("Teste", 0);
 
     auto& posts = db.getTodosPostsMutavel();
@@ -116,8 +116,8 @@ TEST_CASE("menuVisualizarPost comentar") {
 TEST_CASE("menuVisualizarPost curtir comentario") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("a@a.com", "123456", "A");
-    db.fazerLogin("a@a.com", "123456");
+    db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
+    db.fazerLogin("a@a.com", "senha12345");
 
     db.criarPost("Teste", 0);
     db.criarComentarioGlobal(1, 1, "Comentario teste");
@@ -135,8 +135,8 @@ TEST_CASE("menuVisualizarPost curtir comentario") {
 TEST_CASE("menuVisualizarPost abrir perfil") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("a@a.com", "123456", "A");
-    db.fazerLogin("a@a.com", "123456");
+    db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
+    db.fazerLogin("a@a.com", "senha12345");
 
     db.criarPost("Teste", 0);
 
@@ -153,8 +153,8 @@ TEST_CASE("menuVisualizarPost abrir perfil") {
 TEST_CASE("menuComunidade criar post") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("a@a.com", "123456", "A");
-    db.fazerLogin("a@a.com", "123456");
+    db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
+    db.fazerLogin("a@a.com", "senha12345");
 
     db.criarComunidade("Com", "Desc");
 
@@ -169,8 +169,8 @@ TEST_CASE("menuComunidade criar post") {
 TEST_CASE("menuVisualizarPost erro sem comentarios") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("x@x.com", "123456", "X");
-    db.fazerLogin("x@x.com", "123456");
+    db.criarUsuarioEPerfil("x@x.com", "senha12345", "X");
+    db.fazerLogin("x@x.com", "senha12345");
     db.criarPost("Teste", 0);
 
     auto& posts = db.getTodosPostsMutavel();
@@ -199,8 +199,8 @@ TEST_CASE("menuVerPostsLista opcao invalida") {
 TEST_CASE("menuVerPostsLista selecionar e sair") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("x@x.com", "123456", "X");
-    db.fazerLogin("x@x.com", "123456");
+    db.criarUsuarioEPerfil("x@x.com", "senha12345", "X");
+    db.fazerLogin("x@x.com", "senha12345");
     db.criarPost("Teste", 0);
 
     auto lista = db.getTodosPosts();
@@ -216,8 +216,8 @@ TEST_CASE("menuVerPostsLista selecionar e sair") {
 TEST_CASE("menuComunidade abrir e sair simples") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("x@x.com", "123456", "X");
-    db.fazerLogin("x@x.com", "123456");
+    db.criarUsuarioEPerfil("x@x.com", "senha12345", "X");
+    db.fazerLogin("x@x.com", "senha12345");
     db.criarComunidade("Teste", "Desc");
 
     // 4 → sair direto
@@ -231,8 +231,8 @@ TEST_CASE("menuComunidade abrir e sair simples") {
 TEST_CASE("menuPerfil abrir e sair imediato") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("x@x.com", "123456", "X");
-    db.fazerLogin("x@x.com", "123456");
+    db.criarUsuarioEPerfil("x@x.com", "senha12345", "X");
+    db.fazerLogin("x@x.com", "senha12345");
 
     // 5 → sair
     std::istringstream input("5\n5\n");
@@ -258,8 +258,8 @@ TEST_CASE("menuVerPostsLista indice invalido erro") {
 TEST_CASE("menuVisualizarPost curtir uma vez e sair") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("a@a.com", "123456", "A");
-    db.fazerLogin("a@a.com", "123456");
+    db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
+    db.fazerLogin("a@a.com", "senha12345");
     db.criarPost("Teste", 0);
 
     auto& posts = db.getTodosPostsMutavel();
@@ -275,8 +275,8 @@ TEST_CASE("menuVisualizarPost curtir uma vez e sair") {
 TEST_CASE("menuVisualizarPost opcao invalida") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("a@a.com", "123456", "A");
-    db.fazerLogin("a@a.com", "123456");
+    db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
+    db.fazerLogin("a@a.com", "senha12345");
     db.criarPost("Teste", 0);
 
     auto& posts = db.getTodosPostsMutavel();
@@ -304,8 +304,8 @@ TEST_CASE("menuVerPostsLista vazio multiplas entradas") {
 TEST_CASE("menuVerPostsLista selecionar valido rapido") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("x@x.com", "123456", "X");
-    db.fazerLogin("x@x.com", "123456");
+    db.criarUsuarioEPerfil("x@x.com", "senha12345", "X");
+    db.fazerLogin("x@x.com", "senha12345");
     db.criarPost("Teste", 0);
 
     auto lista = db.getTodosPosts();
@@ -320,8 +320,8 @@ TEST_CASE("menuVerPostsLista selecionar valido rapido") {
 TEST_CASE("menuComunidade abrir sem interacao") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("x@x.com", "123456", "X");
-    db.fazerLogin("x@x.com", "123456");
+    db.criarUsuarioEPerfil("x@x.com", "senha12345", "X");
+    db.fazerLogin("x@x.com", "senha12345");
     db.criarComunidade("Teste", "Desc");
 
     std::istringstream input("4\n");
@@ -334,8 +334,8 @@ TEST_CASE("menuComunidade abrir sem interacao") {
 TEST_CASE("menuPerfil opcao invalida") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("x@x.com", "123456", "X");
-    db.fazerLogin("x@x.com", "123456");
+    db.criarUsuarioEPerfil("x@x.com", "senha12345", "X");
+    db.fazerLogin("x@x.com", "senha12345");
 
     std::istringstream input("99\n5\n5\n");
     auto* old = std::cin.rdbuf(input.rdbuf());
@@ -347,8 +347,8 @@ TEST_CASE("menuPerfil opcao invalida") {
 TEST_CASE("menuVisualizarPost comentario vazio ignorado") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("a@a.com", "123456", "A");
-    db.fazerLogin("a@a.com", "123456");
+    db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
+    db.fazerLogin("a@a.com", "senha12345");
     db.criarPost("Teste", 0);
 
     auto& posts = db.getTodosPostsMutavel();
@@ -364,8 +364,8 @@ TEST_CASE("menuVisualizarPost comentario vazio ignorado") {
 TEST_CASE("menuVisualizarPost abrir comunidade inexistente") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("a@a.com", "123456", "A");
-    db.fazerLogin("a@a.com", "123456");
+    db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
+    db.fazerLogin("a@a.com", "senha12345");
 
     db.criarPost("Teste", 0); // sem comunidade
 
@@ -395,8 +395,8 @@ TEST_CASE("menuVerPostsLista letra aleatoria") {
 TEST_CASE("menuVerPostsLista selecionar e cancelar") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("b@b.com", "123456", "B");
-    db.fazerLogin("b@b.com", "123456");
+    db.criarUsuarioEPerfil("b@b.com", "senha12345", "B");
+    db.fazerLogin("b@b.com", "senha12345");
     db.criarPost("Teste", 0);
 
     auto lista = db.getTodosPosts();
@@ -433,8 +433,8 @@ TEST_CASE("menuPerfil id invalido") {
 TEST_CASE("menuVisualizarPost curtir comentario rapido") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("c@c.com", "123456", "C");
-    db.fazerLogin("c@c.com", "123456");
+    db.criarUsuarioEPerfil("c@c.com", "senha12345", "C");
+    db.fazerLogin("c@c.com", "senha12345");
 
     db.criarPost("Teste", 0);
     db.criarComentarioGlobal(1, 1, "Oi");
@@ -452,8 +452,8 @@ TEST_CASE("menuVisualizarPost curtir comentario rapido") {
 TEST_CASE("menuVisualizarPost comentario simples") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("d@d.com", "123456", "D");
-    db.fazerLogin("d@d.com", "123456");
+    db.criarUsuarioEPerfil("d@d.com", "senha12345", "D");
+    db.fazerLogin("d@d.com", "senha12345");
 
     db.criarPost("Teste", 0);
 
@@ -482,8 +482,8 @@ TEST_CASE("menuVerPostsLista cancelar direto") {
 TEST_CASE("menuVisualizarPost sair direto sem interacao") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("f@f.com", "123456", "F");
-    db.fazerLogin("f@f.com", "123456");
+    db.criarUsuarioEPerfil("f@f.com", "senha12345", "F");
+    db.fazerLogin("f@f.com", "senha12345");
 
     db.criarPost("Teste", 0);
 
@@ -499,8 +499,8 @@ TEST_CASE("menuVisualizarPost sair direto sem interacao") {
 TEST_CASE("menuPerfil invalido e sair") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("g@g.com", "123456", "G");
-    db.fazerLogin("g@g.com", "123456");
+    db.criarUsuarioEPerfil("g@g.com", "senha12345", "G");
+    db.fazerLogin("g@g.com", "senha12345");
 
     std::istringstream input("0\n5\n");
     auto* old = std::cin.rdbuf(input.rdbuf());

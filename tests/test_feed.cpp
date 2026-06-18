@@ -27,8 +27,8 @@ TEST_SUITE("Feed Interativo") {
 
     TEST_CASE("Navegacao Completa e Inputs Invalidos Feed") {
         Armazenamento db;
-        db.criarUsuarioEPerfil("a@b.c", "123456", "UserA");
-        db.fazerLogin("a@b.c", "123456");
+        db.criarUsuarioEPerfil("a@b.c", "senha12345", "UserA");
+        db.fazerLogin("a@b.c", "senha12345");
         db.criarPost("Geral Post", 0);
         db.criarComunidade("Comum", "Desc");
         db.criarPost("Comum Post", 1);

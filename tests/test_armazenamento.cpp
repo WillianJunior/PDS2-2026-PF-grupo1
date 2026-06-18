@@ -73,7 +73,7 @@ TEST_SUITE("Armazenamento") {
 
     TEST_CASE("Carregar e Salvar Dados (I/O Simulado)") {
         Armazenamento db;
-        db.criarUsuarioEPerfil("a@b.c", "123", "A");
+        db.criarUsuarioEPerfil("a@b.c", "senha12345", "A");
         db.salvarDados(); 
         db.carregarDados(); 
         CHECK(db.getTodosPerfis().size() >= 1);
@@ -95,7 +95,7 @@ TEST_SUITE("Armazenamento") {
 TEST_CASE("Salvar e carregar novamente") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("x@x.com", "123456", "X");
+    db.criarUsuarioEPerfil("x@x.com", "senha12345", "X");
     db.salvarDados();
     db.carregarDados();
 
