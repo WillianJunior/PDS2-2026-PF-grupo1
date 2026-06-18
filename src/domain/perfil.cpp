@@ -39,6 +39,18 @@ void Perfil::deixarDeSeguir(int idPerfil) {
         idsSeguidos.erase(it);
 }
 
+void Perfil::adicionarSeguidor(int idPerfil) {
+    if (std::find(idsSeguidores.begin(), idsSeguidores.end(), idPerfil) == idsSeguidores.end()) {
+        idsSeguidores.push_back(idPerfil);
+    }
+}
+
+void Perfil::removerSeguidor(int idPerfil) {
+    auto it = std::find(idsSeguidores.begin(), idsSeguidores.end(), idPerfil);
+    if (it != idsSeguidores.end())
+        idsSeguidores.erase(it);
+}
+
 void Perfil::sairComunidade(int idComunidade) {
     auto it = std::find(idsComunidadesQueFazParte.begin(),
                         idsComunidadesQueFazParte.end(),

@@ -36,6 +36,16 @@ TEST_SUITE("Perfil") {
         CHECK(p.getIdsComunidades().size() == 2);
     }
 
+    TEST_CASE("adicionarSeguidor e removerSeguidor") {
+        Perfil p("Curso", "Inst", 1);
+        p.adicionarSeguidor(2);
+        p.adicionarSeguidor(2);
+        CHECK(p.getIdsSeguidores().size() == 1);
+        p.removerSeguidor(2);
+        CHECK(p.getIdsSeguidores().size() == 0);
+        CHECK_NOTHROW(p.removerSeguidor(99));
+    }
+
     TEST_CASE("seguir e deixarDeSeguir") {
         Perfil p("Curso", "Inst", 1);
         p.seguir(2);

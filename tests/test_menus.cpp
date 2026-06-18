@@ -64,6 +64,29 @@ TEST_SUITE("Menus") {
         std::cin.rdbuf(old);
     }
 
+    TEST_CASE("menuPerfil seguir e deixar de seguir") {
+        Armazenamento db;
+
+        db.criarUsuarioEPerfil("a@a.com", "senha12345", "UserA");
+        db.criarUsuarioEPerfil("b@b.com", "senha12345", "UserB");
+        db.fazerLogin("a@a.com", "senha12345");
+
+        Perfil* userB = db.getPerfil(2);
+        REQUIRE(userB != nullptr);
+
+        std::istringstream input("2\n2\n3\n");
+        auto* old = std::cin.rdbuf(input.rdbuf());
+
+        CHECK_NOTHROW(menuPerfil(userB->getId(), db));
+
+        std::cin.rdbuf(old);
+
+        Perfil* userA = db.getPerfil(1);
+        REQUIRE(userA != nullptr);
+        CHECK(userA->getIdsSeguidos().size() == 0);
+        CHECK(userB->getIdsSeguidores().size() == 0);
+    }
+
     TEST_CASE("menuComunidade sair direto") {
         Armazenamento db;
 

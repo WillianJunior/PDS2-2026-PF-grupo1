@@ -35,7 +35,31 @@ void exibirResumoPerfil(const Perfil& alvo) {
     std::cout << "Periodo: " << alvo.getPeriodo() << " Semestre\n";
     std::cout << "Biografia: "
               << (alvo.getDescricao().empty() ? "(nao informado)" : alvo.getDescricao()) << "\n";
+    std::cout << "Seguidores: " << alvo.getIdsSeguidores().size() << "\n";
+    std::cout << "Seguindo: " << alvo.getIdsSeguidos().size() << "\n";
     std::cout << "====================================\n\n";
+}
+
+bool perfilSegue(const Perfil& seguidor, int idAlvo) {
+    const auto& ids = seguidor.getIdsSeguidos();
+    return std::find(ids.begin(), ids.end(), idAlvo) != ids.end();
+}
+
+void alternarSeguir(Perfil& eu, Perfil& alvo) {
+    if (eu.getId() == alvo.getId()) {
+        std::cout << "\n[ERRO] Voce nao pode seguir a si mesmo.\n";
+        return;
+    }
+
+    if (perfilSegue(eu, alvo.getId())) {
+        eu.deixarDeSeguir(alvo.getId());
+        alvo.removerSeguidor(eu.getId());
+        std::cout << "\n[SUCESSO] Voce deixou de seguir @" << alvo.getNome() << ".\n";
+    } else {
+        eu.seguir(alvo.getId());
+        alvo.adicionarSeguidor(eu.getId());
+        std::cout << "\n[SUCESSO] Voce agora segue @" << alvo.getNome() << ".\n";
+    }
 }
 
 void menuEditarPerfil(Perfil& alvo) {
@@ -438,7 +462,13 @@ void menuPerfil(int idAlvo, Armazenamento& db) {
             std::cout << "2 - Editar Perfil\n";
             std::cout << "5 - Voltar\n\n";
         } else {
+            Perfil* eu = db.getPerfil(db.getIdPerfilLogado());
             std::cout << "1 - Ver Posts\n";
+            if (eu && perfilSegue(*eu, idAlvo)) {
+                std::cout << "2 - Deixar de Seguir\n";
+            } else {
+                std::cout << "2 - Seguir\n";
+            }
             std::cout << "3 - Voltar\n\n";
         }
 
@@ -466,6 +496,13 @@ void menuPerfil(int idAlvo, Armazenamento& db) {
         } else {
             if (opcao == 1) {
                 menuVerPostsLista(postsDoUsuario, db);
+            } else if (opcao == 2) {
+                Perfil* eu = db.getPerfil(db.getIdPerfilLogado());
+                if (!eu) {
+                    std::cout << "\n[ERRO] Perfil logado nao encontrado.\n";
+                } else {
+                    alternarSeguir(*eu, *alvo);
+                }
             } else if (opcao == 3) {
                 break;
             } else {

@@ -32,6 +32,8 @@ public:
 
     void seguir(int idPerfil);
     void deixarDeSeguir(int idPerfil);
+    void adicionarSeguidor(int idPerfil);
+    void removerSeguidor(int idPerfil);
     void entrarComunidade(int idComunidade);
     void sairComunidade(int idComunidade);
 
