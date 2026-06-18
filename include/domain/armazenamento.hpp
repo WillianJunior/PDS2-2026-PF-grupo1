@@ -120,7 +120,7 @@ public:
     Comunidade* getComunidade(int id);
     const Comunidade* getComunidade(int id) const;
 
-    const std::vector<Post>& getPostsFeed() const;
+   std::vector<Post> getPostsFeed() const;
     /** @} */
 
     /**
