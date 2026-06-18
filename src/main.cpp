@@ -47,11 +47,23 @@ bool lerOpcaoNumerica(int& valor, bool modoAutomatico) {
     return true;
 }
 
-}  // namespace
+class RestaurarEntradaCin {
+public:
+    explicit RestaurarEntradaCin(std::streambuf* original) : original_(original) {}
+    ~RestaurarEntradaCin() { std::cin.rdbuf(original_); }
+
+    RestaurarEntradaCin(const RestaurarEntradaCin&) = delete;
+    RestaurarEntradaCin& operator=(const RestaurarEntradaCin&) = delete;
+
+private:
+    std::streambuf* original_;
+};
+
+} 
 
 int main(int argc, char* argv[]) {
     std::ifstream arquivoEntrada;
-    std::streambuf* entradaPadrao = nullptr;
+    std::streambuf* const entradaOriginal = std::cin.rdbuf();
     const bool modoAutomatico = argc > 1;
 
     if (modoAutomatico) {
@@ -62,9 +74,11 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
-        entradaPadrao = std::cin.rdbuf(arquivoEntrada.rdbuf());
+        std::cin.rdbuf(arquivoEntrada.rdbuf());
         std::cout << "[demo] Lendo comandos de: " << argv[1] << "\n\n";
     }
+
+    RestaurarEntradaCin restaurarEntrada{entradaOriginal};
 
     Armazenamento db;
     Busca busca;
@@ -304,10 +318,6 @@ int main(int argc, char* argv[]) {
         }
 
         db.salvarDados();
-    }
-
-    if (entradaPadrao != nullptr) {
-        std::cin.rdbuf(entradaPadrao);
     }
 
     return 0;

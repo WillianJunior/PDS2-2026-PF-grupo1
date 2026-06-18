@@ -137,22 +137,23 @@ void menuVisualizarPost(Post& post, Armazenamento& db) {
 
         std::cout << "/////////////Comentarios//////////////\n\n";
 
-        const auto& todosComentarios = db.getTodosComentariosMutavel();
-        std::vector<Comentario> coms;
+        auto& todosComentarios = db.getTodosComentariosMutavel();
+        std::vector<Comentario*> coms;
 
-        for (const auto& c : todosComentarios) {
-            if (c.getIdPost() == post.getId()) coms.push_back(c);
+        for (auto& c : todosComentarios) {
+            if (c.getIdPost() == post.getId()) coms.push_back(&c);
         }
 
         if (coms.empty()) {
             std::cout << "Nenhum comentario nesta publicacao ainda.\n\n";
         } else {
             for (size_t i = 0; i < coms.size(); ++i) {
-                Perfil* autorCom = db.getPerfil(coms[i].getIdAutor());
+                Comentario* c = coms[i];
+                Perfil* autorCom = db.getPerfil(c->getIdAutor());
                 std::string nomeCom = autorCom ? autorCom->getNome() : "Desconhecido";
                 std::cout << (i + 1) << " - @" << nomeCom << "\n";
-                std::cout << coms[i].getTexto() << "\n";
-                std::cout << "Curtidas: " << coms[i].quantidadeDeCurtidas() << "\n\n";
+                std::cout << c->getTexto() << "\n";
+                std::cout << "Curtidas: " << c->quantidadeDeCurtidas() << "\n\n";
             }
         }
 
@@ -175,7 +176,7 @@ void menuVisualizarPost(Post& post, Armazenamento& db) {
             std::string linhaIdx;
             if (!std::getline(std::cin, linhaIdx) || !lerInteiro(linhaIdx, idx)) break;
             if (idx >= 1 && idx <= static_cast<int>(coms.size())) {
-                coms.at(static_cast<size_t>(idx - 1)).curtir(db.getIdPerfilLogado());
+                coms.at(static_cast<size_t>(idx - 1))->curtir(db.getIdPerfilLogado());
             } else {
                 std::cout << "\n[ERRO] Indice invalido!\n";
             }
@@ -233,13 +234,7 @@ void menuVerPostsLista(const std::vector<Post>& postsList, Armazenamento& db) {
             std::string linhaIdx;
             if (!std::getline(std::cin, linhaIdx) || !lerInteiro(linhaIdx, idx)) break;
             if (idx >= 1 && idx <= static_cast<int>(postsList.size())) {
-                Post* postReal = nullptr;
-                for (auto& p : db.getTodosPostsMutavel()) {
-                    if (p.getId() == postsList[static_cast<size_t>(idx - 1)].getId()) {
-                        postReal = &p;
-                        break;
-                    }
-                }
+                Post* postReal = db.getPostMutavel(postsList[static_cast<size_t>(idx - 1)].getId());
                 if (postReal) menuVisualizarPost(*postReal, db);
             } else {
                 std::cout << "\n[ERRO] Indice invalido!\n";

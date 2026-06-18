@@ -130,17 +130,48 @@ void Armazenamento::criarComentarioGlobal(int idPost, int idAutor, std::string t
 }
 
 Perfil* Armazenamento::getPerfil(int id) {
-    for (auto& p : perfis) if (p.getId() == id) return &p;
+    return const_cast<Perfil*>(static_cast<const Armazenamento*>(this)->getPerfil(id));
+}
+
+const Perfil* Armazenamento::getPerfil(int id) const {
+    for (const auto& p : perfis) {
+        if (p.getId() == id) return &p;
+    }
     return nullptr;
 }
 
 Usuario* Armazenamento::getUsuario(const std::string& email) {
-    for (auto& u : usuarios) if (u.getEmail() == email) return &u;
+    return const_cast<Usuario*>(
+        static_cast<const Armazenamento*>(this)->getUsuario(email));
+}
+
+const Usuario* Armazenamento::getUsuario(const std::string& email) const {
+    for (const auto& u : usuarios) {
+        if (u.getEmail() == email) return &u;
+    }
     return nullptr;
 }
 
 Comunidade* Armazenamento::getComunidade(int id) {
-    for (auto& c : comunidades) if (c.getId() == id) return &c;
+    return const_cast<Comunidade*>(
+        static_cast<const Armazenamento*>(this)->getComunidade(id));
+}
+
+const Comunidade* Armazenamento::getComunidade(int id) const {
+    for (const auto& c : comunidades) {
+        if (c.getId() == id) return &c;
+    }
+    return nullptr;
+}
+
+Post* Armazenamento::getPostMutavel(int id) {
+    return const_cast<Post*>(getPost(id));
+}
+
+const Post* Armazenamento::getPost(int id) const {
+    for (const auto& p : posts) {
+        if (p.getId() == id) return &p;
+    }
     return nullptr;
 }
 
