@@ -1,0 +1,44 @@
+[
+  {
+    "nome": "João",
+    "emails": [
+      "joao.sirge@gmail.com",
+      "joaosirge@ufmg.br"
+    ]
+  },
+  {
+    "nome": "Maria Agostini",
+    "emails": [
+      "mariaclaraagfe@gmail.com",
+      "mariagostini@ufmg.br"
+    ]
+  },
+  {
+    "nome": "Lucas Grama",
+    "emails": [
+      "lucasggrama@protonmail.com",
+      "lucasggrama@ufmg.br",
+      "lucas@debian",
+      "106435098+lucasggrama@users.noreply.github.com"
+    ]
+  },
+  {
+    "nome": "Milena",
+    "emails": [
+      "milenaflaviacs@gmail.com",
+      "163079509+milena-santos@users.noreply.github.com"
+    ]
+  },
+  {
+    "nome": "Luana",
+    "emails": [
+      "lulu.assis10@gmail.com"
+    ]
+  },
+  {
+    "nome": "Willian",
+    "emails": [
+      "guns945@gmail.com"
+    ]
+  }
+]

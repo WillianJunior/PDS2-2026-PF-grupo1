@@ -4,13 +4,15 @@ CMAKE_ARGS := -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
 JOBS ?= 4
 APP_EXTENSION :=
 APP_PATH := $(BUILD_DIR)/bin/edu_social_backend$(APP_EXTENSION)
+COMMITS_BIN := $(BUILD_DIR)/bin/count_commits_alunos$(APP_EXTENSION)
 
 ifeq ($(OS),Windows_NT)
 APP_EXTENSION := .exe
 APP_PATH := $(BUILD_DIR)/bin/edu_social_backend$(APP_EXTENSION)
+COMMITS_BIN := $(BUILD_DIR)/bin/count_commits_alunos$(APP_EXTENSION)
 endif
 
-.PHONY: all configure build run test docs clean help
+.PHONY: all configure build run test docs clean help commits commits-alunos build-commits
 
 all: build
 
@@ -38,6 +40,32 @@ clean:
 	@echo "[clean] Removendo diretório de build..."
 	@cmake -E remove_directory $(BUILD_DIR)
 
+# Permite: make commits alunos
+ifneq (,$(filter commits,$(MAKECMDGOALS)))
+  COMMITS_MODE := $(filter-out commits,$(MAKECMDGOALS))
+  $(COMMITS_MODE):
+	@:
+endif
+
+build-commits: configure
+	@echo "[commits] Compilando contador de commits..."
+	@cmake --build $(BUILD_DIR) --config $(BUILD_TYPE) --target count_commits_alunos
+
+commits:
+ifeq ($(COMMITS_MODE),alunos)
+	@$(MAKE) build-commits
+	@$(COMMITS_BIN)
+else ifeq ($(COMMITS_MODE),)
+	@echo "[commits] Uso: make commits alunos"
+else
+	@echo "[commits] Modo desconhecido: $(COMMITS_MODE)"
+	@echo "[commits] Uso: make commits alunos"
+	@exit 1
+endif
+
+commits-alunos: build-commits
+	@$(COMMITS_BIN)
+
 help:
 	@echo
 	@echo "Uso: make [alvo] [VARIAVEL=valor]"
@@ -50,7 +78,9 @@ help:
 	@echo "  test       Executa os testes"
 	@echo "  docs       Gera documentação"
 	@echo "  clean      Remove o diretório build"
+	@echo "  commits    Contagem de commits (use: make commits alunos)"
 	@echo
 	@echo "Exemplos:"
 	@echo "  make build BUILD_TYPE=Release"
 	@echo "  make test JOBS=2"
+	@echo "  make commits alunos"

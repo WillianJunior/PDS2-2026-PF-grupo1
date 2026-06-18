@@ -107,6 +107,30 @@ foreach(CONFIG_TYPE Debug Release RelWithDebInfo MinSizeRel)
     )
 endforeach()
 
+add_executable(count_commits_alunos scripts/count_commits_alunos.cpp)
+
+if(MSVC)
+    target_compile_options(count_commits_alunos PRIVATE /W4 /permissive- /utf-8)
+else()
+    target_compile_options(count_commits_alunos PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+set_target_properties(
+    count_commits_alunos
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+)
+
+foreach(CONFIG_TYPE Debug Release RelWithDebInfo MinSizeRel)
+    string(TOUPPER ${CONFIG_TYPE} CONFIG_TYPE_UPPER)
+
+    set_target_properties(
+        count_commits_alunos
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY_${CONFIG_TYPE_UPPER} ${CMAKE_BINARY_DIR}/bin
+    )
+endforeach()
+
 if(TEST_SOURCES)
     add_executable(edu_social_tests ${TEST_SOURCES})
 
