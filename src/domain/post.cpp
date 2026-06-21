@@ -25,15 +25,6 @@ int Post::quantidadeDeCurtidas() const {
     return idsCurtidas.size();
 }
 
-void Post::adicionarComentario(const Comentario& c) {
-    comentariosTestes.push_back(c);
-}
-
-
-const std::vector<Comentario>& Post::listarComentarios() const {
-    return comentariosTestes;
-}
-
 int Post::getId() const {
     return id;
 }

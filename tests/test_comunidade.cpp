@@ -27,17 +27,6 @@ TEST_SUITE("Comunidade") {
         CHECK(c.getIdsMembros().size() == 2);
     }
 
-    TEST_CASE("Permissao para publicar e Posts Locais") {
-        Comunidade c("Teste", 1); 
-        c.adicionarMembro(2);     
-        CHECK(c.podePublicar(1) == true);
-        CHECK(c.podePublicar(2) == true);
-        CHECK(c.podePublicar(3) == false); 
-
-        CHECK(c.posts().empty());
-        CHECK(c.buscarPosts("algo").empty());
-    }
-
     TEST_CASE("exibirMembrosComunidade") {
         Comunidade c("Teste", 1);
         c.adicionarMembro(2);
@@ -74,19 +63,7 @@ TEST_CASE("setIdsMembros sobrescreve lista") {
     CHECK(c.getIdsMembros().size() == 3);
     CHECK(c.getIdsMembros()[0] == 7);
 }
-TEST_CASE("buscarPosts sem correspondencia") {
-    Comunidade c("Teste", 1);
 
-    auto resultado = c.buscarPosts("inexistente");
-
-    CHECK(resultado.empty());
-}
-TEST_CASE("posts permanece vazio") {
-    Comunidade c("Teste", 1);
-
-    CHECK(c.posts().size() == 0);
-    CHECK(c.posts().empty());
-}
 TEST_CASE("Adicionar e remover varios membros sequencialmente") {
     Comunidade c("Teste", 1);
 
@@ -122,13 +99,6 @@ TEST_CASE("podePublicar apos remover membro") {
     c.removerMembro(10);
 
     CHECK(c.podePublicar(10) == false);
-}
-TEST_CASE("buscarPosts string vazia") {
-    Comunidade c("Teste", 1);
-
-    auto resultado = c.buscarPosts("");
-
-    CHECK(resultado.empty());
 }
 TEST_CASE("administrador nao eh automaticamente membro") {
     Comunidade c("Teste", 1);

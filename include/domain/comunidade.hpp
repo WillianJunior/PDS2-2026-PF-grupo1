@@ -17,7 +17,6 @@ private:
     std::string descricao;
     int idAdministrador;
     std::vector<int> idsMembros;
-    std::vector<Post> postsTestes; // Armazena publicações locais exigidas pelos testes
 
 public:
     Comunidade(int id, std::string nome, std::string descricao, int idAdministrador);
@@ -28,17 +27,6 @@ public:
     void entrarComunidade(int idPerfil);
 
     bool podePublicar(int idPerfil) const;
-
-    /**
-     * @brief Retorna a lista de posts publicados localmente na comunidade (compatibilidade com testes).
-     */
-    const std::vector<Post>& posts() const;
-
-    /**
-     * @brief Busca posts internamente por palavra-chave (compatibilidade com testes).
-     */
-    std::vector<Post> buscarPosts(const std::string& termo) const; 
-    //  aqui pode manter cópia (porque é filtrado)
 
     void exibirMembrosComunidade() const;
 

@@ -17,7 +17,6 @@ private:
     int idComunidade; // 0 significa que é um post no feed geral
     std::string texto;
     std::vector<int> idsCurtidas;
-    std::vector<Comentario> comentariosTestes; // Armazena comentários locais exigidos pelos testes
 
 public:
     Post(int id, int idAutor, int idComunidade, std::string texto);
@@ -26,7 +25,6 @@ public:
     void curtir(int idUsuario);
     int quantidadeDeCurtidas() const;
 
-    void adicionarComentario(const Comentario& c);
 
     /**
      * Agora retorna referência
