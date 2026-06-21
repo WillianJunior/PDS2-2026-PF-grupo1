@@ -4,6 +4,7 @@
 class ConsoleUtils {
 public:
     static void limparTela();
+    static void aguardarUsuario();
 };
 
 #endif

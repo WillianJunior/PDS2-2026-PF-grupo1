@@ -9,3 +9,8 @@ void ConsoleUtils::limparTela() {
         std::system("clear");
     #endif
 }
+
+void ConsoleUtils::aguardarUsuario() {
+    std::cout << "Pressione Enter para continuar...";
+    std::cin.get();
+}

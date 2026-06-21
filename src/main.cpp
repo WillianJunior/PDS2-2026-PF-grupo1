@@ -124,6 +124,7 @@ int main(int argc, char* argv[]) {
 
                     if (db.fazerLogin(email, senha)) {
                         std::cout << "\n[SUCESSO] Login realizado!\n";
+                        ConsoleUtils::aguardarUsuario();
                         break;
                     }
 
@@ -133,6 +134,7 @@ int main(int argc, char* argv[]) {
                     }
 
                     std::cout << "\n[ERRO] Email ou senha invalidos.\n";
+                    ConsoleUtils::aguardarUsuario();
                     std::cout << "1 - Tentar novamente / 2 - Voltar\nEscolha: ";
                     int sub;
                     if (!lerOpcaoNumerica(sub, modoAutomatico)) break;
@@ -180,6 +182,7 @@ int main(int argc, char* argv[]) {
                     try {
                         db.criarUsuarioEPerfil(email, senha, nome);
                         std::cout << "\n[SUCESSO] Conta criada!\n";
+                        ConsoleUtils::aguardarUsuario();
                         db.salvarDados();
                         break;
                     } catch (const std::invalid_argument& e) {
@@ -266,6 +269,7 @@ int main(int argc, char* argv[]) {
                     menuPerfil(db.getIdPerfilLogado(), db);
                 } else {
                     std::cout << "\n[ERRO] Perfil logado nao encontrado.\n";
+                    ConsoleUtils::aguardarUsuario();
                 }
             }
 
@@ -273,6 +277,7 @@ int main(int argc, char* argv[]) {
                 Usuario* usuario = db.getUsuario(db.getEmailLogado());
                 if (!usuario) {
                     std::cout << "\n[ERRO] Usuario logado nao encontrado.\n";
+                    ConsoleUtils::aguardarUsuario();
                     continue;
                 }
 
@@ -296,6 +301,7 @@ int main(int argc, char* argv[]) {
                         std::cout << "\n[ERRO] Senha invalida!\n";
                     } else if (usuario->alterarSenha(atual, nova)) {
                         std::cout << "\n[SUCESSO] Senha alterada!\n";
+                        ConsoleUtils::aguardarUsuario();
                     } else {
                         std::cout << "\n[ERRO] Senha atual incorreta.\n";
                     }
@@ -310,6 +316,7 @@ int main(int argc, char* argv[]) {
                         std::cout << "\n[ERRO] Email repetido!\n";
                     } else if (usuario->alterarEmail(atual, novoEmail)) {
                         std::cout << "\n[SUCESSO] Email alterado!\n";
+                        ConsoleUtils::aguardarUsuario();
                     } else {
                         std::cout << "\n[ERRO] Senha atual incorreta.\n";
                     }

@@ -23,9 +23,7 @@ bool lerInteiro(const std::string& linha, int& valor) {
         return false;
     }
 }
-
 void exibirResumoPerfil(const Perfil& alvo) {
-    ConsoleUtils::limparTela();
     std::cout << "\n====================================\n";
     std::cout << "         PERFIL DE @" << alvo.getNome() << "\n";
     std::cout << "====================================\n";
@@ -93,18 +91,21 @@ void menuEditarPerfil(Perfil& alvo) {
             if (!std::getline(std::cin, bio)) break;
             alvo.setDescricao(bio);
             std::cout << "\n[SUCESSO] Biografia atualizada!\n";
+            ConsoleUtils::aguardarUsuario();
         } else if (opcao == 2) {
             std::cout << "Novo curso: ";
             std::string curso;
             if (!std::getline(std::cin, curso)) break;
             alvo.setCurso(curso);
             std::cout << "\n[SUCESSO] Curso atualizado!\n";
+            ConsoleUtils::aguardarUsuario();
         } else if (opcao == 3) {
             std::cout << "Nova instituicao: ";
             std::string inst;
             if (!std::getline(std::cin, inst)) break;
             alvo.setInstituicao(inst);
             std::cout << "\n[SUCESSO] Instituicao atualizada!\n";
+            ConsoleUtils::aguardarUsuario();
         } else if (opcao == 4) {
             std::cout << "Novo periodo (semestre): ";
             std::string linhaPeriodo;
@@ -116,6 +117,7 @@ void menuEditarPerfil(Perfil& alvo) {
             }
             alvo.setPeriodo(periodo);
             std::cout << "\n[SUCESSO] Periodo atualizado!\n";
+            ConsoleUtils::aguardarUsuario();
         } else {
             std::cout << "\n[ERRO] Opcao invalida.\n";
         }
@@ -300,7 +302,7 @@ void menuComunidade(int idComunidade, Armazenamento& db) {
             continue;
         }
 
-        if (adminOuMembro) {
+        if (isMember) {
             if (opcao == 1) {
                 std::string txt;
                 std::cout << "Texto do post: ";
