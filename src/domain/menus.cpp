@@ -259,7 +259,6 @@ void menuComunidade(int idComunidade, Armazenamento& db) {
         const auto& membros = com->getIdsMembros();
         bool isMember =
             std::find(membros.begin(), membros.end(), db.getIdPerfilLogado()) != membros.end();
-        bool adminOuMembro = isMember || com->getIdAdministrador() == db.getIdPerfilLogado();
         ConsoleUtils::limparTela();
         std::cout << "\n///////////////////////////////////////\n";
         std::cout << "        COMUNIDADE: " << com->getNome() << "\n";
@@ -285,7 +284,7 @@ void menuComunidade(int idComunidade, Armazenamento& db) {
             std::cout << "\n";
         }
 
-        if (adminOuMembro) {
+        if (isMember) {
             std::cout << "1 - Criar Post\n2 - Ver Posts\n4 - Voltar\n\n";
         } else {
             std::cout << "1 - Entrar na Comunidade\n2 - Ver Posts\n3 - Voltar\n\n";
