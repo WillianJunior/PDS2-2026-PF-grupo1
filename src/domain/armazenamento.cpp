@@ -2,6 +2,7 @@
 #include <cctype>
 #include <filesystem>
 #include <stdexcept>
+#include <iostream>
 
 namespace {
 
@@ -118,8 +119,17 @@ void Armazenamento::criarComunidade(std::string nome, std::string descricao) {
     if (nome.empty()) {
         throw std::invalid_argument("O nome da comunidade nao pode ser vazio.");
     }
-    if (idPerfilLogado > 0)
-        comunidades.push_back(Comunidade(proxIdComunidade++, nome, descricao, idPerfilLogado));
+    if (idPerfilLogado > 0) {
+        Comunidade comunidade(proxIdComunidade++, nome, descricao, idPerfilLogado);
+        comunidades.push_back(comunidade);
+        Perfil* eu = getPerfil(idPerfilLogado);
+        comunidades.back().entrarComunidade(idPerfilLogado);
+        if (eu) {
+            eu->entrarComunidade(proxIdComunidade - 1);
+        } else {
+            throw std::runtime_error("Perfil logado nao encontrado ao criar comunidade.");
+        }
+    }
 }
 
 void Armazenamento::criarComentarioGlobal(int idPost, int idAutor, std::string texto) {
