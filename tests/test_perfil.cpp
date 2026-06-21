@@ -3,9 +3,8 @@
 
 TEST_SUITE("Perfil") {
     TEST_CASE("Construtores e Getters") {
-        Perfil p1(1, "email@uni.br", "Nome", "Desc", "Curso", "Inst", 5);
+        Perfil p1(1, "Nome", "Desc", "Curso", "Inst", 5);
         CHECK(p1.getId() == 1);
-        CHECK(p1.getEmailUsuario() == "email@uni.br");
         CHECK(p1.getNome() == "Nome");
         CHECK(p1.getDescricao() == "Desc");
         CHECK(p1.getCurso() == "Curso");

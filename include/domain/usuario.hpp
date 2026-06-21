@@ -6,12 +6,13 @@
 class Usuario
 {
  private:
+    int id;
     std::string email;
     std::string senha;
     std::string nomeDeUsuario;
 
  public:
-    Usuario(
+    Usuario(int id,
         std::string emailInicial,
         std::string senhaInicial,
         std::string nomeInicial);
@@ -24,6 +25,7 @@ class Usuario
         std::string senhaInformada) const;
 
     std::string getEmail() const;
+    int getId() const;
     std::string getNome() const;
     std::string getSenha() const;
 };

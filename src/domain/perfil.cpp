@@ -1,10 +1,9 @@
 #include "domain/perfil.hpp"
 #include <algorithm>
 
-Perfil::Perfil(int id, std::string emailUsuario, std::string nome, std::string descricao, 
+Perfil::Perfil(int id, std::string nome, std::string descricao, 
                std::string curso, std::string instituicao, int periodo)
     : id(id),
-      emailUsuario(std::move(emailUsuario)),
       nome(std::move(nome)),
       descricao(std::move(descricao)),
       curso(std::move(curso)),
@@ -13,7 +12,6 @@ Perfil::Perfil(int id, std::string emailUsuario, std::string nome, std::string d
 
 Perfil::Perfil(std::string curso, std::string instituicao, int periodo)
     : id(0),
-      emailUsuario(""),
       nome(""),
       descricao(""),
       curso(std::move(curso)),
@@ -69,10 +67,6 @@ const std::vector<int>& Perfil::listarIdSeguidos() const {
 }
 
 int Perfil::getId() const { return id; }
-
-const std::string& Perfil::getEmailUsuario() const {
-    return emailUsuario;
-}
 
 const std::string& Perfil::getNome() const {
     return nome;

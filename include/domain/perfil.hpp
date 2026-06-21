@@ -13,7 +13,6 @@
 class Perfil {
 private:
     int id;
-    std::string emailUsuario; 
     std::string nome;
     std::string descricao;
     std::string curso;
@@ -25,7 +24,7 @@ private:
     std::vector<int> idsComunidadesQueFazParte;
 
 public:
-    Perfil(int id, std::string emailUsuario, std::string nome, std::string descricao, 
+    Perfil(int id, std::string nome, std::string descricao, 
            std::string curso, std::string instituicao, int periodo);
 
     Perfil(std::string curso, std::string instituicao, int periodo);
@@ -44,7 +43,6 @@ public:
      * @name Getters
      */
     int getId() const;
-    const std::string& getEmailUsuario() const;
     const std::string& getNome() const;
     const std::string& getDescricao() const;
     const std::string& getCurso() const;

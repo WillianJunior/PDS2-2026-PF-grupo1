@@ -19,13 +19,13 @@ TEST_SUITE("GerenciadorCSV") {
     }
 
     TEST_CASE("Exportar e Importar CSV Fisico - Entidades Completas") {
-        std::vector<Usuario> usrs = { Usuario("a@a.com", "senha", "UserA") };
+        std::vector<Usuario> usrs = { Usuario(1,"a@a.com", "senha", "UserA") };
         GerenciadorCSV::salvarUsuarios(usrs, "test_usrs.csv");
         auto uLido = GerenciadorCSV::carregarUsuarios("test_usrs.csv");
         CHECK(uLido.size() == 1);
         CHECK(uLido[0].getEmail() == "a@a.com");
 
-        Perfil p(1, "a", "b", "c", "d", "e", 2);
+        Perfil p(1, "a", "b", "c", "d", 2);
         p.setIdsSeguidores({1}); p.setIdsSeguidos({2}); p.setIdsComunidades({3});
         GerenciadorCSV::salvarPerfis({p}, "test_perfis.csv");
         auto pLido = GerenciadorCSV::carregarPerfis("test_perfis.csv");

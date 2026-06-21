@@ -74,7 +74,7 @@ bool Armazenamento::fazerLogin(const std::string& email, const std::string& senh
         if (u.fazerLogin(email, senha)) {
             emailLogado = email;
             for (const auto& p : perfis) {
-                if (p.getEmailUsuario() == email) {
+                if (p.getId() == u.getId()) {
                     idPerfilLogado = p.getId();
                     return true;
                 }
@@ -103,9 +103,9 @@ void Armazenamento::criarUsuarioEPerfil(std::string email, std::string senha, st
     if (email.find('@') == std::string::npos) {
         throw std::invalid_argument("Formato de email invalido. Deve conter '@'.");
     }
-
-    usuarios.push_back(Usuario(email, senha, nome));
-    perfis.push_back(Perfil(proxIdPerfil++, email, nome, "", "", "", 0));
+    int idNovo = proxIdPerfil++;
+    usuarios.push_back(Usuario(idNovo, email, senha, nome));
+    perfis.push_back(Perfil(idNovo, nome, "", "", "", 0));
 }
 
 void Armazenamento::criarPost(std::string texto, int idComunidade) {

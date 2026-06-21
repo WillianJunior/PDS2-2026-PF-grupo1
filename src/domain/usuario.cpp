@@ -3,11 +3,13 @@
 #include <utility>
 
 Usuario::Usuario(
+    int id,
     std::string emailInicial,
     std::string senhaInicial,
     std::string nomeInicial
 )
-    : email(std::move(emailInicial)),
+    : id(id),
+      email(std::move(emailInicial)),
       senha(std::move(senhaInicial)),
       nomeDeUsuario(std::move(nomeInicial))
 {
@@ -44,6 +46,11 @@ bool Usuario::fazerLogin(
 std::string Usuario::getEmail() const
 {
     return email;
+}
+
+int Usuario::getId() const
+{
+    return id;
 }
 
 std::string Usuario::getNome() const

@@ -35,9 +35,9 @@ std::string GerenciadorCSV::juntarInteiros(const std::vector<int>& lista, char d
 
 void GerenciadorCSV::salvarUsuarios(const std::vector<Usuario>& usuarios, const std::string& nomeArquivo) {
     std::ofstream arquivo(nomeArquivo);
-    arquivo << "email,senha,nome\n";
+    arquivo << "id,email,senha,nome\n";
     for (const auto& u : usuarios) {
-        arquivo << u.getEmail() << "," << u.getSenha() << "," << u.getNome() << "\n";
+        arquivo << u.getId() << "," << u.getEmail() << "," << u.getSenha() << "," << u.getNome() << "\n";
     }
 }
 
@@ -48,7 +48,7 @@ std::vector<Usuario> GerenciadorCSV::carregarUsuarios(const std::string& nomeArq
     if (std::getline(arquivo, linha)) { 
         while (std::getline(arquivo, linha)) {
             auto dados = separarString(linha, ',');
-            if (dados.size() >= 3) lista.push_back(Usuario(dados[0], dados[1], dados[2]));
+            if (dados.size() >= 4) lista.push_back(Usuario(std::stoi(dados[0]), dados[1], dados[2], dados[3]));
         }
     }
     return lista;
@@ -56,9 +56,9 @@ std::vector<Usuario> GerenciadorCSV::carregarUsuarios(const std::string& nomeArq
 
 void GerenciadorCSV::salvarPerfis(const std::vector<Perfil>& perfis, const std::string& nomeArquivo) {
     std::ofstream arquivo(nomeArquivo);
-    arquivo << "id,email,nome,descricao,curso,instituicao,periodo,seguidores,seguidos,comunidades\n";
+    arquivo << "id,nome,descricao,curso,instituicao,periodo,seguidores,seguidos,comunidades\n";
     for (const auto& p : perfis) {
-        arquivo << p.getId() << "," << p.getEmailUsuario() << "," << p.getNome() << ","
+        arquivo << p.getId() << "," << p.getNome() << ","
                 << p.getDescricao() << "," << p.getCurso() << "," << p.getInstituicao() << ","
                 << p.getPeriodo() << "," << juntarInteiros(p.getIdsSeguidores(), '|') << ","
                 << juntarInteiros(p.getIdsSeguidos(), '|') << "," << juntarInteiros(p.getIdsComunidades(), '|') << "\n";
@@ -74,7 +74,7 @@ std::vector<Perfil> GerenciadorCSV::carregarPerfis(const std::string& nomeArquiv
             auto dados = separarString(linha, ',');
             if (dados.size() >= 7) { 
                 try {
-                    Perfil p(std::stoi(dados[0]), dados[1], dados[2], dados[3], dados[4], dados[5], std::stoi(dados[6]));
+                    Perfil p(std::stoi(dados[0]), dados[1], dados[2], dados[3], dados[4], std::stoi(dados[5]));
                     if(dados.size() > 7) p.setIdsSeguidores(separarInteiros(dados[7], '|'));
                     if(dados.size() > 8) p.setIdsSeguidos(separarInteiros(dados[8], '|'));
                     if(dados.size() > 9) p.setIdsComunidades(separarInteiros(dados[9], '|'));
