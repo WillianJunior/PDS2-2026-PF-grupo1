@@ -72,18 +72,18 @@ bool Armazenamento::nomeUsuarioUnico(const std::string& nome) {
 bool Armazenamento::fazerLogin(const std::string& email, const std::string& senha) {
     for (const auto& u : usuarios) {
         if (u.fazerLogin(email, senha)) {
-            emailLogado = email;
             for (const auto& p : perfis) {
                 if (p.getId() == u.getId()) {
+                    emailLogado = email;
                     idPerfilLogado = p.getId();
                     return true;
                 }
             }
+            return false;
         }
     }
     return false;
 }
-
 void Armazenamento::deslogar() { emailLogado = ""; idPerfilLogado = 0; }
 int Armazenamento::getIdPerfilLogado() const { return idPerfilLogado; }
 
