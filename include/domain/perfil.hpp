@@ -37,7 +37,6 @@ public:
     void entrarComunidade(int idComunidade);
     void sairComunidade(int idComunidade);
 
-    // ✅ pode manter para compatibilidade
     const std::vector<int>& listarIdSeguidores() const;
     const std::vector<int>& listarIdSeguidos() const;
 

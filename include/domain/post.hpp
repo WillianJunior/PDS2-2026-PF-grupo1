@@ -29,7 +29,7 @@ public:
     void adicionarComentario(const Comentario& c);
 
     /**
-     * ✅ Agora retorna referência
+     * Agora retorna referência
      */
     const std::vector<Comentario>& listarComentarios() const;
 
