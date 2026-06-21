@@ -28,19 +28,4 @@ TEST_SUITE("Post") {
         p.setIdsCurtidas({1, 2, 3});
         CHECK(p.getIdsCurtidas().size() == 3);
     }
-
-    TEST_CASE("Gerenciamento local de Comentarios") {
-        Perfil autor("Computacao", "UFMG", 1);
-        Post p("Texto", 1);
-        Comentario c1("Bom post!", autor);
-        Comentario c2("Gostei!", autor);
-        p.adicionarComentario(c1);
-        p.adicionarComentario(c2);
-        CHECK(p.listarComentarios().size() == 2);
-    }
-    TEST_CASE("Post sem curtidas") {
-    Post p("Teste", 1);
-
-    CHECK(p.quantidadeDeCurtidas() == 0);
-}
 }

@@ -27,20 +27,6 @@ bool Comunidade::podePublicar(int idPerfil) const {
            std::find(idsMembros.begin(), idsMembros.end(), idPerfil) != idsMembros.end();
 }
 
-const std::vector<Post>& Comunidade::posts() const {
-    return postsTestes;
-}
-
-std::vector<Post> Comunidade::buscarPosts(const std::string& termo) const {
-    std::vector<Post> filtrados;
-    for (const auto& p : postsTestes) {
-        if (p.getConteudo().find(termo) != std::string::npos) {
-            filtrados.push_back(p);
-        }
-    }
-    return filtrados;
-}
-
 void Comunidade::exibirMembrosComunidade() const {}
 
 int Comunidade::getId() const { return id; }
