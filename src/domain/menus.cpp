@@ -277,8 +277,10 @@ void menuComunidade(int idComunidade, Armazenamento& db) {
         if (postsDaComunidade.empty()) {
             std::cout << "Nenhum post.\n\n";
         } else {
+            auto it = postsDaComunidade.rbegin();
             for (size_t i = 0; i < std::min<size_t>(3, postsDaComunidade.size()); ++i) {
-                std::cout << "-> " << postsDaComunidade[i].getConteudo() << "\n";
+                std::cout << "-> " << it->getConteudo() << "\n";
+                ++it;
             }
             std::cout << "\n";
         }
