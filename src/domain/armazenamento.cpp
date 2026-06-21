@@ -36,7 +36,9 @@ void Armazenamento::criarPerfil(const Perfil& p) { perfis.push_back(p); }
 const std::vector<Comunidade>& Armazenamento::listarComunidade() const { return comunidades; }
 void Armazenamento::criarComunidade(const Comunidade& c) { comunidades.push_back(c); }
 
-void Armazenamento::mensagemSucessoErro() const {}
+void Armazenamento::mensagemSucessoErro() const {
+    std::cout << "Operacao realizada." << std::endl;
+}
 
 void Armazenamento::carregarDados() {
     usuarios = GerenciadorCSV::carregarUsuarios(caminhoCsv("usuarios.csv"));
