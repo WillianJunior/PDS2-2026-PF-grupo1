@@ -130,7 +130,6 @@ void menuEditarPerfil(Perfil& alvo) {
 }
 
 }  // namespace
-
 void menuVisualizarPost(Post& post, Armazenamento& db) {
     std::string mensagem;
     while (true) {
@@ -162,13 +161,16 @@ void menuVisualizarPost(Post& post, Armazenamento& db) {
         if (coms.empty()) {
             std::cout << "Nenhum comentario nesta publicacao ainda.\n\n";
         } else {
-            for (size_t i = 0; i < coms.size(); ++i) {
-                Comentario* c = coms[i];
+            size_t contadorVisual = 1;
+            for (auto it = coms.rbegin(); it != coms.rend(); ++it) {
+                Comentario* c = *it;
                 Perfil* autorCom = db.getPerfil(c->getIdAutor());
                 std::string nomeCom = autorCom ? autorCom->getNome() : "Desconhecido";
-                std::cout << (i + 1) << " - @" << nomeCom << "\n";
+                
+                std::cout << contadorVisual << " - @" << nomeCom << "\n";
                 std::cout << c->getTexto() << "\n";
                 std::cout << "Curtidas: " << c->quantidadeDeCurtidas() << "\n\n";
+                contadorVisual++;
             }
         }
 
@@ -191,7 +193,8 @@ void menuVisualizarPost(Post& post, Armazenamento& db) {
             std::string linhaIdx;
             if (!std::getline(std::cin, linhaIdx) || !lerInteiro(linhaIdx, idx)) break;
             if (idx >= 1 && idx <= static_cast<int>(coms.size())) {
-                coms.at(static_cast<size_t>(idx - 1))->curtir(db.getIdPerfilLogado());
+                size_t idxReal = coms.size() - static_cast<size_t>(idx);
+                coms.at(idxReal)->curtir(db.getIdPerfilLogado());
             } else {
                 mensagem = "[ERRO] Indice invalido!";
             }
@@ -236,12 +239,12 @@ void menuVerPostsLista(const std::vector<Post>& postsList, Armazenamento& db) {
         }
 
         for (size_t i = 0; i < postsList.size(); ++i) {
-            Perfil* autor = db.getPerfil(postsList[i].getIdAutor());
+            size_t idxReverso = postsList.size() - 1 - i; 
+            Perfil* autor = db.getPerfil(postsList[idxReverso].getIdAutor());
             std::string nomeAutor = autor ? autor->getNome() : "Desconhecido";
             std::cout << (i + 1) << " - @" << nomeAutor << "\n";
-            std::cout << postsList[i].getConteudo() << "\n\n";
+            std::cout << postsList[idxReverso].getConteudo() << "\n\n";
         }
-
         std::cout << "A) Selecionar Post / B) Voltar\n\n";
         std::cout << "Digite sua opcao desejada: ";
         std::string opcao;
@@ -254,7 +257,8 @@ void menuVerPostsLista(const std::vector<Post>& postsList, Armazenamento& db) {
             std::string linhaIdx;
             if (!std::getline(std::cin, linhaIdx) || !lerInteiro(linhaIdx, idx)) break;
             if (idx >= 1 && idx <= static_cast<int>(postsList.size())) {
-                Post* postReal = db.getPostMutavel(postsList[static_cast<size_t>(idx - 1)].getId());
+                size_t idxReal = postsList.size() - static_cast<size_t>(idx);
+                Post* postReal = db.getPostMutavel(postsList[idxReal].getId());
                 if (postReal) menuVisualizarPost(*postReal, db);
             } else {
                 mensagem = "[ERRO] Indice invalido!";
