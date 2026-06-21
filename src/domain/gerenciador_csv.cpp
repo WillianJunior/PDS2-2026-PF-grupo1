@@ -3,6 +3,24 @@
 #include <sstream>
 #include <stdexcept>
 
+std::string escaparTexto(std::string texto) {
+    size_t pos = 0;
+    while ((pos = texto.find(",", pos)) != std::string::npos) {
+        texto.replace(pos, 1, "[VIRGULA]");
+        pos += 9;
+    }
+    return texto;
+}
+
+std::string desescaparTexto(std::string texto) {
+    size_t pos = 0;
+    while ((pos = texto.find("[VIRGULA]", pos)) != std::string::npos) {
+        texto.replace(pos, 9, ",");
+        pos += 1;
+    }
+    return texto;
+}
+
 std::vector<std::string> GerenciadorCSV::separarString(const std::string& linha, char delimitador) {
     std::vector<std::string> tokens;
     std::string token;
@@ -120,7 +138,7 @@ void GerenciadorCSV::salvarPosts(const std::vector<Post>& posts, const std::stri
     arquivo << "id,idAutor,idComunidade,texto,curtidas\n";
     for (const auto& p : posts) {
         arquivo << p.getId() << "," << p.getIdAutor() << "," << p.getIdComunidade() << ","
-                << p.getConteudo() << "," << juntarInteiros(p.getIdsCurtidas(), '|') << "\n";
+                << escaparTexto(p.getConteudo()) << "," << juntarInteiros(p.getIdsCurtidas(), '|') << "\n";
     }
 }
 
@@ -168,5 +186,6 @@ std::vector<Comentario> GerenciadorCSV::carregarComentarios(const std::string& n
             }
         }
     }
+
     return lista;
 }

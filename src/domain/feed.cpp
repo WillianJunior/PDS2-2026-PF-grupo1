@@ -27,7 +27,7 @@ void Feed::verFeed(Armazenamento& db) {
         std::cout << "           EDU SOCIAL FEED\n";
         std::cout << "///////////////////////////////////////\n\n";
 
-        auto& todosPosts = db.getTodosPostsMutavel();
+        auto todosPosts = db.getPostsFeed();
 
         if (todosPosts.empty()) {
             std::cout << "Nenhum post publicado na rede ainda.\n\n";

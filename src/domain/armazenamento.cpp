@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <stdexcept>
 #include <iostream>
+#include <algorithm>
 
 namespace {
 
@@ -187,9 +188,21 @@ const Post* Armazenamento::getPost(int id) const {
 
 std::vector<Post> Armazenamento::getPostsFeed() const {
     std::vector<Post> feed;
-    for (const auto& p : posts) {
-        if (p.getIdComunidade() == 0) {
-            feed.push_back(p);
+    const Perfil* perfilLogado = getPerfil(idPerfilLogado);
+
+    if (perfilLogado == nullptr)
+        return feed;
+
+    const auto& comunidadesUsuario =
+        perfilLogado->getIdsComunidades();
+
+    for (const auto& post : posts) {
+        if (std::find(
+                comunidadesUsuario.begin(),
+                comunidadesUsuario.end(),
+                post.getIdComunidade())
+            != comunidadesUsuario.end()) {
+            feed.push_back(post);
         }
     }
     return feed;
