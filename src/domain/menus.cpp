@@ -23,6 +23,13 @@ bool lerInteiro(const std::string& linha, int& valor) {
         return false;
     }
 }
+
+void exibirMensagem(const std::string& mensagem) {
+    if (!mensagem.empty()) {
+        std::cout << mensagem << "\n\n";
+    }
+}
+
 void exibirResumoPerfil(const Perfil& alvo) {
     std::cout << "\n====================================\n";
     std::cout << "         PERFIL DE @" << alvo.getNome() << "\n";
@@ -45,26 +52,28 @@ bool perfilSegue(const Perfil& seguidor, int idAlvo) {
     return std::find(ids.begin(), ids.end(), idAlvo) != ids.end();
 }
 
-void alternarSeguir(Perfil& eu, Perfil& alvo) {
+std::string alternarSeguir(Perfil& eu, Perfil& alvo) {
     if (eu.getId() == alvo.getId()) {
-        std::cout << "\n[ERRO] Voce nao pode seguir a si mesmo.\n";
-        return;
+        return "[ERRO] Voce nao pode seguir a si mesmo.";
     }
 
     if (perfilSegue(eu, alvo.getId())) {
         eu.deixarDeSeguir(alvo.getId());
         alvo.removerSeguidor(eu.getId());
-        std::cout << "\n[SUCESSO] Voce deixou de seguir @" << alvo.getNome() << ".\n";
+        return "[SUCESSO] Voce deixou de seguir @" + alvo.getNome() + ".";
     } else {
         eu.seguir(alvo.getId());
         alvo.adicionarSeguidor(eu.getId());
-        std::cout << "\n[SUCESSO] Voce agora segue @" << alvo.getNome() << ".\n";
+        return "[SUCESSO] Voce agora segue @" + alvo.getNome() + ".";
     }
 }
 
 void menuEditarPerfil(Perfil& alvo) {
+    std::string mensagem;
     while (true) {
-        ConsoleUtils::limparTela();
+        exibirMensagem(mensagem);
+        mensagem.clear();
+
         std::cout << "--- EDITAR PERFIL ---\n";
         std::cout << "1 - Biografia\n";
         std::cout << "2 - Curso\n";
@@ -79,7 +88,7 @@ void menuEditarPerfil(Perfil& alvo) {
 
         int opcao;
         if (!lerInteiro(linha, opcao)) {
-            std::cout << "\n[ERRO] Opcao invalida.\n";
+            mensagem = "[ERRO] Opcao invalida.";
             continue;
         }
 
@@ -90,36 +99,32 @@ void menuEditarPerfil(Perfil& alvo) {
             std::string bio;
             if (!std::getline(std::cin, bio)) break;
             alvo.setDescricao(bio);
-            std::cout << "\n[SUCESSO] Biografia atualizada!\n";
-            ConsoleUtils::aguardarUsuario();
+            mensagem = "[SUCESSO] Biografia atualizada!";
         } else if (opcao == 2) {
             std::cout << "Novo curso: ";
             std::string curso;
             if (!std::getline(std::cin, curso)) break;
             alvo.setCurso(curso);
-            std::cout << "\n[SUCESSO] Curso atualizado!\n";
-            ConsoleUtils::aguardarUsuario();
+            mensagem = "[SUCESSO] Curso atualizado!";
         } else if (opcao == 3) {
             std::cout << "Nova instituicao: ";
             std::string inst;
             if (!std::getline(std::cin, inst)) break;
             alvo.setInstituicao(inst);
-            std::cout << "\n[SUCESSO] Instituicao atualizada!\n";
-            ConsoleUtils::aguardarUsuario();
+            mensagem = "[SUCESSO] Instituicao atualizada!";
         } else if (opcao == 4) {
             std::cout << "Novo periodo (semestre): ";
             std::string linhaPeriodo;
             if (!std::getline(std::cin, linhaPeriodo)) break;
             int periodo;
             if (!lerInteiro(linhaPeriodo, periodo) || periodo < 1) {
-                std::cout << "\n[ERRO] Periodo invalido.\n";
+                mensagem = "[ERRO] Periodo invalido.";
                 continue;
             }
             alvo.setPeriodo(periodo);
-            std::cout << "\n[SUCESSO] Periodo atualizado!\n";
-            ConsoleUtils::aguardarUsuario();
+            mensagem = "[SUCESSO] Periodo atualizado!";
         } else {
-            std::cout << "\n[ERRO] Opcao invalida.\n";
+            mensagem = "[ERRO] Opcao invalida.";
         }
     }
 }
@@ -127,8 +132,12 @@ void menuEditarPerfil(Perfil& alvo) {
 }  // namespace
 
 void menuVisualizarPost(Post& post, Armazenamento& db) {
+    std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
+        exibirMensagem(mensagem);
+        mensagem.clear();
+
         std::cout << "\n////////////////Post//////////////////\n\n";
         Perfil* autor = db.getPerfil(post.getIdAutor());
         std::string nomeAutor = autor ? autor->getNome() : "Desconhecido";
@@ -174,7 +183,7 @@ void menuVisualizarPost(Post& post, Armazenamento& db) {
             post.curtir(db.getIdPerfilLogado());
         } else if (opcao == "B" || opcao == "b") {
             if (coms.empty()) {
-                std::cout << "\n[ERRO] Nao existem comentarios.\n";
+                mensagem = "[ERRO] Nao existem comentarios.";
                 continue;
             }
             std::cout << "Qual comentario deseja Curtir/Descurtir: ";
@@ -184,7 +193,7 @@ void menuVisualizarPost(Post& post, Armazenamento& db) {
             if (idx >= 1 && idx <= static_cast<int>(coms.size())) {
                 coms.at(static_cast<size_t>(idx - 1))->curtir(db.getIdPerfilLogado());
             } else {
-                std::cout << "\n[ERRO] Indice invalido!\n";
+                mensagem = "[ERRO] Indice invalido!";
             }
         } else if (opcao == "C" || opcao == "c") {
             std::cout << "Digite seu comentario: ";
@@ -192,9 +201,9 @@ void menuVisualizarPost(Post& post, Armazenamento& db) {
             std::getline(std::cin, txt);
             try {
                 db.criarComentarioGlobal(post.getId(), db.getIdPerfilLogado(), txt);
-                std::cout << "\n[SUCESSO] Comentario adicionado!\n";
+                mensagem = "[SUCESSO] Comentario adicionado!";
             } catch (const std::invalid_argument& e) {
-                std::cout << "\n[ERRO] " << e.what() << "\n";
+                mensagem = std::string("[ERRO] ") + e.what();
             }
         } else if (opcao == "D" || opcao == "d") {
             menuPerfil(post.getIdAutor(), db);
@@ -202,15 +211,19 @@ void menuVisualizarPost(Post& post, Armazenamento& db) {
             if (post.getIdComunidade() != 0) {
                 menuComunidade(post.getIdComunidade(), db);
             } else {
-                std::cout << "\n[AVISO] Post do Feed Geral, sem comunidade.\n";
+                mensagem = "[AVISO] Post do Feed Geral, sem comunidade.";
             }
         }
     }
 }
 
 void menuVerPostsLista(const std::vector<Post>& postsList, Armazenamento& db) {
+    std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
+        exibirMensagem(mensagem);
+        mensagem.clear();
+
         std::cout << "\n///////////////////////////////////////\n";
         std::cout << "              LISTA DE POSTS\n";
         std::cout << "///////////////////////////////////////\n\n";
@@ -244,13 +257,14 @@ void menuVerPostsLista(const std::vector<Post>& postsList, Armazenamento& db) {
                 Post* postReal = db.getPostMutavel(postsList[static_cast<size_t>(idx - 1)].getId());
                 if (postReal) menuVisualizarPost(*postReal, db);
             } else {
-                std::cout << "\n[ERRO] Indice invalido!\n";
+                mensagem = "[ERRO] Indice invalido!";
             }
         }
     }
 }
 
 void menuComunidade(int idComunidade, Armazenamento& db) {
+    std::string mensagem;
     while (true) {
         Comunidade* com = db.getComunidade(idComunidade);
         if (!com) break;
@@ -261,7 +275,11 @@ void menuComunidade(int idComunidade, Armazenamento& db) {
         const auto& membros = com->getIdsMembros();
         bool isMember =
             std::find(membros.begin(), membros.end(), db.getIdPerfilLogado()) != membros.end();
+
         ConsoleUtils::limparTela();
+        exibirMensagem(mensagem);
+        mensagem.clear();
+
         std::cout << "\n///////////////////////////////////////\n";
         std::cout << "        COMUNIDADE: " << com->getNome() << "\n";
         std::cout << "///////////////////////////////////////\n";
@@ -298,7 +316,7 @@ void menuComunidade(int idComunidade, Armazenamento& db) {
 
         int opcao;
         if (!lerInteiro(linha, opcao)) {
-            std::cout << "\n[ERRO] Opcao invalida.\n";
+            mensagem = "[ERRO] Opcao invalida.";
             continue;
         }
 
@@ -309,39 +327,44 @@ void menuComunidade(int idComunidade, Armazenamento& db) {
                 if (!std::getline(std::cin, txt)) break;
                 try {
                     db.criarPost(txt, com->getId());
-                    std::cout << "\n[SUCESSO] Post publicado com sucesso!\n";
+                    mensagem = "[SUCESSO] Post publicado com sucesso!";
                 } catch (const std::invalid_argument& e) {
-                    std::cout << "\n[ERRO] " << e.what() << "\n";
+                    mensagem = std::string("[ERRO] ") + e.what();
                 }
             } else if (opcao == 2) {
                 menuVerPostsLista(postsDaComunidade, db);
             } else if (opcao == 4) {
                 break;
             } else {
-                std::cout << "\n[ERRO] Opcao invalida.\n";
+                mensagem = "[ERRO] Opcao invalida.";
             }
         } else {
             if (opcao == 1) {
                 if (!eu) {
-                    std::cout << "\n[ERRO] Perfil logado nao encontrado.\n";
+                    mensagem = "[ERRO] Perfil logado nao encontrado.";
                     continue;
                 }
                 com->adicionarMembro(eu->getId());
                 eu->entrarComunidade(com->getId());
+                mensagem = "[SUCESSO] Voce entrou na comunidade!";
             } else if (opcao == 2) {
                 menuVerPostsLista(postsDaComunidade, db);
             } else if (opcao == 3) {
                 break;
             } else {
-                std::cout << "\n[ERRO] Opcao invalida.\n";
+                mensagem = "[ERRO] Opcao invalida.";
             }
         }
     }
 }
 
 void menuVerPerfisLista(const std::vector<Perfil>& perfisList, Armazenamento& db) {
+    std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
+        exibirMensagem(mensagem);
+        mensagem.clear();
+
         std::cout << "\n///////////////////////////////////////\n";
         std::cout << "              LISTA DE PERFIS\n";
         std::cout << "///////////////////////////////////////\n\n";
@@ -375,17 +398,21 @@ void menuVerPerfisLista(const std::vector<Perfil>& perfisList, Armazenamento& db
             if (idx >= 1 && idx <= static_cast<int>(perfisList.size())) {
                 menuPerfil(perfisList[static_cast<size_t>(idx - 1)].getId(), db);
             } else {
-                std::cout << "\n[ERRO] Indice invalido!\n";
+                mensagem = "[ERRO] Indice invalido!";
             }
         } else if (!opcao.empty()) {
-            std::cout << "\n[ERRO] Opcao invalida.\n";
+            mensagem = "[ERRO] Opcao invalida.";
         }
     }
 }
 
 void menuVerComunidadesLista(Armazenamento& db, const std::vector<Comunidade>* filtro) {
+    std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
+        exibirMensagem(mensagem);
+        mensagem.clear();
+
         const std::vector<Comunidade>& lista =
             filtro != nullptr ? *filtro : db.getTodasComunidades();
 
@@ -419,17 +446,17 @@ void menuVerComunidadesLista(Armazenamento& db, const std::vector<Comunidade>* f
             try {
                 if (!nome.empty()) {
                     db.criarComunidade(nome, descricao);
-                    std::cout << "\n[SUCESSO] Comunidade criada!\n";
+                    mensagem = "[SUCESSO] Comunidade criada!";
                 }
             } catch (const std::invalid_argument& e) {
-                std::cout << "\n[ERRO] " << e.what() << "\n";
+                mensagem = std::string("[ERRO] ") + e.what();
             }
             continue;
         }
 
         if (opcao == "A" || opcao == "a") {
             if (lista.empty()) {
-                std::cout << "\n[ERRO] Nenhuma comunidade disponivel.\n";
+                mensagem = "[ERRO] Nenhuma comunidade disponivel.";
                 continue;
             }
 
@@ -440,19 +467,23 @@ void menuVerComunidadesLista(Armazenamento& db, const std::vector<Comunidade>* f
             if (idx >= 1 && idx <= static_cast<int>(lista.size())) {
                 menuComunidade(lista[static_cast<size_t>(idx - 1)].getId(), db);
             } else {
-                std::cout << "\n[ERRO] Indice invalido!\n";
+                mensagem = "[ERRO] Indice invalido!";
             }
         } else if (!opcao.empty()) {
-            std::cout << "\n[ERRO] Opcao invalida. Use A, B ou C.\n";
+            mensagem = "[ERRO] Opcao invalida. Use A, B ou C.";
         }
     }
 }
 
 void menuPerfil(int idAlvo, Armazenamento& db) {
+    std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
         Perfil* alvo = db.getPerfil(idAlvo);
         if (!alvo) break;
+
+        exibirMensagem(mensagem);
+        mensagem.clear();
 
         bool souEu = (idAlvo == db.getIdPerfilLogado());
 
@@ -485,7 +516,7 @@ void menuPerfil(int idAlvo, Armazenamento& db) {
 
         int opcao;
         if (!lerInteiro(linha, opcao)) {
-            std::cout << "\n[ERRO] Opcao invalida.\n";
+            mensagem = "[ERRO] Opcao invalida.";
             continue;
         }
 
@@ -497,7 +528,7 @@ void menuPerfil(int idAlvo, Armazenamento& db) {
             } else if (opcao == 5) {
                 break;
             } else {
-                std::cout << "\n[ERRO] Opcao invalida.\n";
+                mensagem = "[ERRO] Opcao invalida.";
             }
         } else {
             if (opcao == 1) {
@@ -505,14 +536,14 @@ void menuPerfil(int idAlvo, Armazenamento& db) {
             } else if (opcao == 2) {
                 Perfil* eu = db.getPerfil(db.getIdPerfilLogado());
                 if (!eu) {
-                    std::cout << "\n[ERRO] Perfil logado nao encontrado.\n";
+                    mensagem = "[ERRO] Perfil logado nao encontrado.";
                 } else {
-                    alternarSeguir(*eu, *alvo);
+                    mensagem = alternarSeguir(*eu, *alvo);
                 }
             } else if (opcao == 3) {
                 break;
             } else {
-                std::cout << "\n[ERRO] Opcao invalida.\n";
+                mensagem = "[ERRO] Opcao invalida.";
             }
         }
     }

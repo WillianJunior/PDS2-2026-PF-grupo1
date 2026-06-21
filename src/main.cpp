@@ -17,51 +17,60 @@ namespace {
 
 void normalizarLinha(std::string& linha) {
     while (!linha.empty() && (linha.back() == '\r' || linha.back() == '\n')) {
-        linha.pop_back();
+            linha.pop_back();
+        }
     }
-}
 
 bool lerLinha(std::string& destino) {
     if (!std::getline(std::cin, destino)) {
-        return false;
+            return false;
+        }
+        normalizarLinha(destino);
+        return !(destino.empty() && std::cin.eof());
     }
-    normalizarLinha(destino);
-    return !(destino.empty() && std::cin.eof());
-}
 
 void abortarEntradaAutomatica(const std::string& motivo) {
-    std::cerr << "\n[demo] Entrada automatica interrompida: " << motivo << "\n";
-    std::exit(1);
-}
-
-bool lerOpcaoNumerica(int& valor, bool modoAutomatico) {
-    std::cin >> valor;
-    if (std::cin.fail()) {
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        if (!modoAutomatico) {
-            std::cout << "\n[ERRO] Entrada invalida! Digite um numero.\n";
-        }
-        return false;
+        std::cerr << "\n[demo] Entrada automatica interrompida: " << motivo << "\n";
+        std::exit(1);
     }
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    return true;
-}
+
+    void exibirMensagem(const std::string &mensagem)
+    {
+        if (!mensagem.empty())
+        {
+            std::cout << mensagem << "\n\n";
+        }
+    }
+
+    bool lerOpcaoNumerica(int &valor, bool modoAutomatico, std::string &mensagemErro)
+    {
+        std::cin >> valor;
+    if (std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            if (!modoAutomatico) {
+                mensagemErro = "[ERRO] Entrada invalida! Digite um numero.";
+            }
+            return false;
+        }
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        return true;
+    }
 
 
 class RestaurarEntradaCin {
-public:
+    public:
     explicit RestaurarEntradaCin(std::streambuf* original) : original_(original) {}
-    ~RestaurarEntradaCin() { std::cin.rdbuf(original_); }
+        ~RestaurarEntradaCin() { std::cin.rdbuf(original_); }
 
     RestaurarEntradaCin(const RestaurarEntradaCin&) = delete;
     RestaurarEntradaCin& operator=(const RestaurarEntradaCin&) = delete;
 
-private:
+    private:
     std::streambuf* original_;
-};
+    };
 
-} 
+}
 
 int main(int argc, char* argv[]) {
     std::ifstream arquivoEntrada;
@@ -71,6 +80,7 @@ int main(int argc, char* argv[]) {
     if (modoAutomatico) {
         arquivoEntrada.open(argv[1]);
         if (!arquivoEntrada.is_open()) {
+            ConsoleUtils::limparTela();
             std::cerr << "[ERRO] Nao foi possivel abrir o arquivo de entrada: "
                       << argv[1] << "\n";
             return 1;
@@ -87,10 +97,14 @@ int main(int argc, char* argv[]) {
     db.carregarDados();
 
     bool rodando = true;
+    std::string mensagem;
 
     while (rodando) {
         if (db.getEmailLogado().empty()) {
             ConsoleUtils::limparTela();
+            exibirMensagem(mensagem);
+            mensagem.clear();
+
             std::cout << "\n////////////////////////////////////////\n";
             std::cout << "        EDU SOCIAL TELA INICIAL         \n";
             std::cout << "////////////////////////////////////////\n";
@@ -100,7 +114,7 @@ int main(int argc, char* argv[]) {
             std::cout << "Digite sua opcao desejada: ";
 
             int opcao;
-            if (!lerOpcaoNumerica(opcao, modoAutomatico)) {
+            if (!lerOpcaoNumerica(opcao, modoAutomatico, mensagem)) {
                 if (modoAutomatico) {
                     rodando = false;
                     break;
@@ -123,8 +137,7 @@ int main(int argc, char* argv[]) {
                     }
 
                     if (db.fazerLogin(email, senha)) {
-                        std::cout << "\n[SUCESSO] Login realizado!\n";
-                        ConsoleUtils::aguardarUsuario();
+                        mensagem = "[SUCESSO] Login realizado!";
                         break;
                     }
 
@@ -134,12 +147,11 @@ int main(int argc, char* argv[]) {
                     }
 
                     std::cout << "\n[ERRO] Email ou senha invalidos.\n";
-                    ConsoleUtils::aguardarUsuario();
                     std::cout << "1 - Tentar novamente / 2 - Voltar\nEscolha: ";
                     int sub;
-                    if (!lerOpcaoNumerica(sub, modoAutomatico)) break;
+                    if (!lerOpcaoNumerica(sub, modoAutomatico, mensagem)) break;
                     if (sub == 2) break;
-                }
+                    }
 
             } else if (opcao == 2) {
                 int tentativas = 0;
@@ -155,8 +167,10 @@ int main(int argc, char* argv[]) {
                     }
 
                     std::cout << "Email: ";
-                    if (!lerLinha(email)) {
-                        if (modoAutomatico) abortarEntradaAutomatica("fim inesperado ao ler email.");
+                    if (!lerLinha(email))
+                    {
+                        if (modoAutomatico)
+                            abortarEntradaAutomatica("fim inesperado ao ler email.");
                         break;
                     }
 
@@ -174,15 +188,14 @@ int main(int argc, char* argv[]) {
                                 "senha invalida (minimo 8 caracteres e 1 digito).");
                         }
                         if (tentativas >= maxTentativas) {
-                            std::cout << "[AVISO] Limite de tentativas atingido. Voltando ao menu.\n";
+                            mensagem = "[AVISO] Limite de tentativas atingido. Voltando ao menu.";
                         }
                         continue;
                     }
 
                     try {
                         db.criarUsuarioEPerfil(email, senha, nome);
-                        std::cout << "\n[SUCESSO] Conta criada!\n";
-                        ConsoleUtils::aguardarUsuario();
+                        mensagem = "[SUCESSO] Conta criada!";
                         db.salvarDados();
                         break;
                     } catch (const std::invalid_argument& e) {
@@ -197,7 +210,7 @@ int main(int argc, char* argv[]) {
                             abortarEntradaAutomatica(msg);
                         }
                         if (tentativas >= maxTentativas) {
-                            std::cout << "[AVISO] Limite de tentativas atingido. Voltando ao menu.\n";
+                            mensagem = "[AVISO] Limite de tentativas atingido. Voltando ao menu.";
                         }
                     }
                 }
@@ -208,6 +221,9 @@ int main(int argc, char* argv[]) {
 
         } else {
             ConsoleUtils::limparTela();
+            exibirMensagem(mensagem);
+            mensagem.clear();
+
             std::cout << "\n////////////////////////////////////////\n";
             std::cout << "           EDU SOCIAL MENU PRINCIPAL    \n";
             std::cout << "////////////////////////////////////////\n";
@@ -220,25 +236,30 @@ int main(int argc, char* argv[]) {
             std::cout << "Digite sua opcao desejada: ";
 
             int opcao;
-            if (!lerOpcaoNumerica(opcao, modoAutomatico)) {
+            if (!lerOpcaoNumerica(opcao, modoAutomatico, mensagem)) {
                 if (modoAutomatico) {
                     rodando = false;
                     break;
                 }
                 continue;
             }
-
+            ConsoleUtils::limparTela();
             if (opcao == 1) {
                 Feed f;
                 f.verFeed(db);
             }
 
             else if (opcao == 2) {
+                std::cout << "\n////////////////////////////////////////\n";
+                std::cout << "           EDU SOCIAL - PESQUISA    \n";
+                std::cout << "////////////////////////////////////////\n";
+
                 std::cout << "\nO que voce quer buscar?\n";
                 std::cout << "1 - Perfil\n2 - Post\n3 - Comunidade\n4 - Voltar\nEscolha: ";
 
                 int cat;
-                if (!lerOpcaoNumerica(cat, modoAutomatico)) continue;
+                if (!lerOpcaoNumerica(cat, modoAutomatico, mensagem)) 
+                    continue;
 
                 if (cat >= 1 && cat <= 3) {
                     std::string termo;
@@ -267,17 +288,16 @@ int main(int argc, char* argv[]) {
             else if (opcao == 4) {
                 if (db.getIdPerfilLogado() > 0) {
                     menuPerfil(db.getIdPerfilLogado(), db);
-                } else {
-                    std::cout << "\n[ERRO] Perfil logado nao encontrado.\n";
-                    ConsoleUtils::aguardarUsuario();
+                }
+                else {
+                    mensagem = "[ERRO] Perfil logado nao encontrado.";
                 }
             }
 
             else if (opcao == 5) {
                 Usuario* usuario = db.getUsuario(db.getEmailLogado());
                 if (!usuario) {
-                    std::cout << "\n[ERRO] Usuario logado nao encontrado.\n";
-                    ConsoleUtils::aguardarUsuario();
+                    mensagem = "[ERRO] Usuario logado nao encontrado.";
                     continue;
                 }
 
@@ -287,9 +307,11 @@ int main(int argc, char* argv[]) {
                 std::cout << "Escolha: ";
 
                 int sub;
-                if (!lerOpcaoNumerica(sub, modoAutomatico)) continue;
+                if (!lerOpcaoNumerica(sub, modoAutomatico, mensagem))
+                    continue;
 
-                if (sub == 1) {
+                if (sub == 1)
+                {
                     std::string atual, nova;
                     std::cout << "Senha atual: ";
                     std::getline(std::cin, atual);
@@ -298,12 +320,13 @@ int main(int argc, char* argv[]) {
                     normalizarLinha(nova);
 
                     if (!db.senhaSegura(nova)) {
-                        std::cout << "\n[ERRO] Senha invalida!\n";
-                    } else if (usuario->alterarSenha(atual, nova)) {
-                        std::cout << "\n[SUCESSO] Senha alterada!\n";
-                        ConsoleUtils::aguardarUsuario();
-                    } else {
-                        std::cout << "\n[ERRO] Senha atual incorreta.\n";
+                        mensagem = "[ERRO] Senha invalida!";
+                    }
+                    else if (usuario->alterarSenha(atual, nova)) {
+                        mensagem = "[SUCESSO] Senha alterada!";
+                    }
+                    else {
+                        mensagem = "[ERRO] Senha atual incorreta.";
                     }
                 } else if (sub == 2) {
                     std::string atual, novoEmail;
@@ -313,12 +336,13 @@ int main(int argc, char* argv[]) {
                     std::getline(std::cin, novoEmail);
 
                     if (!db.emailUnico(novoEmail) && novoEmail != db.getEmailLogado()) {
-                        std::cout << "\n[ERRO] Email repetido!\n";
-                    } else if (usuario->alterarEmail(atual, novoEmail)) {
-                        std::cout << "\n[SUCESSO] Email alterado!\n";
-                        ConsoleUtils::aguardarUsuario();
-                    } else {
-                        std::cout << "\n[ERRO] Senha atual incorreta.\n";
+                        mensagem = "[ERRO] Email repetido!";
+                    }
+                    else if (usuario->alterarEmail(atual, novoEmail)) {
+                        mensagem = "[SUCESSO] Email alterado!";
+                    }
+                    else {
+                        mensagem = "[ERRO] Senha atual incorreta.";
                     }
                 }
             }

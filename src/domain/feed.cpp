@@ -56,6 +56,7 @@ void Feed::verFeed(Armazenamento& db) {
         std::getline(std::cin, opcao);
 
         if (opcao == "B" || opcao == "b") {
+            ConsoleUtils::limparTela();
             break;
         } else if (opcao == "A" || opcao == "a") {
             if (todosPosts.empty()) {
