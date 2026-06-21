@@ -15,7 +15,9 @@ std::vector<Perfil> Busca::buscarPerfis(const std::string& palavraChave, const A
             achados.push_back(perfil);
         }
     }
-
+    std::sort(achados.begin(), achados.end(), [](const Perfil& a, const Perfil& b) {
+        return a.getNome() < b.getNome();
+    });
     return achados;
 }
 
@@ -27,7 +29,6 @@ std::vector<Post> Busca::buscarPosts(const std::string& palavraChave, const Arma
             achados.push_back(post);
         }
     }
-
     return achados;
 }
 
@@ -50,7 +51,7 @@ void Busca::buscarPalavraChave(const std::string& palavraChave, const Armazename
     for (const auto& perfil : buscarPerfis(palavraChave, db)) {
         resultados.push_back("Perfil: " + perfil.getNome());
     }
-
+    std::sort(resultados.begin(), resultados.end());
     for (const auto& comunidade : buscarComunidades(palavraChave, db)) {
         resultados.push_back("Comunidade: " + comunidade.getNome());
     }
