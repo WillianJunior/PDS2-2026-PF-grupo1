@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <console_utils.hpp>
 
 namespace {
 
@@ -21,6 +22,7 @@ bool lerInteiro(const std::string& linha, int& valor) {
 
 void Feed::verFeed(Armazenamento& db) {
     while (true) {
+        ConsoleUtils::limparTela();
         std::cout << "\n///////////////////////////////////////\n";
         std::cout << "           EDU SOCIAL FEED\n";
         std::cout << "///////////////////////////////////////\n\n";

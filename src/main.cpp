@@ -11,6 +11,7 @@
 #include "feed.hpp"
 #include "busca.hpp"
 #include "menus.hpp"
+#include <console_utils.hpp>
 
 namespace {
 
@@ -46,6 +47,7 @@ bool lerOpcaoNumerica(int& valor, bool modoAutomatico) {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     return true;
 }
+
 
 class RestaurarEntradaCin {
 public:
@@ -88,6 +90,7 @@ int main(int argc, char* argv[]) {
 
     while (rodando) {
         if (db.getEmailLogado().empty()) {
+            ConsoleUtils::limparTela();
             std::cout << "\n////////////////////////////////////////\n";
             std::cout << "        EDU SOCIAL TELA INICIAL         \n";
             std::cout << "////////////////////////////////////////\n";
@@ -201,6 +204,7 @@ int main(int argc, char* argv[]) {
             }
 
         } else {
+            ConsoleUtils::limparTela();
             std::cout << "\n////////////////////////////////////////\n";
             std::cout << "           EDU SOCIAL MENU PRINCIPAL    \n";
             std::cout << "////////////////////////////////////////\n";

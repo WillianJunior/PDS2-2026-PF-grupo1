@@ -5,6 +5,7 @@
 #include <string>
 #include "domain/comunidade.hpp"
 #include "domain/perfil.hpp"
+#include <console_utils.hpp>
 
 namespace {
 
@@ -24,6 +25,7 @@ bool lerInteiro(const std::string& linha, int& valor) {
 }
 
 void exibirResumoPerfil(const Perfil& alvo) {
+    ConsoleUtils::limparTela();
     std::cout << "\n====================================\n";
     std::cout << "         PERFIL DE @" << alvo.getNome() << "\n";
     std::cout << "====================================\n";
@@ -64,6 +66,7 @@ void alternarSeguir(Perfil& eu, Perfil& alvo) {
 
 void menuEditarPerfil(Perfil& alvo) {
     while (true) {
+        ConsoleUtils::limparTela();
         std::cout << "--- EDITAR PERFIL ---\n";
         std::cout << "1 - Biografia\n";
         std::cout << "2 - Curso\n";
@@ -123,6 +126,7 @@ void menuEditarPerfil(Perfil& alvo) {
 
 void menuVisualizarPost(Post& post, Armazenamento& db) {
     while (true) {
+        ConsoleUtils::limparTela();
         std::cout << "\n////////////////Post//////////////////\n\n";
         Perfil* autor = db.getPerfil(post.getIdAutor());
         std::string nomeAutor = autor ? autor->getNome() : "Desconhecido";
@@ -204,6 +208,7 @@ void menuVisualizarPost(Post& post, Armazenamento& db) {
 
 void menuVerPostsLista(const std::vector<Post>& postsList, Armazenamento& db) {
     while (true) {
+        ConsoleUtils::limparTela();
         std::cout << "\n///////////////////////////////////////\n";
         std::cout << "              LISTA DE POSTS\n";
         std::cout << "///////////////////////////////////////\n\n";
@@ -255,7 +260,7 @@ void menuComunidade(int idComunidade, Armazenamento& db) {
         bool isMember =
             std::find(membros.begin(), membros.end(), db.getIdPerfilLogado()) != membros.end();
         bool adminOuMembro = isMember || com->getIdAdministrador() == db.getIdPerfilLogado();
-
+        ConsoleUtils::limparTela();
         std::cout << "\n///////////////////////////////////////\n";
         std::cout << "        COMUNIDADE: " << com->getNome() << "\n";
         std::cout << "///////////////////////////////////////\n";
@@ -333,6 +338,7 @@ void menuComunidade(int idComunidade, Armazenamento& db) {
 
 void menuVerPerfisLista(const std::vector<Perfil>& perfisList, Armazenamento& db) {
     while (true) {
+        ConsoleUtils::limparTela();
         std::cout << "\n///////////////////////////////////////\n";
         std::cout << "              LISTA DE PERFIS\n";
         std::cout << "///////////////////////////////////////\n\n";
@@ -376,6 +382,7 @@ void menuVerPerfisLista(const std::vector<Perfil>& perfisList, Armazenamento& db
 
 void menuVerComunidadesLista(Armazenamento& db, const std::vector<Comunidade>* filtro) {
     while (true) {
+        ConsoleUtils::limparTela();
         const std::vector<Comunidade>& lista =
             filtro != nullptr ? *filtro : db.getTodasComunidades();
 
@@ -440,6 +447,7 @@ void menuVerComunidadesLista(Armazenamento& db, const std::vector<Comunidade>* f
 
 void menuPerfil(int idAlvo, Armazenamento& db) {
     while (true) {
+        ConsoleUtils::limparTela();
         Perfil* alvo = db.getPerfil(idAlvo);
         if (!alvo) break;
 
