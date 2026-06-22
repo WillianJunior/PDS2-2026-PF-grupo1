@@ -22,7 +22,7 @@ TEST_SUITE("Post") {
         Post p("Texto", 1);
         p.curtir(10);
         CHECK(p.quantidadeDeCurtidas() == 1);
-        p.curtir(10); // Alterna estado (Toggle)
+        p.curtir(10);
         CHECK(p.quantidadeDeCurtidas() == 0);
 
         p.setIdsCurtidas({1, 2, 3});

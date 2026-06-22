@@ -26,33 +26,8 @@ TEST_SUITE("Perfil") {
         CHECK(p.getInstituicao() == "NovaInst");
         CHECK(p.getDescricao() == "NovaDesc");
         CHECK(p.getPeriodo() == 3);
-
-        p.setIdsSeguidores({1, 2});
-        p.setIdsSeguidos({3, 4});
         p.setIdsComunidades({5, 6});
-        CHECK(p.getIdsSeguidores().size() == 2);
-        CHECK(p.getIdsSeguidos().size() == 2);
         CHECK(p.getIdsComunidades().size() == 2);
-    }
-
-    TEST_CASE("adicionarSeguidor e removerSeguidor") {
-        Perfil p("Curso", "Inst", 1);
-        p.adicionarSeguidor(2);
-        p.adicionarSeguidor(2);
-        CHECK(p.getIdsSeguidores().size() == 1);
-        p.removerSeguidor(2);
-        CHECK(p.getIdsSeguidores().size() == 0);
-        CHECK_NOTHROW(p.removerSeguidor(99));
-    }
-
-    TEST_CASE("seguir e deixarDeSeguir") {
-        Perfil p("Curso", "Inst", 1);
-        p.seguir(2);
-        p.seguir(2);
-        CHECK(p.listarIdSeguidos().size() == 1);
-        p.deixarDeSeguir(2);
-        CHECK(p.listarIdSeguidos().size() == 0);
-        CHECK_NOTHROW(p.deixarDeSeguir(99)); 
     }
 
     TEST_CASE("entrarComunidade e sairComunidade") {

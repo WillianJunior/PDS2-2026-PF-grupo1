@@ -26,7 +26,6 @@ TEST_SUITE("GerenciadorCSV") {
         CHECK(uLido[0].getEmail() == "a@a.com");
 
         Perfil p(1, "a", "b", "c", "d", 2);
-        p.setIdsSeguidores({1}); p.setIdsSeguidos({2}); p.setIdsComunidades({3});
         GerenciadorCSV::salvarPerfis({p}, "test_perfis.csv");
         auto pLido = GerenciadorCSV::carregarPerfis("test_perfis.csv");
         CHECK(pLido.size() == 1);

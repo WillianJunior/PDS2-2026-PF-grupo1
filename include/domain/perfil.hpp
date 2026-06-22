@@ -19,8 +19,6 @@ private:
     std::string instituicao;
     int periodo;
 
-    std::vector<int> idsSeguidores;
-    std::vector<int> idsSeguidos;
     std::vector<int> idsComunidadesQueFazParte;
 
 public:
@@ -29,10 +27,6 @@ public:
 
     Perfil(std::string curso, std::string instituicao, int periodo);
 
-    void seguir(int idPerfil);
-    void deixarDeSeguir(int idPerfil);
-    void adicionarSeguidor(int idPerfil);
-    void removerSeguidor(int idPerfil);
     void entrarComunidade(int idComunidade);
     void sairComunidade(int idComunidade);
 
@@ -48,8 +42,6 @@ public:
     const std::string& getCurso() const;
     const std::string& getInstituicao() const;
     int getPeriodo() const;
-    const std::vector<int>& getIdsSeguidores() const;
-    const std::vector<int>& getIdsSeguidos() const;
     const std::vector<int>& getIdsComunidades() const;
 
     /**
@@ -63,8 +55,6 @@ public:
     /**
      * @name Setters (Persistência)
      */
-    void setIdsSeguidores(const std::vector<int>& ids);
-    void setIdsSeguidos(const std::vector<int>& ids);
     void setIdsComunidades(const std::vector<int>& ids);
 };
 

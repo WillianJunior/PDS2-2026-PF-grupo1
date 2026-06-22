@@ -17,7 +17,7 @@ void garantirDiretorioDados() {
     std::filesystem::create_directories(DATA_DIR);
 }
 
-}  // namespace
+}
 
 Armazenamento::Armazenamento() : emailLogado(""), idPerfilLogado(0) {}
 
