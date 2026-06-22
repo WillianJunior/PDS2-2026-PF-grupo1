@@ -44,6 +44,9 @@ public:
     int getPeriodo() const;
     const std::vector<int>& getIdsComunidades() const;
 
+    virtual bool podeGerenciarComunidade() const;
+    virtual ~Perfil() = default;
+    
     /**
      * @name Setters (Edição de Perfil)
      */

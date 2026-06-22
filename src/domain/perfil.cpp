@@ -53,3 +53,7 @@ void Perfil::setInstituicao(const std::string &i) { instituicao = i; }
 void Perfil::setDescricao(const std::string &d) { descricao = d; }
 
 void Perfil::setPeriodo(int p) { periodo = p; }
+
+bool Perfil::podeGerenciarComunidade() const {
+    return false;
+}
