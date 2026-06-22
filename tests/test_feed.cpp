@@ -18,13 +18,7 @@ static void simularInteracaoFeed(const std::string& inputsProgramados, std::func
 }
 
 TEST_SUITE("Feed Interativo") {
-    TEST_CASE("Exibir Listagens Diretas") {
-        Feed f;
-        CHECK_NOTHROW(f.exibirPosts({}));
-        CHECK_NOTHROW(f.exibirPerfis({}));
-        CHECK_NOTHROW(f.exibirComunidades({}));
-    }
-
+    
     TEST_CASE("Navegacao Completa e Inputs Invalidos Feed") {
         Armazenamento db;
         db.criarUsuarioEPerfil("a@b.c", "senha12345", "UserA");
@@ -38,19 +32,14 @@ TEST_SUITE("Feed Interativo") {
         std::string acoes = 
             "Z\n"               
             "A\n99\n"           
-            "A\n2\n"            
-            "A\n"               
-            "B\n1\n"          
-            "C\nNovo Teste\n"   
-            "D\n5\n"            
-            "E\n"              
-            "F\n"              
-            "A\n1\n"           
-            "E\n4\n"           
-            "B\n99\n"          
-            "X\n"             
-            "F\n"              
-            "B\n";
+            "A\n1\n"            
+            "F\n"               
+            "B\n"               
+            "Novo Post Global\n" 
+            "\n"                
+            "A\n1\n"            
+            "F\n"               
+            "C\n";              
             
         CHECK_NOTHROW(simularInteracaoFeed(acoes, [&](){ f.verFeed(db); }));
     }

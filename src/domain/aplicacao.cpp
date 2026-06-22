@@ -299,16 +299,19 @@ void Aplicacao::executarFluxoAlterarCredenciais() {
         std::cout << "Novo email: ";
         std::getline(std::cin, novoEmail);
 
-        if (!db.emailUnico(novoEmail) && novoEmail != db.getEmailLogado()) {
-            mensagemAlerta = "[ERRO] Email repetido!";
+        if (novoEmail.find('@') == std::string::npos) {
+            mensagemAlerta = "[ERRO] Formato de email invalido. Deve conter '@'.";
+        } 
+        else if (!db.emailUnico(novoEmail) && novoEmail != db.getEmailLogado()) {
+            mensagemAlerta = "[ERRO] Email repetido ou ja em uso!";
         } else if (usuario->alterarEmail(atual, novoEmail)) {
-            mensagemAlerta = "[SUCESSO] Email alterado!";
+            mensagemAlerta = "[SUCESSO] Email alterado! Faca login novamente com o novo email.";
+            db.deslogar(); 
         } else {
             mensagemAlerta = "[ERRO] Senha atual incorreta.";
         }
     }
 }
-
 void Aplicacao::executarFluxoVerPerfil() {
     if (db.getIdPerfilLogado() > 0) {
         menuPerfil(db.getIdPerfilLogado(), db);

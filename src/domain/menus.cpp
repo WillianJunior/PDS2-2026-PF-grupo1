@@ -1,9 +1,8 @@
-#include "menus.hpp"
-#include "domain/comunidade.hpp"
 #include "domain/menus.hpp"
+#include "domain/comunidade.hpp"
 #include "domain/perfil.hpp"
 #include <algorithm>
-#include <console_utils.hpp>
+#include "domain/console_utils.hpp"
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -128,16 +127,6 @@ std::vector<Comentario *> comentariosDoPost(const Post &post, Armazenamento &db)
     for (auto &comentario : db.getTodosComentariosMutavel()) {
         if (comentario.getIdPost() == post.getId()) {
             resultado.push_back(&comentario);
-        }
-    }
-    return resultado;
-}
-
-std::vector<Post> postsDoUsuario(int idAlvo, const Armazenamento &db) {
-    std::vector<Post> resultado;
-    for (const auto &post : db.getTodosPosts()) {
-        if (post.getIdAutor() == idAlvo) {
-            resultado.push_back(post);
         }
     }
     return resultado;
@@ -361,7 +350,7 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
         }
 
         if (isMember) {
-            std::cout << "1 - Criar Post\n2 - Ver Posts\n4 - Voltar\n\n";
+            std::cout << "1 - Criar Post\n2 - Ver Posts\n3 - Voltar\n\n"; 
         } else {
             std::cout
                 << "1 - Entrar na Comunidade\n2 - Ver Posts\n3 - Voltar\n\n";
@@ -392,7 +381,7 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
                 }
             } else if (opcao == 2) {
                 menuVerPostsLista(postsDaComunidade, db);
-            } else if (opcao == 4) {
+            } else if (opcao == 3) {
                 break;
             } else {
                 mensagem = "[ERRO] Opcao invalida.";
@@ -557,8 +546,24 @@ void menuPerfil(int idAlvo, Armazenamento &db) {
         mensagem.clear();
 
         const bool souEu = (idAlvo == db.getIdPerfilLogado());
-        const auto postsUsuario = postsDoUsuario(idAlvo, db);
+        Perfil* eu = db.getPerfil(db.getIdPerfilLogado());
+        std::vector<int> minhasComunidades = eu ? eu->getIdsComunidades() : std::vector<int>();
 
+        std::vector<Post> postsUsuario;
+        for (const auto &p : db.getTodosPosts()) {
+            if (p.getIdAutor() != idAlvo)
+                continue;
+            if (souEu) {
+                postsUsuario.push_back(p);
+            } else {
+                if (p.getIdComunidade() == 0) {
+                    postsUsuario.push_back(p);
+                } else if (std::find(minhasComunidades.begin(), minhasComunidades.end(), p.getIdComunidade()) != minhasComunidades.end()) {
+                    postsUsuario.push_back(p);
+                }
+            }
+        }
+            
         exibirResumoPerfil(*alvo);
 
         if (souEu) {
@@ -567,7 +572,7 @@ void menuPerfil(int idAlvo, Armazenamento &db) {
             std::cout << "3 - Voltar\n\n";
         } else {
             std::cout << "1 - Ver Posts\n";
-            std::cout << "3 - Voltar\n\n";
+            std::cout << "2 - Voltar\n\n";
         }
 
         std::cout << "Digite sua opcao desejada: ";

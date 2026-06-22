@@ -6,7 +6,7 @@ void ConsoleUtils::limparTela() {
     #if defined(_WIN32) || defined(_WIN64)
         std::system("cls");
     #else
-        std::system("clear");
+        std::system("ls");
     #endif
 }
 

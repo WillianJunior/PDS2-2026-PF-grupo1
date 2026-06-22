@@ -12,14 +12,14 @@ TEST_SUITE("Armazenamento") {
         CHECK(db.senhaSegura("SenhaSemNumero") == false);
         CHECK(db.senhaSegura("Segura123") == true);
 
-        db.criarUsuarioEPerfil("teste@uni.br", "senha123", "Tester");
+        db.criarUsuarioEPerfil("teste@uni.br", "Senha123", "Tester");
         CHECK(db.emailUnico("teste@uni.br") == false);
         CHECK(db.nomeUsuarioUnico("Tester") == false);
         CHECK(db.emailUnico("novo@uni.br") == true);
         
         CHECK(db.fazerLogin("teste@uni.br", "errada") == false);
         CHECK(db.fazerLogin("errado@uni.br", "senha123") == false);
-        CHECK(db.fazerLogin("teste@uni.br", "senha123") == true);
+        CHECK(db.fazerLogin("teste@uni.br", "Senha123") == true);
         CHECK(db.getEmailLogado() == "teste@uni.br");
         CHECK(db.getIdPerfilLogado() == 1);
 
@@ -30,8 +30,8 @@ TEST_SUITE("Armazenamento") {
 
     TEST_CASE("Criacao e Consulta de Entidades") {
         Armazenamento db;
-        db.criarUsuarioEPerfil("teste@uni.br", "senha123", "Tester");
-        db.fazerLogin("teste@uni.br", "senha123");
+        db.criarUsuarioEPerfil("teste@uni.br", "Senha123", "Tester");
+        db.fazerLogin("teste@uni.br", "Senha123");
 
         db.criarComunidade("Minha Com", "Desc");
         db.criarPost("Meu Post", 1);
@@ -41,7 +41,7 @@ TEST_SUITE("Armazenamento") {
         CHECK(db.getTodosPerfis().size() == 1);
         CHECK(db.getTodasComunidades().size() == 1);
         CHECK(db.getTodosPosts().size() == 2);
-        CHECK(db.getPostsFeed().size() == 1); 
+        CHECK(db.getPostsFeed().size() == 2); 
 
         CHECK(db.getPerfil(1) != nullptr);
         CHECK(db.getPerfil(99) == nullptr);
@@ -74,7 +74,7 @@ TEST_SUITE("Armazenamento") {
 
     TEST_CASE("Carregar e Salvar Dados (I/O Simulado)") {
         Armazenamento db;
-        db.criarUsuarioEPerfil("a@b.c", "senha12345", "A");
+        db.criarUsuarioEPerfil("a@b.c", "Senha12345", "A");
         db.salvarDados(); 
         db.carregarDados(); 
         CHECK(db.getTodosPerfis().size() >= 1);
@@ -97,7 +97,7 @@ TEST_SUITE("Armazenamento") {
 TEST_CASE("Salvar e carregar novamente") {
     Armazenamento db;
 
-    db.criarUsuarioEPerfil("x@x.com", "senha12345", "X");
+    db.criarUsuarioEPerfil("x@x.com", "Senha12345", "X");
     db.salvarDados();
     db.carregarDados();
 

@@ -19,7 +19,13 @@ void garantirDiretorioDados() {
 
 }
 
-Armazenamento::Armazenamento() : emailLogado(""), idPerfilLogado(0) {}
+Armazenamento::Armazenamento() : emailLogado(""), idPerfilLogado(0) {
+    usuarios.reserve(1000);
+    perfis.reserve(1000);
+    comunidades.reserve(1000);
+    posts.reserve(1000);
+    comentarios.reserve(1000);
+}
 
 bool Armazenamento::senhaSegura(const std::string& senha) const {
     if (senha.length() < 8) return false;
@@ -199,7 +205,8 @@ std::vector<Post> Armazenamento::getPostsFeed() const {
         perfilLogado->getIdsComunidades();
 
     for (const auto& post : posts) {
-        if (std::find(
+        if (post.getIdComunidade() == 0 || 
+            std::find(
                 comunidadesUsuario.begin(),
                 comunidadesUsuario.end(),
                 post.getIdComunidade())
@@ -209,7 +216,6 @@ std::vector<Post> Armazenamento::getPostsFeed() const {
     }
     return feed;
 }
-
 std::vector<Post>& Armazenamento::getTodosPostsMutavel() { return posts; }
 std::vector<Comentario>& Armazenamento::getTodosComentariosMutavel() { return comentarios; }
 const std::vector<Perfil>& Armazenamento::getTodosPerfis() const { return perfis; }

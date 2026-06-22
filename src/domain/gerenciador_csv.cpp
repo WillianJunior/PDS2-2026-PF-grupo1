@@ -89,8 +89,8 @@ void GerenciadorCSV::salvarPerfis(const std::vector<Perfil> &perfis,
     std::ofstream arquivo(nomeArquivo);
     arquivo << "id,nome,descricao,curso,instituicao,periodo,comunidades\n";
     for (const auto &p : perfis) {
-        arquivo << p.getId() << "," << p.getNome() << "," << p.getDescricao()
-                << "," << p.getCurso() << "," << p.getInstituicao() << ","
+        arquivo << p.getId() << "," << escaparTexto(p.getNome()) << "," << escaparTexto(p.getDescricao())
+                << "," << escaparTexto(p.getCurso()) << "," << escaparTexto(p.getInstituicao()) << ","
                 << p.getPeriodo() << ","
                 << juntarInteiros(p.getIdsComunidades(), '|') << "\n";
     }
@@ -106,8 +106,8 @@ GerenciadorCSV::carregarPerfis(const std::string &nomeArquivo) {
             auto dados = separarString(linha, ',');
             if (dados.size() >= 6) {
                 try {
-                    Perfil p(std::stoi(dados[0]), dados[1], dados[2], dados[3],
-                             dados[4], std::stoi(dados[5]));
+                    Perfil p(std::stoi(dados[0]), desescaparTexto(dados[1]), desescaparTexto(dados[2]),
+                             desescaparTexto(dados[3]), desescaparTexto(dados[4]), std::stoi(dados[5]));
                     if (dados.size() > 9)
                         p.setIdsComunidades(separarInteiros(dados[9], '|'));
                     lista.push_back(p);
@@ -125,7 +125,7 @@ void GerenciadorCSV::salvarComunidades(
     std::ofstream arquivo(nomeArquivo);
     arquivo << "id,nome,descricao,idAdmin,membros\n";
     for (const auto &c : comunidades) {
-        arquivo << c.getId() << "," << c.getNome() << "," << c.getDescricao()
+        arquivo << c.getId() << "," << escaparTexto(c.getNome()) << "," << escaparTexto(c.getDescricao())
                 << "," << c.getIdAdministrador() << ","
                 << juntarInteiros(c.getIdsMembros(), '|') << "\n";
     }
@@ -141,7 +141,7 @@ GerenciadorCSV::carregarComunidades(const std::string &nomeArquivo) {
             auto dados = separarString(linha, ',');
             if (dados.size() >= 4) {
                 try {
-                    Comunidade c(std::stoi(dados[0]), dados[1], dados[2],
+                    Comunidade c(std::stoi(dados[0]), desescaparTexto(dados[1]), desescaparTexto(dados[2]),
                                  std::stoi(dados[3]));
                     if (dados.size() > 4)
                         c.setIdsMembros(separarInteiros(dados[4], '|'));
@@ -176,7 +176,7 @@ GerenciadorCSV::carregarPosts(const std::string &nomeArquivo) {
             if (dados.size() >= 4) {
                 try {
                     Post p(std::stoi(dados[0]), std::stoi(dados[1]),
-                           std::stoi(dados[2]), dados[3]);
+                           std::stoi(dados[2]), desescaparTexto(dados[3]));
                     if (dados.size() > 4)
                         p.setIdsCurtidas(separarInteiros(dados[4], '|'));
                     lista.push_back(p);
@@ -195,7 +195,7 @@ void GerenciadorCSV::salvarComentarios(
     arquivo << "id,idPost,idAutor,texto,curtidas\n";
     for (const auto &c : comentarios) {
         arquivo << c.getId() << "," << c.getIdPost() << "," << c.getIdAutor()
-                << "," << c.getTexto() << ","
+                << "," << escaparTexto(c.getTexto()) << ","
                 << juntarInteiros(c.getIdsCurtidas(), '|') << "\n";
     }
 }
@@ -211,7 +211,7 @@ GerenciadorCSV::carregarComentarios(const std::string &nomeArquivo) {
             if (dados.size() >= 4) {
                 try {
                     Comentario c(std::stoi(dados[0]), std::stoi(dados[1]),
-                                 std::stoi(dados[2]), dados[3]);
+                                 std::stoi(dados[2]), desescaparTexto(dados[3]));
                     if (dados.size() > 4)
                         c.setIdsCurtidas(separarInteiros(dados[4], '|'));
                     lista.push_back(c);
