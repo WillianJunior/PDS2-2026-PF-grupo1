@@ -1,65 +1,60 @@
-# Design do Sistema
+# Design do Sistema - Edu Social
 
-## Visao geral
+## Visão geral
 
-O projeto modela uma rede social educacional centrada em comunidades. A comunidade e o espaco principal de interacao: usuarios entram em comunidades, publicam posts, respondem com comentarios e consomem o feed consolidado das fontes que acompanham.
+O projeto modela uma rede social educacional centrada em comunidades. A comunidade é o espaço principal de interação: usuários entram em comunidades, publicam posts, respondem com comentários e consomem o feed consolidado das fontes que acompanham. A aplicação funciona por meio de uma interface em terminal, permitindo que os usuários realizem operações semelhantes às encontradas em redes sociais tradicionais, porém voltadas para o contexto educacional.
 
-O objetivo desta modelagem e deixar a orientacao a objetos visivel no codigo e facil de defender em apresentacao, especialmente nos pontos de heranca, composicao e polimorfismo.
+Além das funcionalidades sociais, o sistema implementa mecanismos de persistência de dados utilizando arquivos CSV, permitindo que informações sejam armazenadas e recuperadas entre diferentes execuções da aplicação. O objetivo desta modelagem é deixar a orientação a objetos visível no código e fácil de defender em apresentação, especialmente nos pontos de herança, composição e polimorfismo.
 
 ## Fluxo principal do produto
 
-1. Um usuario cria ou entra em uma comunidade.
-2. A comunidade passa a compor os membros cadastrados.
-3. Um membro publica um post dentro da comunidade.
-4. O post passa a compor seus comentarios.
-5. O feed agrega posts vindos de uma ou mais comunidades.
-6. O servico de busca percorre comunidades e posts sem se tornar dono deles.
+1. Um usuário cria ou entra em uma comunidade;
+2. A comunidade passa a compor os membros cadastrados;
+3. Um membro publica um post dentro da comunidade;
+4. O post passa a compor seus comentários;
+5. O feed agrega posts vindos de uma ou mais comunidades;
+6. O serviço de busca percorre comunidades e posts sem se tornar dono deles;
 
 ## Mapa das classes principais
 
-- `User`: conta principal do participante da rede.
-- `Community`: agregado central do sistema.
-- `Content`: abstracao base do conteudo publicavel.
-- `Post`: publicacao principal da comunidade.
-- `Comment`: resposta vinculada a um post.
-- `Feed`: agregador personalizado de posts.
-- `SearchService`: servico de busca do dominio.
-- `PostSource`: interface polimorfica para qualquer classe que liste posts.
+- `Armazenamento`: mantém coleção de objetos que serão utilizados. Central de dados;
+- `Busca`: responsável pelas operações de pesquisa (de usuários, comunidades e posts);
+- `Comentário`: resposta vinculada a um post;
+- `Comunidade`: representa grupos temáticos dentro da plataforma;
+- `Console Utils`: faz a limpeza da tela;
+- `Feed`: responsável pela organização e exibição das publicações;
+- `Gerenciador CSV`: responsável pela manutenção dos dados;
+- `Menus`: responsável pela interação com o usuário;
+- `Perfil`: representa as informações públicas de um usuário;
+- `Post`: publicação principal da comunidade;
+- `Usuário`: conta principal do participante da rede.
 
-## Heranca
+## Herança
 
 O projeto usa uma hierarquia explicita de conteudo:
 
-- `Content` e a classe abstrata base.
-- `Post` herda de `Content`.
-- `Comment` herda de `Content`.
+- Todas as classes herdam de `Armazenamento`;
+- `Gerenciador CSV` herda de `Comunidade`, `Usuário`, `Perfil`, `Post` e `Comentário`;
+- `Usuário`, `Perfil` e `Post` herdam de `Comunidade`;
 
-Essa decisao concentra comportamento comum em um unico lugar: id, autor, corpo, timestamps, curtidas e resumo textual.
+## Composição
 
-## Composicao
+O projeto usa composição em dois pontos centrais:
 
-O projeto usa composicao em dois pontos centrais:
-
-- `Community` compoe membros e posts.
-- `Post` compoe comentarios.
-
-Essas relacoes aparecem de forma direta nos atributos das classes, o que deixa o modelo facil de enxergar e defender.
+- `Usuário` 1:1 `Perfil`.
+- `Comentário` compõe de `Post` e `Perfil`;
 
 ## Polimorfismo
 
 O projeto demonstra polimorfismo em dois eixos:
 
-- `Content` permite tratar `Post` e `Comment` por uma interface comum.
-- `PostSource` permite tratar `Community` e `Feed` como fontes de listagem de posts.
+- 
 
-Esses dois casos foram escolhidos porque representam diferencas reais de comportamento no dominio, evitando heranca artificial.
+## Relação entre modelagem e implementação
 
-## Relacao entre modelagem e implementacao
+- As User Stories estao em [user_stories.md](./user_stories.md);
+- Os CRCs estao em [crc_cards.md](./crc_cards.md);
+- Os contratos das classes estao em `include/domain/`;
+- O Diagrama UML do projeto está em `Diagrama_UML.png`;
+- A API planejada está documentada no `README.md`.
 
-- As User Stories estao em [user_stories.md](./user_stories.md).
-- Os CRCs estao em [crc_cards.md](./crc_cards.md).
-- Os contratos das classes estao em `include/domain/`.
-- O schema esta em `database/schema.sql`.
-- A API planejada esta documentada no `README.md`.
-
-Os PDFs originais do checkpoint continuam no diretorio apenas como registro historico da entrega inicial.
