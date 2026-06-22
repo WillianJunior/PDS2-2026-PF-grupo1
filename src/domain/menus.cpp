@@ -286,7 +286,7 @@ void menuComunidade(int idComunidade, Armazenamento& db) {
         }
 
         if (isMember) {
-            std::cout << "1 - Criar Post\n2 - Ver Posts\n4 - Voltar\n\n";
+            std::cout << "1 - Criar Post\n2 - Ver Posts\n3 - Voltar\n\n"; 
         } else {
             std::cout << "1 - Entrar na Comunidade\n2 - Ver Posts\n3 - Voltar\n\n";
         }
@@ -314,7 +314,7 @@ void menuComunidade(int idComunidade, Armazenamento& db) {
                 }
             } else if (opcao == 2) {
                 menuVerPostsLista(postsDaComunidade, db);
-            } else if (opcao == 4) {
+            } else if (opcao == 3) {
                 break;
             } else {
                 mensagem = "[ERRO] Opcao invalida.";
@@ -469,10 +469,17 @@ void menuPerfil(int idAlvo, Armazenamento& db) {
         bool souEu = (idAlvo == db.getIdPerfilLogado());
 
         std::vector<Post> postsDoUsuario;
-        for (const auto& p : db.getTodosPosts()) {
-            if (p.getIdAutor() == idAlvo) postsDoUsuario.push_back(p);
-        }
+        Perfil* eu = db.getPerfil(db.getIdPerfilLogado());
+        const auto& minhasComunidades = eu ? eu->getIdsComunidades() : std::vector<int>();
 
+        for (const auto& p : db.getTodosPosts()) {
+            if (p.getIdAutor() == idAlvo) {
+                if (souEu || p.getIdComunidade() == 0 || 
+                    std::find(minhasComunidades.begin(), minhasComunidades.end(), p.getIdComunidade()) != minhasComunidades.end()) {
+                    postsDoUsuario.push_back(p);
+                }
+            }
+        }
         exibirResumoPerfil(*alvo);
 
         if (souEu) {
@@ -482,7 +489,7 @@ void menuPerfil(int idAlvo, Armazenamento& db) {
         } else {
             Perfil* eu = db.getPerfil(db.getIdPerfilLogado());
             std::cout << "1 - Ver Posts\n";
-            std::cout << "3 - Voltar\n\n";
+            std::cout << "2 - Voltar\n\n";
         }
 
         std::cout << "Digite sua opcao desejada: ";
@@ -509,13 +516,8 @@ void menuPerfil(int idAlvo, Armazenamento& db) {
         } else {
             if (opcao == 1) {
                 menuVerPostsLista(postsDoUsuario, db);
-            } else if (opcao == 2) {
-                Perfil* eu = db.getPerfil(db.getIdPerfilLogado());
-                if (!eu) {
-                    mensagem = "[ERRO] Perfil logado nao encontrado.";
-                }
-            } else if (opcao == 3) {
-                break;
+            } else if (opcao == 2) { 
+                break; 
             } else {
                 mensagem = "[ERRO] Opcao invalida.";
             }

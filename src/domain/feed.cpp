@@ -18,7 +18,7 @@ bool lerInteiro(const std::string& linha, int& valor) {
     }
 }
 
-}  // namespace
+} 
 
 void Feed::verFeed(Armazenamento& db) {
     while (true) {
@@ -50,14 +50,27 @@ void Feed::verFeed(Armazenamento& db) {
             }
         }
 
-        std::cout << "A) Selecionar Post / B) Voltar\n\n";
+        std::cout << "A) Selecionar Post / B) Criar Post Global / C) Voltar\n\n";
         std::cout << "Digite sua opcao desejada: ";
         std::string opcao;
         std::getline(std::cin, opcao);
 
-        if (opcao == "B" || opcao == "b") {
+        if (opcao == "C" || opcao == "c") {
             ConsoleUtils::limparTela();
             break;
+        } else if (opcao == "B" || opcao == "b") {
+            std::cout << "Digite o texto do seu post global: ";
+            std::string txt;
+            if (std::getline(std::cin, txt) && !txt.empty()) {
+                try {
+                    db.criarPost(txt, 0); 
+                    std::cout << "\n[SUCESSO] Post global publicado! Pressione ENTER para recarregar...";
+                    std::cin.get();
+                } catch (const std::invalid_argument& e) {
+                    std::cout << "\n[ERRO] " << e.what() << "\n";
+                }
+            }
+            continue; 
         } else if (opcao == "A" || opcao == "a") {
             if (todosPosts.empty()) {
                 std::cout << "\n[ERRO] Nao ha posts para selecionar.\n";
@@ -74,9 +87,12 @@ void Feed::verFeed(Armazenamento& db) {
 
             if (escolhaIdx >= 1 && escolhaIdx <= static_cast<int>(todosPosts.size())) {
                 int vetorIdx = static_cast<int>(todosPosts.size()) - escolhaIdx;
-                try {
-                    menuVisualizarPost(todosPosts.at(vetorIdx), db);
-                } catch (const std::out_of_range&) {
+                
+                Post* postOriginal = db.getPostMutavel(todosPosts.at(vetorIdx).getId());
+                
+                if (postOriginal) {
+                    menuVisualizarPost(*postOriginal, db);
+                } else {
                     std::cout << "\n[ERRO] Post nao acessivel operacionalmente.\n";
                 }
             } else {

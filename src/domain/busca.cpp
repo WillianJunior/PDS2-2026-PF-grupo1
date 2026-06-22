@@ -1,9 +1,19 @@
 #include "domain/busca.hpp"
 #include <iostream>
 #include <algorithm>
+#include <cctype> 
 
 static bool contemPalavra(const std::string& texto, const std::string& chave) {
-    return texto.find(chave) != std::string::npos;
+    std::string textoMin = texto;
+    std::string chaveMin = chave;
+
+    std::transform(textoMin.begin(), textoMin.end(), textoMin.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+    
+    std::transform(chaveMin.begin(), chaveMin.end(), chaveMin.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+
+    return textoMin.find(chaveMin) != std::string::npos;
 }
 
 std::vector<Perfil> Busca::buscarPerfis(const std::string& palavraChave, const Armazenamento& db) const {
