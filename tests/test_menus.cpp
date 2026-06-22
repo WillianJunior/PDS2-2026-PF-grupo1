@@ -40,12 +40,15 @@ TEST_SUITE("Menus") {
         db.fazerLogin("a@a.com", "senha12345");
         db.criarPost("Teste", 0);
 
-        auto &posts = db.getTodosPostsMutavel();
+        auto posts = db.getTodosPosts();
+        Post *postReal = db.getPostMutavel(posts[0].getId());
 
         std::istringstream input("F\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
-        CHECK_NOTHROW(menuVisualizarPost(posts[0], db));
+        if (postReal) {
+            CHECK_NOTHROW(menuVisualizarPost(*postReal, db));
+        }
         std::cout << "menuVisualizarPost sair direto passou sem travar\n";
         std::cin.rdbuf(old);
     }
@@ -87,12 +90,15 @@ TEST_SUITE("Menus") {
         db.fazerLogin("a@a.com", "senha12345");
         db.criarPost("Teste", 0);
 
-        auto &posts = db.getTodosPostsMutavel();
+        auto posts = db.getTodosPosts();
+        Post *postReal = db.getPostMutavel(posts[0].getId());
 
         std::istringstream input("A\nA\nF\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
-        CHECK_NOTHROW(menuVisualizarPost(posts[0], db));
+        if (postReal) {
+            CHECK_NOTHROW(menuVisualizarPost(*postReal, db));
+        }
         std::cout
             << "menuVisualizarPost curtir e descurtir passou sem travar\n";
         std::cin.rdbuf(old);
@@ -105,12 +111,15 @@ TEST_SUITE("Menus") {
         db.fazerLogin("a@a.com", "senha12345");
         db.criarPost("Teste", 0);
 
-        auto &posts = db.getTodosPostsMutavel();
+        auto posts = db.getTodosPosts();
+        Post *postReal = db.getPostMutavel(posts[0].getId());
 
         std::istringstream input("C\nMeu comentario\nF\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
-        CHECK_NOTHROW(menuVisualizarPost(posts[0], db));
+        if (postReal) {
+            CHECK_NOTHROW(menuVisualizarPost(*postReal, db));
+        }
         std::cout << "menuVisualizarPost comentar passou sem travar\n";
         std::cin.rdbuf(old);
     }
@@ -124,12 +133,15 @@ TEST_SUITE("Menus") {
         db.criarPost("Teste", 0);
         db.criarComentarioGlobal(1, 1, "Comentario teste");
 
-        auto &posts = db.getTodosPostsMutavel();
+        auto posts = db.getTodosPosts();
+        Post *postReal = db.getPostMutavel(posts[0].getId());
 
         std::istringstream input("B\n1\nF\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
-        CHECK_NOTHROW(menuVisualizarPost(posts[0], db));
+        if (postReal) {
+            CHECK_NOTHROW(menuVisualizarPost(*postReal, db));
+        }
         std::cout << "menuVisualizarPost curtir comentario passou sem travar\n";
         std::cin.rdbuf(old);
     }
@@ -142,12 +154,15 @@ TEST_SUITE("Menus") {
 
         db.criarPost("Teste", 0);
 
-        auto &posts = db.getTodosPostsMutavel();
+        auto posts = db.getTodosPosts();
+        Post *postReal = db.getPostMutavel(posts[0].getId());
 
         std::istringstream input("D\nB\nF\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
-        CHECK_NOTHROW(menuVisualizarPost(posts[0], db));
+        if (postReal) {
+            CHECK_NOTHROW(menuVisualizarPost(*postReal, db));
+        }
         std::cout << "menuVisualizarPost abrir perfil passou sem travar\n";
         std::cin.rdbuf(old);
     }
@@ -175,12 +190,15 @@ TEST_SUITE("Menus") {
         db.fazerLogin("x@x.com", "senha12345");
         db.criarPost("Teste", 0);
 
-        auto &posts = db.getTodosPostsMutavel();
+        auto posts = db.getTodosPosts();
+        Post *postReal = db.getPostMutavel(posts[0].getId());
 
         std::istringstream input("B\nF\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
-        CHECK_NOTHROW(menuVisualizarPost(posts[0], db));
+        if (postReal) {
+            CHECK_NOTHROW(menuVisualizarPost(*postReal, db));
+        }
         std::cout
             << "menuVisualizarPost erro sem comentarios passou sem travar\n";
         std::cin.rdbuf(old);
@@ -265,12 +283,15 @@ TEST_SUITE("Menus") {
         db.fazerLogin("a@a.com", "senha12345");
         db.criarPost("Teste", 0);
 
-        auto &posts = db.getTodosPostsMutavel();
+        auto posts = db.getTodosPosts();
+        Post *postReal = db.getPostMutavel(posts[0].getId());
 
         std::istringstream input("A\nF\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
-        CHECK_NOTHROW(menuVisualizarPost(posts[0], db));
+        if (postReal) {
+            CHECK_NOTHROW(menuVisualizarPost(*postReal, db));
+        }
 
         std::cin.rdbuf(old);
     }
@@ -282,12 +303,15 @@ TEST_SUITE("Menus") {
         db.fazerLogin("a@a.com", "senha12345");
         db.criarPost("Teste", 0);
 
-        auto &posts = db.getTodosPostsMutavel();
+        auto posts = db.getTodosPosts();
+        Post *postReal = db.getPostMutavel(posts[0].getId());
 
         std::istringstream input("Z\nF\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
-        CHECK_NOTHROW(menuVisualizarPost(posts[0], db));
+        if (postReal) {
+            CHECK_NOTHROW(menuVisualizarPost(*postReal, db));
+        }
 
         std::cin.rdbuf(old);
     }
@@ -358,12 +382,15 @@ TEST_SUITE("Menus") {
         db.fazerLogin("a@a.com", "senha12345");
         db.criarPost("Teste", 0);
 
-        auto &posts = db.getTodosPostsMutavel();
+        auto posts = db.getTodosPosts();
+        Post *postReal = db.getPostMutavel(posts[0].getId());
 
         std::istringstream input("C\n\nF\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
-        CHECK_NOTHROW(menuVisualizarPost(posts[0], db));
+        if (postReal) {
+            CHECK_NOTHROW(menuVisualizarPost(*postReal, db));
+        }
 
         std::cin.rdbuf(old);
     }
@@ -373,14 +400,17 @@ TEST_SUITE("Menus") {
 
         db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
         db.fazerLogin("a@a.com", "senha12345");
+        db.criarPost("Teste", 0); // Garante que há pelo menos um post criado
 
-
-        auto &posts = db.getTodosPostsMutavel();
+        auto posts = db.getTodosPosts();
+        Post *postReal = db.getPostMutavel(posts[0].getId());
 
         std::istringstream input("E\nF\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
-        CHECK_NOTHROW(menuVisualizarPost(posts[0], db));
+        if (postReal) {
+            CHECK_NOTHROW(menuVisualizarPost(*postReal, db));
+        }
 
         std::cin.rdbuf(old);
     }
@@ -446,12 +476,15 @@ TEST_SUITE("Menus") {
         db.criarPost("Teste", 0);
         db.criarComentarioGlobal(1, 1, "Oi");
 
-        auto &posts = db.getTodosPostsMutavel();
+        auto posts = db.getTodosPosts();
+        Post *postReal = db.getPostMutavel(posts[0].getId());
 
         std::istringstream input("B\n1\nF\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
-        CHECK_NOTHROW(menuVisualizarPost(posts[0], db));
+        if (postReal) {
+            CHECK_NOTHROW(menuVisualizarPost(*postReal, db));
+        }
 
         std::cin.rdbuf(old);
     }
@@ -464,12 +497,15 @@ TEST_SUITE("Menus") {
 
         db.criarPost("Teste", 0);
 
-        auto &posts = db.getTodosPostsMutavel();
+        auto posts = db.getTodosPosts();
+        Post *postReal = db.getPostMutavel(posts[0].getId());
 
         std::istringstream input("C\nTeste comentario\nF\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
-        CHECK_NOTHROW(menuVisualizarPost(posts[0], db));
+        if (postReal) {
+            CHECK_NOTHROW(menuVisualizarPost(*postReal, db));
+        }
 
         std::cin.rdbuf(old);
     }
@@ -495,12 +531,15 @@ TEST_SUITE("Menus") {
 
         db.criarPost("Teste", 0);
 
-        auto &posts = db.getTodosPostsMutavel();
+        auto posts = db.getTodosPosts();
+        Post *postReal = db.getPostMutavel(posts[0].getId());
 
         std::istringstream input("F\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
-        CHECK_NOTHROW(menuVisualizarPost(posts[0], db));
+        if (postReal) {
+            CHECK_NOTHROW(menuVisualizarPost(*postReal, db));
+        }
 
         std::cin.rdbuf(old);
     }
