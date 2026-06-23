@@ -22,7 +22,7 @@ void Post::curtir(int idUsuario) {
 }
 
 int Post::quantidadeDeCurtidas() const {
-    return idsCurtidas.size();
+    return static_cast<int>(idsCurtidas.size());
 }
 
 int Post::getId() const {

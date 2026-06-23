@@ -8,10 +8,14 @@ static bool contemPalavra(const std::string& texto, const std::string& chave) {
     std::string chaveMin = chave;
 
     std::transform(textoMin.begin(), textoMin.end(), textoMin.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
-    
+                   [](unsigned char c) {
+                       return static_cast<char>(std::tolower(c));
+                   });
+
     std::transform(chaveMin.begin(), chaveMin.end(), chaveMin.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
+                   [](unsigned char c) {
+                       return static_cast<char>(std::tolower(c));
+                   });
 
     return textoMin.find(chaveMin) != std::string::npos;
 }

@@ -135,7 +135,7 @@
 - Exibir perfis.
 - Exibir comunidades.
 - Exibir posts e comentários.
-- Permitir interações sociais (seguir, curtir e comentar).
+- Permitir interações sociais (curtir e comentar).
 - Permitir edição de perfil.
 
 ### Colaboradores
@@ -156,8 +156,6 @@
 - Armazenar dados públicos do usuário.
 - Gerenciar informações acadêmicas.
 - Gerenciar biografia do usuário.
-- Controlar seguidores.
-- Controlar usuários seguidos.
 - Gerenciar comunidades das quais participa.
 - Permitir atualização das informações do perfil.
 - Disponibilizar dados do perfil.
