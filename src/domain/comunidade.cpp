@@ -15,30 +15,26 @@ void Comunidade::adicionarMembro(int idPerfil) {
 
 void Comunidade::removerMembro(int idPerfil) {
     auto it = std::find(idsMembros.begin(), idsMembros.end(), idPerfil);
-    if (it != idsMembros.end()) idsMembros.erase(it);
+    if (it != idsMembros.end())
+        idsMembros.erase(it);
 }
 
-void Comunidade::entrarComunidade(int idPerfil) {
-    adicionarMembro(idPerfil);
-}
+void Comunidade::entrarComunidade(int idPerfil) { adicionarMembro(idPerfil); }
 
 bool Comunidade::podePublicar(int idPerfil) const {
-    return idPerfil == idAdministrador ||
-           std::find(idsMembros.begin(), idsMembros.end(), idPerfil) != idsMembros.end();
+    return idPerfil == idAdministrador || std::find(idsMembros.begin(), idsMembros.end(), idPerfil) != idsMembros.end();
 }
 
 void Comunidade::exibirMembrosComunidade() const {}
 
 int Comunidade::getId() const { return id; }
 
-const std::string& Comunidade::getNome() const { return nome; }
+const std::string &Comunidade::getNome() const { return nome; }
 
-const std::string& Comunidade::getDescricao() const { return descricao; }
+const std::string &Comunidade::getDescricao() const { return descricao; }
 
 int Comunidade::getIdAdministrador() const { return idAdministrador; }
 
-const std::vector<int>& Comunidade::getIdsMembros() const { return idsMembros; }
+const std::vector<int> &Comunidade::getIdsMembros() const { return idsMembros; }
 
-void Comunidade::setIdsMembros(const std::vector<int>& ids) {
-    idsMembros = ids;
-}
+void Comunidade::setIdsMembros(const std::vector<int> &ids) { idsMembros = ids; }

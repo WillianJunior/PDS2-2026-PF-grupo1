@@ -2,21 +2,10 @@
 
 #include <utility>
 
-Usuario::Usuario(
-    int id,
-    std::string emailInicial,
-    std::string senhaInicial,
-    std::string nomeInicial
-)
-    : id(id),
-      email(std::move(emailInicial)),
-      senha(std::move(senhaInicial)),
-      nomeDeUsuario(std::move(nomeInicial))
-{
-}
+Usuario::Usuario(int id, std::string emailInicial, std::string senhaInicial, std::string nomeInicial)
+    : id(id), email(std::move(emailInicial)), senha(std::move(senhaInicial)), nomeDeUsuario(std::move(nomeInicial)) {}
 
-bool Usuario::alterarSenha(std::string senhaAtual, std::string novaSenha)
-{
+bool Usuario::alterarSenha(std::string senhaAtual, std::string novaSenha) {
     if (senhaAtual != senha) {
         return false;
     }
@@ -25,8 +14,7 @@ bool Usuario::alterarSenha(std::string senhaAtual, std::string novaSenha)
     return true;
 }
 
-bool Usuario::alterarEmail(std::string senhaAtual, std::string novoEmail)
-{
+bool Usuario::alterarEmail(std::string senhaAtual, std::string novoEmail) {
     if (senhaAtual != senha) {
         return false;
     }
@@ -35,30 +23,14 @@ bool Usuario::alterarEmail(std::string senhaAtual, std::string novoEmail)
     return true;
 }
 
-bool Usuario::fazerLogin(
-    std::string emailInformado,
-    std::string senhaInformada
-) const
-{
+bool Usuario::fazerLogin(std::string emailInformado, std::string senhaInformada) const {
     return emailInformado == email && senhaInformada == senha;
 }
 
-std::string Usuario::getEmail() const
-{
-    return email;
-}
+std::string Usuario::getEmail() const { return email; }
 
-int Usuario::getId() const
-{
-    return id;
-}
+int Usuario::getId() const { return id; }
 
-std::string Usuario::getNome() const
-{
-    return nomeDeUsuario;
-}
+std::string Usuario::getNome() const { return nomeDeUsuario; }
 
-std::string Usuario::getSenha() const
-{
-    return senha;
-}
+std::string Usuario::getSenha() const { return senha; }
