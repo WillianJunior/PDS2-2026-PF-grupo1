@@ -540,7 +540,7 @@ As relações de composição do sistema são:
 
 O polimorfismo é utilizado por meio do método virtual:
 
-- podeGerarComunidade()
+- podeGerenciarComunidade()
 
 A classe Perfil fornece uma implementação padrão retornando false, enquanto a classe Administrador sobrescreve esse método retornando true.
 
