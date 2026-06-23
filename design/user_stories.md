@@ -116,3 +116,16 @@ Como membro de uma comunidade, quero publicar conteúdos dentro dela para compar
 - Os membros devem conseguir visualizar as publicações da comunidade;
 - As publicações da comunidade devem exibir seu autor;
 - As publicações devem permanecer armazenadas após o encerramento do sistema.
+
+
+## Interação entre usuários
+
+### Descrição
+Como estudante, quero seguir outros usuários para acompanhar suas atividades acadêmicas e publicações.
+
+### Critérios de aceitação
+- O usuário deve poder seguir outro perfil;
+- O sistema deve registrar a relação de seguimento;
+- O usuário deve poder deixar de seguir um perfil;
+- O sistema deve mater listas de seguidores e seguidos;
+- As alterações devem ser refletidas imediatamente nos perfis envolvidos.

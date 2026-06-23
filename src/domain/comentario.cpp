@@ -13,9 +13,7 @@ void Comentario::curtir(int idUsuario) {
     else idsCurtidas.erase(it);
 }
 
-int Comentario::quantidadeDeCurtidas() const {
-    return static_cast<int>(idsCurtidas.size());
-}
+int Comentario::quantidadeDeCurtidas() const { return idsCurtidas.size(); }
 int Comentario::getId() const { return id; }
 int Comentario::getIdPost() const { return idPost; }
 int Comentario::idAutorObter() const { return idAutor; }

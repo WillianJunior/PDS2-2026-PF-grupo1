@@ -7,8 +7,8 @@
  * @class Perfil
  * @brief Classe que armazena os dados públicos, acadêmicos e sociais de um usuário.
  * * Representa a identidade do usuário dentro da rede educacional. É responsável 
- * por gerenciar atributos visíveis (como nome, curso e biografia) e as comunidades
- * em que ingressou.
+ * por gerenciar atributos visíveis (como nome, curso e biografia) e as relações 
+ * sociais (quem ele segue, seus seguidores e as comunidades em que ingressou).
  */
 class Perfil {
 private:
@@ -29,6 +29,9 @@ public:
 
     void entrarComunidade(int idComunidade);
     void sairComunidade(int idComunidade);
+
+    const std::vector<int>& listarIdSeguidores() const;
+    const std::vector<int>& listarIdSeguidos() const;
 
     /**
      * @name Getters

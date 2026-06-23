@@ -350,8 +350,7 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
         }
 
         if (isMember) {
-            std::cout << "1 - Criar Post\n2 - Ver Posts\n3 - Sair da "
-                         "Comunidade\n4 - Voltar\n\n";
+            std::cout << "1 - Criar Post\n2 - Ver Posts\n3 - Voltar\n\n"; 
         } else {
             std::cout
                 << "1 - Entrar na Comunidade\n2 - Ver Posts\n3 - Voltar\n\n";
@@ -383,14 +382,6 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
             } else if (opcao == 2) {
                 menuVerPostsLista(postsDaComunidade, db);
             } else if (opcao == 3) {
-                if (!eu) {
-                    mensagem = "[ERRO] Perfil logado nao encontrado.";
-                    continue;
-                }
-                com->removerMembro(eu->getId());
-                eu->sairComunidade(com->getId());
-                mensagem = "[SUCESSO] Voce saiu da comunidade!";
-            } else if (opcao == 4) {
                 break;
             } else {
                 mensagem = "[ERRO] Opcao invalida.";

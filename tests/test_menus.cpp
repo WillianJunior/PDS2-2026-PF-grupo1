@@ -73,31 +73,10 @@ TEST_SUITE("Menus") {
         db.fazerLogin("a@a.com", "senha12345");
         db.criarComunidade("Com", "Desc");
 
-        std::istringstream input("4\n");
+        std::istringstream input("3\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
         CHECK_NOTHROW(menuComunidade(1, db));
-        std::cin.rdbuf(old);
-    }
-
-    TEST_CASE("menuComunidade sair da comunidade") {
-        Armazenamento db;
-
-        db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
-        db.fazerLogin("a@a.com", "senha12345");
-        db.criarComunidade("Com", "Desc");
-
-        Perfil *eu = db.getPerfil(db.getIdPerfilLogado());
-        REQUIRE(eu != nullptr);
-        CHECK(eu->getIdsComunidades().size() == 1);
-
-        std::istringstream input("3\n4\n");
-        auto *old = std::cin.rdbuf(input.rdbuf());
-
-        CHECK_NOTHROW(menuComunidade(1, db));
-        CHECK(eu->getIdsComunidades().empty());
-        CHECK(db.getComunidade(1)->getIdsMembros().empty());
-
         std::cin.rdbuf(old);
     }
 
@@ -184,9 +163,10 @@ TEST_SUITE("Menus") {
 
         db.criarUsuarioEPerfil("a@a.com", "senha12345", "A");
         db.fazerLogin("a@a.com", "senha12345");
-        db.criarComunidade("Com", "Desc");
+        db.criarComunidade("Com", "Desc"); // O criador vira admin/membro
 
-        std::istringstream input("1\nMeu post\n4\n");
+        // 1 para Criar Post, digita o texto, e depois 3 para Voltar
+        std::istringstream input("1\nMeu post\n3\n");
         auto *old = std::cin.rdbuf(input.rdbuf());
 
         CHECK_NOTHROW(menuComunidade(1, db));
