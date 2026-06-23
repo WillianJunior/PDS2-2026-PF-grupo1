@@ -89,11 +89,11 @@ TEST_SUITE("Busca") {
         db.criarPost("Post Publico do Autor", 0);
         db.criarPost("Post Privado da Comunidade", 1);
 
-        auto postsParaSiMesmo = b.buscaPostsPorAutor(1, 1, db);
+        auto postsParaSiMesmo = b.buscaPostsPorAutor(1, db);
         CHECK(postsParaSiMesmo.size() == 2);
 
-        auto postsParaEstranho = b.buscaPostsPorAutor(1, 2, db);
-        CHECK(postsParaEstranho.size() == 1);
+        auto postsParaEstranho = b.buscaPostsPorAutor(1, db);
+        CHECK(postsParaEstranho.size() == 2);
         CHECK(postsParaEstranho[0]->getConteudo() == "Post Publico do Autor");
 
         db.getComunidade(1)->adicionarMembro(2);
@@ -101,7 +101,7 @@ TEST_SUITE("Busca") {
         if (PerfilLeitor)
             PerfilLeitor->entrarComunidade(1);
 
-        auto postsParaMembro = b.buscaPostsPorAutor(1, 2, db);
+        auto postsParaMembro = b.buscaPostsPorAutor(1, db);
         CHECK(postsParaMembro.size() == 2);
     }
 

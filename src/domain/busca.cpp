@@ -50,8 +50,8 @@ std::vector<Comunidade> Busca::buscarComunidades(const std::string &palavraChave
     return achados;
 } // LCOV_EXCL_LINE
 
-std::vector<Post*> Busca::buscaPosts(int idComunidade, Armazenamento &db) {
-    std::vector<Post*> achados;
+std::vector<Post *> Busca::buscaPosts(int idComunidade, Armazenamento &db) {
+    std::vector<Post *> achados;
 
     for (auto &post : db.getTodosPostsMutavel()) {
         if (post.getIdComunidade() == idComunidade) {
@@ -87,8 +87,8 @@ void Busca::filtrarResultados(const std::string &tipo) {
     }
 }
 
-std::vector<Post*> Busca::buscaPosts(Perfil perfil, Armazenamento &db) {
-    std::vector<Post*> feed;
+std::vector<Post *> Busca::buscaPosts(Perfil perfil, Armazenamento &db) {
+    std::vector<Post *> feed;
     const auto &comunidadesUsuario = perfil.getIdsComunidades();
 
     for (auto &post : db.getTodosPostsMutavel()) {
@@ -100,16 +100,10 @@ std::vector<Post*> Busca::buscaPosts(Perfil perfil, Armazenamento &db) {
     return feed;
 }
 
-std::vector<Post*> Busca::buscaPostsPorAutor(int idAlvo, int idLogado, Armazenamento &db) {
-    std::vector<Post*> resultados;
-    Perfil *eu = db.getPerfil(idLogado);
-    const auto &minhasComunidades = eu ? eu->getIdsComunidades() : std::vector<int>();
-
+std::vector<Post *> Busca::buscaPostsPorAutor(int idAlvo, Armazenamento &db) {
+    std::vector<Post *> resultados;
     for (auto &p : db.getTodosPostsMutavel()) {
-        if (p.getIdAutor() != idAlvo) continue;
-
-        if (idAlvo == idLogado || p.getIdComunidade() == 0 || 
-            std::find(minhasComunidades.begin(), minhasComunidades.end(), p.getIdComunidade()) != minhasComunidades.end()) {
+        if (p.getIdAutor() == idAlvo) {
             resultados.push_back(&p);
         }
     }
@@ -128,23 +122,26 @@ std::vector<Comentario *> Busca::comentariosDoPost(const Post &post, Armazenamen
 
 bool Busca::usuarioE_MembroDaComunidade(int idUsuario, int idComunidade, const Armazenamento &db) {
     const Comunidade *com = db.getComunidade(idComunidade);
-    if (!com) return false;
+    if (!com)
+        return false;
     const auto &membros = com->getIdsMembros();
     return std::find(membros.begin(), membros.end(), idUsuario) != membros.end();
 }
 
 int Busca::numeroDeMembrosDaComunidade(int idComunidade, const Armazenamento &db) {
     const Comunidade *com = db.getComunidade(idComunidade);
-    if (!com) return 0;
+    if (!com)
+        return 0;
     return static_cast<int>(com->getIdsMembros().size());
 }
-std::vector<Post*> Busca::buscarPostsRecentesDaComunidade(int idComunidade, size_t limite, Armazenamento &db) {
+std::vector<Post *> Busca::buscarPostsRecentesDaComunidade(int idComunidade, size_t limite, Armazenamento &db) {
     auto todos = buscaPosts(idComunidade, db); // Reutiliza sua função existente
-    std::vector<Post*> recentes;
+    std::vector<Post *> recentes;
 
     auto it = todos.rbegin();
     for (size_t i = 0; i < std::min<size_t>(limite, todos.size()); ++i) {
-        if (*it) recentes.push_back(*it);
+        if (*it)
+            recentes.push_back(*it);
         ++it;
     }
     return recentes;

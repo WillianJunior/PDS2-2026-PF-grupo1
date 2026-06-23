@@ -79,11 +79,10 @@ class Busca {
     /**
      * @brief Busca e filtra as publicações criadas por um autor específico baseado nas regras de privacidade.
      * @param idAlvo Identificador único do perfil dono das publicações.
-     * @param idLogado Identificador único do usuário que está solicitando a visualização.
      * @param db Referência ao banco de dados mutável do sistema.
      * @return Vetor de ponteiros para os posts originais filtrados do autor.
      */
-    std::vector<Post *> buscaPostsPorAutor(int idAlvo, int idLogado, Armazenamento &db);
+    std::vector<Post *> buscaPostsPorAutor(int idAlvo, Armazenamento &db);
 
     /**
      * @brief Recupera de forma mutável a lista de comentários vinculados a uma publicação específica.

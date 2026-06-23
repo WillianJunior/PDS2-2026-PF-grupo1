@@ -491,7 +491,7 @@ void Menus::menuPerfil(int idAlvo, Armazenamento &db) {
 
         const bool souEu = (idAlvo == db.getIdPerfilLogado());
 
-        const auto &postsPorAutor = busca.buscaPostsPorAutor(idAlvo, db.getIdPerfilLogado(), db);
+        const auto &postsPorAutor = busca.buscaPostsPorAutor(idAlvo, db);
         std::vector<Post> postsUsuario;
         for (const auto *p : postsPorAutor) {
             if (p) postsUsuario.push_back(*p);
