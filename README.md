@@ -538,13 +538,16 @@ As relações de composição do sistema são:
 
 ### Polimorfismo
 
-O sistema demonstra polimorfismo em dois pontos:
+O polimorfismo é utilizado por meio do método virtual:
 
-NÃO LEMBRO, PROCURAR
+- podeGerarComunidade()
+
+A classe Perfil fornece uma implementação padrão retornando false, enquanto a classe Administrador sobrescreve esse método retornando true.
 
 ### Classes principais
 
 - `Admin`: guarda informações sobre o administrador de determinada comunidade;
+- `Aplicação`: controla o fluxo geral do programa;
 - `Armazenamento`: mantém coleção de objetos que serão utilizados. Central de dados;
 - `Busca`: responsável pelas operações de pesquisa (de usuários, comunidades e posts);
 - `Comentário`: resposta vinculada a um post;

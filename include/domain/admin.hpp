@@ -13,7 +13,7 @@ public:
         int periodo
     );
 
-    bool podeGerenciarComunidade() const;
+    bool podeGerenciarComunidade() const override;
 };
 
 #endif

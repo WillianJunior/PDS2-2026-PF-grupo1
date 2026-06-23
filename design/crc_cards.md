@@ -1,17 +1,73 @@
 # Cartões CRC – Rede Social Educacional
 
+## Admin
+
+### Responsabilidades de Conhecimento
+
+- Todos os dados herdados de Perfil
+
+### Responsabilidades de Realização
+
+- Gerenciar comunidades
+- Sobrescrever permissões de gerenciamento
+- Validar privilégios administrativos
+
+### Colaboradores
+
+- Perfil
+- Comunidade
+
+
+## Aplicação
+
+### Responsabilidades de Conhecimento
+
+- Estado de execução do sistema
+- Mensagens de alerta
+- Instâncias principais do sistema
+
+### Responsabilidades de Realização
+
+- Exibir telas
+- Controlar menus
+- Gerenciar fluxo de login
+- Gerenciar fluxo de cadastro
+- Gerenciar fluxo de pesquisa
+- Gerenciar visualização de perfis
+- Controlar encerramento da aplicação
+
+### Colaboradores
+
+- Armazenamento
+- Busca
+- Feed
+
+
 ## Armazenamento
 
-### Responsabilidades
+### Responsabilidades de Conhecimento
 
-- Gerenciar os dados da aplicação em memória.
-- Carregar dados dos arquivos CSV.
-- Salvar dados da aplicação.
-- Validar cadastro de usuários.
-- Realizar autenticação de usuários.
-- Controlar a sessão do usuário logado.
-- Criar usuários, perfis, posts, comunidades e comentários.
-- Fornecer acesso aos objetos armazenados.
+- Usuários cadastrados
+- Perfis cadastrados
+- Comunidades cadastradas
+- Posts cadastrados
+- Comentários cadastrados
+- Sessão do usuário logado
+- Próximos IDs disponíveis
+
+### Responsabilidades de Realização
+
+- Carregar dados
+- Salvar dados
+- Realizar login
+- Realizar logout
+- Criar usuários
+- Criar perfis
+- Criar comunidades
+- Criar posts
+- Criar comentários
+- Recuperar entidades do sistema
+- Validar unicidade de usuários
 
 ### Colaboradores
 
@@ -21,19 +77,22 @@
 - Post
 - Comentário
 - GerenciadorCSV
+- Admin
 
 
 ## Busca
 
-### Responsabilidades
+### Responsabilidades de Conhecimento
 
-- Buscar perfis por palavra-chave.
-- Buscar comunidades por palavra-chave.
-- Buscar posts por palavra-chave.
-- Consolidar resultados de diferentes tipos.
-- Filtrar resultados por categoria.
-- Organizar resultados encontrados.
-- Exibir resultados de pesquisa.
+- Resultados da pesquisa
+
+### Responsabilidades de Realização4
+
+- Buscar perfis
+- Buscar comunidades
+- Buscar posts
+- Filtrar resultados
+- Exibir resultados encontrados
 
 ### Colaboradores
 
@@ -45,14 +104,20 @@
 
 ## Comentário
 
-### Responsabilidades
+### Responsabilidades de Conhecimento
 
-- Armazenar informações do comentário.
-- Associar comentário a um post.
-- Associar comentário a um autor.
-- Gerenciar curtidas do comentário.
-- Registrar usuários que curtiram o comentário.
-- Disponibilizar dados do comentário para consulta.
+- ID do comentário
+- Autor
+- Post relacionado
+- Texto do comentário
+- Curtidas recebidas
+
+### Responsabilidades de Realização
+
+- Registrar curtidas
+- Remover curtidas
+- Contabilizar curtidas
+- Fornecer informações do comentário
 
 ### Colaboradores
 
@@ -62,35 +127,61 @@
 
 ## Comunidade
 
-### Responsabilidades
+### Responsabilidades de Conhecimento
 
-- Armazenar informações da comunidade.
-- Gerenciar membros da comunidade.
-- Permitir entrada de novos membros.
-- Permitir saída de membros.
-- Verificar permissões de publicação.
-- Manter referência ao administrador.
-- Buscar posts da comunidade.
-- Disponibilizar informações da comunidade.
+- ID da comunidade
+- Nome
+- Descrição
+- Administrador responsável
+- Lista de membros
+
+### Responsabilidades de Realização
+
+- Adicionar membro
+- Remover membro
+- Registrar entrada de usuários
+- Verificar permissão de postagem
+- Exibir membros
 
 ### Colaboradores
 
 - Perfil
 - Post
 - Armazenamento
+- Admin
+
+## Console Utils
+
+### Responsabilidades de Conhecimento
+
+- Regras de interação com o terminal
+- Recursos de limpeza e pausa da interface
+
+### Responsabilidades de Realização
+
+- Limpar a tela do terminal
+- Pausar a execução aguardando interação do usuário
+- Auxiliar a navegação da interface textual
+
+### Colaborações
+- Aplicação
+- Feed
+- Menus
 
 
 ## Feed
 
-### Responsabilidades
+### Responsabilidade de Conhecimento
 
-- Exibir publicações da rede social.
-- Organizar posts para visualização.
-- Permitir seleção de publicações.
-- Encaminhar ações sobre posts.
-- Exibir informações dos autores.
-- Exibir informações das comunidades associadas.
-- Navegar entre conteúdos da plataforma.
+- Dados temporários de exibição do feed
+
+### Responsabilidades de Realização
+
+- Exibir posts
+- Exibir perfis
+- Exibir comunidades
+- Renderizar feed principal
+- Intermediar interação com publicações
 
 ### Colaboradores
 
@@ -103,16 +194,24 @@
 
 ## GerenciadorCSV
 
-### Responsabilidades
+### Responsabilidades de Conhecimento
 
-- Ler arquivos CSV.
-- Escrever arquivos CSV.
-- Converter registros CSV em objetos do sistema.
-- Converter objetos em registros CSV.
-- Manipular listas de inteiros serializadas.
-- Persistir usuários.
-- Persistir perfis.
-- Persistir comunidades, posts e comentários.
+- Estrutura dos arquivos CSV
+- Regras de serialização e desserialização
+
+### Responsabilidades de Realização
+
+- Salvar usuários
+- Salvar perfis
+- Salvar comunidades
+- Salvar posts
+- Salvar comentários
+- Carregar usuários
+- Carregar perfis
+- Carregar comunidades
+- Carregar posts
+- Carregar comentários
+- Converter strings e listas
 
 ### Colaboradores
 
@@ -126,17 +225,21 @@
 
 ## Menus
 
-### Responsabilidades
+### Responsabilidades de Conhecimento
 
-- Exibir menus da aplicação.
-- Receber entradas do usuário.
-- Validar opções informadas.
-- Controlar a navegação entre telas.
-- Exibir perfis.
-- Exibir comunidades.
-- Exibir posts e comentários.
-- Permitir interações sociais (seguir, curtir e comentar).
-- Permitir edição de perfil.
+- Estado atual de navegação do usuário
+- Entidades exibidas na interface (posts, perfis e comunidades)
+
+### Responsabilidades de Realização
+
+- Exibir posts individuais
+- Exibir listas de posts
+- Exibir listas de perfis
+- Exibir listas de comunidades
+- Exibir perfis detalhados
+- Exibir comunidades detalhadas
+- Processar interações de navegação
+- Encaminhar ações para o sistema de armazenamento
 
 ### Colaboradores
 
@@ -151,16 +254,22 @@
 
 ## Perfil
 
-### Responsabilidades
+### Responsabilidades de Conhecimento
 
-- Armazenar dados públicos do usuário.
-- Gerenciar informações acadêmicas.
-- Gerenciar biografia do usuário.
-- Controlar seguidores.
-- Controlar usuários seguidos.
-- Gerenciar comunidades das quais participa.
-- Permitir atualização das informações do perfil.
-- Disponibilizar dados do perfil.
+- ID do perfil
+- Nome do usuário
+- Descrição/Biografia
+- Curso
+- Instituição
+- Período acadêmico
+- Comunidades das quais participa
+
+### Responsabilidades de Realização
+
+- Entrar em comunidade
+- Sair de comunidade
+- Editar informações acadêmicas
+- Informar permissões básicas de comunidade
 
 ### Colaboradores
 
@@ -168,19 +277,26 @@
 - Comunidade
 - Post
 - Menus
+- Armazenamento
+- Admin
 
 
 ## Post
 
-### Responsabilidades
+### Responsabilidades de Conhecimento
 
-- Armazenar o conteúdo da publicação.
-- Associar publicação ao autor.
-- Associar publicação a uma comunidade.
-- Gerenciar curtidas da publicação.
-- Registrar usuários que curtiram o post.
-- Disponibilizar informações da publicação.
-- Permitir interação por comentários.
+- ID do post
+- Autor
+- Comunidade associada
+- Conteúdo textual
+- Usuários que curtiram
+
+### Responsabilidades de Realização
+
+- Receber curtidas
+- Remover curtidas
+- Contabilizar curtidas
+- Disponibilizar comentários relacionados
 
 ### Colaboradores
 
@@ -192,13 +308,19 @@
 
 ## Usuário
 
-### Responsabilidades
+### Responsabilidades de Conhecimento
 
-- Armazenar credenciais de acesso.
-- Armazenar informações básicas do usuário.
-- Validar login.
-- Disponibilizar dados de autenticação.
-- Representar a conta associada a um perfil.
+- ID do usuário
+- E-mail
+- Senha
+- Nome de usuário
+
+### Responsabilidades de Realização
+
+- Validar login
+- Alterar senha
+- Alterar e-mail
+- Fornecer informações da conta
 
 ### Colaboradores
 
