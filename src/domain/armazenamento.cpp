@@ -40,8 +40,6 @@ void Armazenamento::criarPerfil(const Perfil &p) { perfis.push_back(p); }
 const std::vector<Comunidade> &Armazenamento::listarComunidade() const { return comunidades; }
 void Armazenamento::criarComunidade(const Comunidade &c) { comunidades.push_back(c); }
 
-void Armazenamento::mensagemSucessoErro() const { std::cout << "Operacao realizada." << std::endl; }
-
 void Armazenamento::carregarDados() {
     usuarios = GerenciadorCSV::carregarUsuarios(caminhoCsv("usuarios.csv"));
     perfis = GerenciadorCSV::carregarPerfis(caminhoCsv("perfis.csv"));
@@ -206,23 +204,6 @@ const Post *Armazenamento::getPost(int id) const {
     return nullptr;
 }
 
-std::vector<Post> Armazenamento::getPostsFeed() const {
-    std::vector<Post> feed;
-    const Perfil *perfilLogado = getPerfil(idPerfilLogado);
-
-    if (perfilLogado == nullptr)
-        return feed;
-
-    const auto &comunidadesUsuario = perfilLogado->getIdsComunidades();
-
-    for (const auto &post : posts) {
-        if (post.getIdComunidade() == 0 || std::find(comunidadesUsuario.begin(), comunidadesUsuario.end(),
-                                                     post.getIdComunidade()) != comunidadesUsuario.end()) {
-            feed.push_back(post);
-        }
-    }
-    return feed;
-} // LCOV_EXCL_LINE
 std::vector<Post> &Armazenamento::getTodosPostsMutavel() { return posts; }
 std::vector<Comentario> &Armazenamento::getTodosComentariosMutavel() { return comentarios; }
 const std::vector<Perfil> &Armazenamento::getTodosPerfis() const { return perfis; }

@@ -5,19 +5,30 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <busca.hpp>
 
 void Feed::verFeed(Armazenamento &db) {
+    Busca busca = Busca();
     while (true) {
         ConsoleUtils::limparTela();
         ConsoleUtils::mostrarCabecalho("EDU SOCIAL FEED");
-        auto todosPosts = db.getPostsFeed();
+        Perfil *perfilLogado = db.getPerfil(db.getIdPerfilLogado());
+        if (!perfilLogado) {
+            std::cout << "Perfil logado nao encontrado.\n";
+            break;
+        }
+        auto todosPosts = busca.buscaPosts(*perfilLogado, db);
 
         if (todosPosts.empty()) {
             std::cout << "Nenhum post publicado na rede ainda.\n\n";
         } else {
             int exibicaoIdx = 1;
             for (int i = static_cast<int>(todosPosts.size()) - 1; i >= 0; --i) {
-                Post &p = todosPosts.at(i);
+                const auto &postPtr = todosPosts.at(i);
+                if (!postPtr) {
+                    continue;
+                }
+                const Post &p = *postPtr;
                 Perfil *autor = db.getPerfil(p.getIdAutor());
                 std::string nomeAutor = autor ? autor->getNome() : "Desconhecido";
 
@@ -71,14 +82,18 @@ void Feed::verFeed(Armazenamento &db) {
 
             if (escolhaIdx >= 1 && escolhaIdx <= static_cast<int>(todosPosts.size())) {
                 int vetorIdx = static_cast<int>(todosPosts.size()) - escolhaIdx;
+                const auto &postPtr = todosPosts.at(vetorIdx);
 
-                Post *postOriginal = db.getPostMutavel(todosPosts.at(vetorIdx).getId());
-
-                if (postOriginal) {
-                    menuVisualizarPost(*postOriginal, db);
+                if (postPtr) {
+                    Post *postOriginal = db.getPostMutavel(postPtr->getId());
+                    if (postOriginal) {
+                        menuVisualizarPost(*postOriginal, db);
+                    } else {
+                        std::cout << "\n[ERRO] Post nao acessivel operacionalmente.\n"; // LCOV_EXCL_LINE
+                    } // LCOV_EXCL_LINE
                 } else {
-                    std::cout << "\n[ERRO] Post nao acessivel operacionalmente.\n"; // LCOV_EXCL_LINE
-                } // LCOV_EXCL_LINE
+                    std::cout << "\n[ERRO] Post nao encontrado.\n";
+                }
             } else {
                 std::cout << "\n[ERRO] Indice invalido!\n";
             }

@@ -7,6 +7,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <busca.hpp>
 
 namespace {
 
@@ -286,24 +287,28 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
         ConsoleUtils::limparTela();
         ConsoleUtils::exibirMensagem(mensagem);
         mensagem.clear();
+        Busca busca = Busca();
         ConsoleUtils::mostrarCabecalho("COMUNIDADE: " + com->getNome());
         std::cout << "Descricao: " << com->getDescricao() << "\n";
         std::cout << "Administrador: @" << (admin ? admin->getNome() : "Desconhecido") << "\n";
         std::cout << "Membros: " << membros.size() << "\n\n";
 
-        std::vector<Post> postsDaComunidade;
-        for (const auto &p : db.getTodosPosts()) {
-            if (p.getIdComunidade() == idComunidade)
-                postsDaComunidade.push_back(p);
+        auto postsDaComunidade = busca.buscaPosts(idComunidade, db);
+        std::vector<Post> postsDaComunidadePlanos;
+        postsDaComunidadePlanos.reserve(postsDaComunidade.size());
+        for (const auto &postPtr : postsDaComunidade) {
+            if (postPtr) {
+                postsDaComunidadePlanos.push_back(*postPtr);
+            }
         }
 
         std::cout << "=== POSTS RECENTES ===\n";
-        if (postsDaComunidade.empty()) {
+        if (postsDaComunidadePlanos.empty()) {
             std::cout << "Nenhum post.\n\n";
         } else {
             auto it = postsDaComunidade.rbegin();
             for (size_t i = 0; i < std::min<size_t>(3, postsDaComunidade.size()); ++i) {
-                std::cout << "-> " << it->getConteudo() << "\n";
+                std::cout << "-> " << (*it)->getConteudo() << "\n";
                 ++it;
             }
             std::cout << "\n";
@@ -339,7 +344,7 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
                     mensagem = std::string("[ERRO] ") + e.what();
                 }
             } else if (opcao == 2) {
-                menuVerPostsLista(postsDaComunidade, db);
+                menuVerPostsLista(postsDaComunidadePlanos, db);
             } else if (opcao == 3) {
                 break;
             } else {
@@ -355,7 +360,7 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
                 eu->entrarComunidade(com->getId());
                 mensagem = "[SUCESSO] Voce entrou na comunidade!";
             } else if (opcao == 2) {
-                menuVerPostsLista(postsDaComunidade, db);
+                menuVerPostsLista(postsDaComunidadePlanos, db);
             } else if (opcao == 3) {
                 break;
             } else {

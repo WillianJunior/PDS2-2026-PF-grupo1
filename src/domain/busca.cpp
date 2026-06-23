@@ -1,7 +1,9 @@
 #include "domain/busca.hpp"
+#include "busca.hpp"
 #include <algorithm>
 #include <cctype>
 #include <iostream>
+#include <memory>
 
 static bool contemPalavra(const std::string &texto, const std::string &chave) {
     std::string textoMin = texto;
@@ -51,24 +53,15 @@ std::vector<Comunidade> Busca::buscarComunidades(const std::string &palavraChave
     return achados;
 } // LCOV_EXCL_LINE
 
-void Busca::buscarPalavraChave(const std::string &palavraChave, const Armazenamento &db) {
-    resultados.clear();
+std::vector<std::shared_ptr<Post>> Busca::buscaPosts(int idComunidade, const Armazenamento &db) {
+    std::vector<std::shared_ptr<Post>> achados;
 
-    for (const auto &perfil : buscarPerfis(palavraChave, db)) {
-        resultados.push_back("Perfil: " + perfil.getNome());
+    for (const auto &post : db.getTodosPosts()) {
+        if (post.getIdComunidade() == idComunidade) {
+            achados.push_back(std::make_shared<Post>(post));
+        }
     }
-    std::sort(resultados.begin(), resultados.end());
-    for (const auto &comunidade : buscarComunidades(palavraChave, db)) {
-        resultados.push_back("Comunidade: " + comunidade.getNome());
-    }
-
-    for (const auto &post : buscarPosts(palavraChave, db)) {
-        resultados.push_back("Post: " + post.getConteudo());
-    }
-
-    if (resultados.empty()) {
-        resultados.push_back("Nenhum resultado encontrado para: " + palavraChave);
-    }
+    return achados;
 }
 
 void Busca::exibirResultadosPesquisa() const {
@@ -95,4 +88,18 @@ void Busca::filtrarResultados(const std::string &tipo) {
             std::cout << r << std::endl;
         }
     }
+}
+
+std::vector<std::shared_ptr<Post>> Busca::buscaPosts(Perfil perfil, const Armazenamento &db) {
+    std::vector<std::shared_ptr<Post>> feed;
+
+    const auto &comunidadesUsuario = perfil.getIdsComunidades();
+
+    for (const auto &post : db.getTodosPosts()) {
+        if (post.getIdComunidade() == 0 || std::find(comunidadesUsuario.begin(), comunidadesUsuario.end(),
+                                                     post.getIdComunidade()) != comunidadesUsuario.end()) {
+            feed.push_back(std::make_shared<Post>(post));
+        }
+    }
+    return feed;
 }

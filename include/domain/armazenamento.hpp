@@ -74,12 +74,6 @@ class Armazenamento {
     void criarComunidade(const Comunidade &c);
 
     /**
-     * @brief Método utilitário fictício para feedbacks de sucesso/erro sem lançar exceções (compatibilidade com
-     * testes).
-     */
-    void mensagemSucessoErro() const;
-
-    /**
      * @name Controle de Ciclo de Vida do Banco
      * @brief Métodos para carregar e salvar dados invocando o GerenciadorCSV.
      * @{
@@ -189,13 +183,6 @@ class Armazenamento {
 
     Post *getPostMutavel(int id);
     const Post *getPost(int id) const;
-
-    /**
-     * @brief Gera o Feed de posts unindo postagens globais e postagens de comunidades que o usuário faz parte.
-     * @return Vetor contendo os posts liberados para visualização do usuário logado.
-     */
-    std::vector<Post> getPostsFeed() const;
-    /** @} */
 
     /**
      * @name Acesso Global (Apenas Leitura)

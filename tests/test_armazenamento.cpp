@@ -43,7 +43,6 @@ TEST_SUITE("Armazenamento") {
         CHECK(db.getTodosPerfis().size() == 1);
         CHECK(db.getTodasComunidades().size() == 1);
         CHECK(db.getTodosPosts().size() == 2);
-        CHECK(db.getPostsFeed().size() == 2);
 
         CHECK(db.getPerfil(1) != nullptr);
         CHECK(db.getPerfil(99) == nullptr);
@@ -63,7 +62,6 @@ TEST_SUITE("Armazenamento") {
         db.criarComunidade(c);
         CHECK(db.listarComunidade().size() == 2);
 
-        CHECK_NOTHROW(db.mensagemSucessoErro());
     }
 
     TEST_CASE("Restrições sem login") {
@@ -72,7 +70,6 @@ TEST_SUITE("Armazenamento") {
         db.criarComunidade("Tentativa", "Desc");
         CHECK(db.getTodosPosts().empty());
         CHECK(db.getTodasComunidades().empty());
-        CHECK(db.getPostsFeed().empty());
     }
 
     TEST_CASE("Carregar e Salvar Dados (I/O Simulado)") {

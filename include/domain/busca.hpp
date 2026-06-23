@@ -5,6 +5,7 @@
 #include "domain/comunidade.hpp"
 #include "domain/perfil.hpp"
 #include "domain/post.hpp"
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -24,13 +25,12 @@ class Busca {
     std::vector<std::string> resultados;
 
   public:
-    /**
-     * @brief Realiza a varredura no sistema em busca de uma palavra-chave genérica.
-     * @param palavraChave O termo textual desejado para a pesquisa.
-     * @param db Referência constante ao banco de dados do sistema.
-     */
-    void buscarPalavraChave(const std::string &palavraChave, const Armazenamento &db);
-
+    /// @brief
+    /// @param palavraChave
+    /// @param db
+    /// @param idComunidade
+    /// @return
+    void buscarPostsComunidade(const std::string &palavraChave, const Armazenamento &db, int idComunidade);
     /**
      * @brief Apresenta os resultados coletados na última busca formatados na tela.
      */
@@ -65,6 +65,14 @@ class Busca {
      * @return Vetor contendo as comunidades encontradas.
      */
     std::vector<Comunidade> buscarComunidades(const std::string &palavraChave, const Armazenamento &db) const;
+    /**
+     * @brief Função polimofica que realiza a varredura no sistema em busca de posts pertencentes a uma comunidade específica.
+     * @param palavraChave O termo textual desejado para a pesquisa.
+     * @param db Referência constante ao banco de dados do sistema.
+     */
+    std::vector<std::shared_ptr<Post>> buscaPosts(int idComunidade, const Armazenamento &db);
+
+    std::vector<std::shared_ptr<Post>> buscaPosts(Perfil perfil, const Armazenamento &db);
 };
 
 #endif
