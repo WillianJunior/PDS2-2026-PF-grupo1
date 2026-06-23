@@ -58,4 +58,47 @@ TEST_SUITE("GerenciadorCSV") {
         std::remove("test_posts.csv");
         std::remove("test_coments.csv");
     }
+
+    TEST_CASE("Escapar e Desescapar Virgulas (Cobertura de Texto)") {
+        Perfil p(1, "Nome, com virgula", "Descricao, super, com, virgula", "Curso", "Inst", 2);
+        p.setIdsComunidades({1, 2});
+        
+        GerenciadorCSV::salvarPerfis({p}, "test_virgula.csv");
+        auto pLido = GerenciadorCSV::carregarPerfis("test_virgula.csv");
+        
+        CHECK(pLido.size() == 1);
+        CHECK(pLido[0].getNome() == "Nome, com virgula");
+        CHECK(pLido[0].getDescricao() == "Descricao, super, com, virgula");
+        CHECK(pLido[0].getIdsComunidades().size() == 2);
+        
+        std::remove("test_virgula.csv");
+    }
+
+    TEST_CASE("Parsing com Falhas - Arquivos Corrompidos (Cobertura dos catch)") {
+        auto ints = GerenciadorCSV::separarInteiros("1|err|3", '|');
+        CHECK(ints.size() == 2);
+        CHECK(ints[0] == 1);
+        CHECK(ints[1] == 3);
+
+        std::ofstream("err_perfis.csv") << "id,nome,descricao,curso,instituicao,periodo,comunidades\n"
+                                        << "ISSO_NAO_E_NUMERO,Nome,Desc,Curso,Inst,1,1|2\n";
+        CHECK(GerenciadorCSV::carregarPerfis("err_perfis.csv").empty());
+
+        std::ofstream("err_coms.csv") << "id,nome,descricao,idAdmin,membros\n"
+                                      << "OUTRO_ERRO,Nome,Desc,1,1|2\n";
+        CHECK(GerenciadorCSV::carregarComunidades("err_coms.csv").empty());
+
+        std::ofstream("err_posts.csv") << "id,idAutor,idComunidade,texto,curtidas\n"
+                                       << "MAIS_ERRO,1,1,Texto,1\n";
+        CHECK(GerenciadorCSV::carregarPosts("err_posts.csv").empty());
+
+        std::ofstream("err_coments.csv") << "id,idPost,idAutor,texto,curtidas\n"
+                                         << "ERRO_FATAL,1,1,Texto,1\n";
+        CHECK(GerenciadorCSV::carregarComentarios("err_coments.csv").empty());
+
+        std::remove("err_perfis.csv");
+        std::remove("err_coms.csv");
+        std::remove("err_posts.csv");
+        std::remove("err_coments.csv");
+    }
 }

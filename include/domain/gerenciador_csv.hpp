@@ -9,6 +9,11 @@
 #include "comentario.hpp"
 
 /**
+ * @file gerenciador_csv.hpp
+ * @brief Declaração da classe estática de persistência de dados em arquivos CSV.
+ */
+
+/**
  * @class GerenciadorCSV
  * @brief Classe estática utilitária responsável pela leitura e escrita dos dados em arquivos CSV.
  * * Atua como o mecanismo de conversão entre arquivos físicos de texto e objetos em memória,
@@ -21,8 +26,29 @@ public:
      * @brief Métodos auxiliares para parsing de linhas de texto e listas de inteiros.
      * @{
      */
+     
+    /**
+     * @brief Separa uma string em vários pedaços usando um delimitador específico.
+     * @param linha O texto bruto a ser cortado.
+     * @param delimitador O caractere usado como separador (ex: ',').
+     * @return Um vetor de strings com os itens separados.
+     */
     static std::vector<std::string> separarString(const std::string& linha, char delimitador);
+    
+    /**
+     * @brief Junta um vetor de inteiros em uma única string de texto.
+     * @param lista O vetor de inteiros.
+     * @param delimitador O caractere usado para unir os números (ex: '|').
+     * @return A string formatada.
+     */
     static std::string juntarInteiros(const std::vector<int>& lista, char delimitador);
+    
+    /**
+     * @brief Converte uma string com delimitadores em um vetor de inteiros.
+     * @param linha O texto bruto contendo números.
+     * @param delimitador O caractere usado como separador.
+     * @return Um vetor de inteiros extraídos do texto.
+     */
     static std::vector<int> separarInteiros(const std::string& linha, char delimitador);
     /** @} */
 

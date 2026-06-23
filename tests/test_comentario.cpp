@@ -22,7 +22,7 @@ TEST_SUITE("Comentario") {
         c.curtir(1);
         c.curtir(2);
         CHECK(c.quantidadeDeCurtidas() == 2);
-        c.curtir(1); // Alterna estado
+        c.curtir(1); 
         CHECK(c.quantidadeDeCurtidas() == 1);
 
         c.setIdsCurtidas({5, 6, 7});

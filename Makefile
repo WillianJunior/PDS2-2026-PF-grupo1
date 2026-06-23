@@ -49,9 +49,15 @@ run-demo-clean: build
 	@echo "[run-demo-clean] Executando demo com $(DEMO_INPUT)..."
 	@$(APP_PATH) $(DEMO_INPUT)
 
+# COMPORTAMENTO ANTIGO RESTAURADO: Executa os testes diretamente e gera a cobertura em seguida
 test: build
 	@echo "[test] Executando testes..."
-	@ctest --test-dir $(BUILD_DIR) -C $(BUILD_TYPE) --output-on-failure --parallel $(JOBS)
+	@$(BUILD_DIR)/bin/edu_social_tests$(APP_EXTENSION)
+	@echo "\n[coverage] Gerando relatorio de cobertura com gcovr..."
+	@gcovr -r . $(GCOVR_EXCLUDE)
+	@mkdir -p coverage
+	@gcovr -r . $(GCOVR_EXCLUDE) --html-details coverage/coverage.html
+	@echo "[sucesso] Relatorio HTML detalhado gerado na pasta 'coverage/'"
 
 ifneq ($(OS),Windows_NT)
 coverage: build FORCE
@@ -73,6 +79,7 @@ docs:
 clean:
 	@echo "[clean] Removendo diretorio de build..."
 	@cmake -E remove_directory $(BUILD_DIR)
+	@rm -rf coverage/
 
 # Permite: make commits alunos
 ifneq (,$(filter commits,$(MAKECMDGOALS)))
@@ -107,11 +114,11 @@ help:
 	@echo "Alvos:"
 	@echo "  run             Compila e executa o app (uso normal)"
 	@echo "  build           So compila"
-	@echo "  test            Executa os testes"
-	@echo "  coverage        Testes + relatorio HTML em report/ (Linux/WSL)"
+	@echo "  test            Executa os testes e gera relatorio gcovr (obrigatorio para C7/C8)"
+	@echo "  coverage        Testes + relatorio HTML alternativo em report/ (Linux/WSL)"
 	@echo "  run-demo        Demo automatica (scripts/demo.in)"
 	@echo "  run-demo-clean  Apaga CSVs em data/ e roda demo do zero"
-	@echo "  clean           Remove a pasta build/"
+	@echo "  clean           Remove a pasta build/ e coverage/"
 	@echo "  commits alunos  Contagem de commits por integrante"
 	@echo "  docs            Gera documentacao Doxygen"
 	@echo

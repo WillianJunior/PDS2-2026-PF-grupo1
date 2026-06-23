@@ -3,14 +3,18 @@
 #include <cstdlib> 
 
 void ConsoleUtils::limparTela() {
+    if (std::getenv("AMBIENTE_DE_TESTE") != nullptr) return;
+
     #if defined(_WIN32) || defined(_WIN64)
-        std::system("cls");
+        std::system("cls"); // LCOV_EXCL_LINE
     #else
-        std::system("ls");
+        std::system("clear"); // LCOV_EXCL_LINE
     #endif
 }
 
 void ConsoleUtils::aguardarUsuario() {
-    std::cout << "Pressione Enter para continuar...";
-    std::cin.get();
+    if (std::getenv("AMBIENTE_DE_TESTE") != nullptr) return;
+
+    std::cout << "Pressione Enter para continuar..."; // LCOV_EXCL_LINE
+    std::cin.get(); // LCOV_EXCL_LINE
 }

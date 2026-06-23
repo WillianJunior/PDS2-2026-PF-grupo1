@@ -36,7 +36,7 @@ TEST_SUITE("Comunidade") {
     Comunidade c("Teste", 1);
 
     c.adicionarMembro(10);
-    c.adicionarMembro(10); // repetido
+    c.adicionarMembro(10); 
 
     CHECK(c.getIdsMembros().size() == 1);
 }

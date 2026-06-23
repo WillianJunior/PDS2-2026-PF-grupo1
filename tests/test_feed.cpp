@@ -17,8 +17,25 @@ static void simularInteracaoFeed(const std::string& inputsProgramados, std::func
     std::cout.rdbuf(backupCout);
 }
 
-TEST_SUITE("Feed Interativo") {
+TEST_SUITE("Feed Interativo e Metodos Auxiliares") {
     
+    TEST_CASE("Feed Vazio e Tratamento de Erros (Cobertura de throws e restricoes)") {
+        Armazenamento db;
+        db.criarUsuarioEPerfil("teste@uni.br", "senha123", "User");
+        db.fazerLogin("teste@uni.br", "senha123");
+        
+        Feed f;
+        
+        std::string acoes = 
+            "A\n"                
+            "B\n\n"              
+            "B\nPost Valido\n\n" 
+            "A\nabc\n"          
+            "C\n";               
+            
+        CHECK_NOTHROW(simularInteracaoFeed(acoes, [&](){ f.verFeed(db); }));
+    }
+
     TEST_CASE("Navegacao Completa e Inputs Invalidos Feed") {
         Armazenamento db;
         db.criarUsuarioEPerfil("a@b.c", "senha12345", "UserA");
@@ -34,13 +51,19 @@ TEST_SUITE("Feed Interativo") {
             "A\n99\n"           
             "A\n1\n"            
             "F\n"               
-            "B\n"               
-            "Novo Post Global\n" 
-            "\n"                
-            "A\n1\n"            
-            "F\n"               
             "C\n";              
             
         CHECK_NOTHROW(simularInteracaoFeed(acoes, [&](){ f.verFeed(db); }));
+    }
+    
+    TEST_CASE("Metodos Vazios de Interface (Cobertura 100%)") {
+        Feed f;
+        std::vector<Post> po;
+        std::vector<Perfil> pe;
+        std::vector<Comunidade> co;
+        
+        CHECK_NOTHROW(f.exibirPosts(po));
+        CHECK_NOTHROW(f.exibirPerfis(pe));
+        CHECK_NOTHROW(f.exibirComunidades(co));
     }
 }

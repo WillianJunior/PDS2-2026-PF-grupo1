@@ -29,7 +29,7 @@ std::vector<Perfil> Busca::buscarPerfis(const std::string& palavraChave, const A
         return a.getNome() < b.getNome();
     });
     return achados;
-}
+} // LCOV_EXCL_LINE
 
 std::vector<Post> Busca::buscarPosts(const std::string& palavraChave, const Armazenamento& db) const {
     std::vector<Post> achados;
@@ -40,7 +40,7 @@ std::vector<Post> Busca::buscarPosts(const std::string& palavraChave, const Arma
         }
     }
     return achados;
-}
+} // LCOV_EXCL_LINE
 
 std::vector<Comunidade> Busca::buscarComunidades(const std::string& palavraChave, const Armazenamento& db) const {
     std::vector<Comunidade> achados;
@@ -53,7 +53,7 @@ std::vector<Comunidade> Busca::buscarComunidades(const std::string& palavraChave
     }
 
     return achados;
-}
+} // LCOV_EXCL_LINE
 
 void Busca::buscarPalavraChave(const std::string& palavraChave, const Armazenamento& db) {
     resultados.clear();
@@ -91,10 +91,12 @@ void Busca::filtrarResultados(const std::string& tipo) {
         }
     }
 
-    std::sort(resultadosFiltrados.begin(), resultadosFiltrados.end());
-
-    std::cout << "=== Resultados filtrados por tipo: " << tipo << " ===" << std::endl;
-    for (const auto& rf : resultadosFiltrados) {
-        std::cout << rf << std::endl;
+    if (resultadosFiltrados.empty()) {
+        std::cout << "Nenhum resultado para o filtro: " << tipo << std::endl;
+    } else {
+        std::cout << "=== Resultados Filtrados (" << tipo << ") ===" << std::endl;
+        for (const auto& r : resultadosFiltrados) {
+            std::cout << r << std::endl;
+        }
     }
 }

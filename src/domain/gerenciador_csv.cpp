@@ -56,7 +56,7 @@ std::string GerenciadorCSV::juntarInteiros(const std::vector<int> &lista,
             result += delimitador;
     }
     return result;
-}
+} // LCOV_EXCL_LINE
 
 void GerenciadorCSV::salvarUsuarios(const std::vector<Usuario> &usuarios,
                                     const std::string &nomeArquivo) {
@@ -108,8 +108,9 @@ GerenciadorCSV::carregarPerfis(const std::string &nomeArquivo) {
                 try {
                     Perfil p(std::stoi(dados[0]), desescaparTexto(dados[1]), desescaparTexto(dados[2]),
                              desescaparTexto(dados[3]), desescaparTexto(dados[4]), std::stoi(dados[5]));
-                    if (dados.size() > 9)
-                        p.setIdsComunidades(separarInteiros(dados[9], '|'));
+                    if (dados.size() > 6)
+                        p.setIdsComunidades(separarInteiros(dados[6], '|'));
+                    
                     lista.push_back(p);
                 } catch (const std::exception &) {
                 }

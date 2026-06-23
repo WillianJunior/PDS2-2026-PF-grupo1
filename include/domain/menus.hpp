@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "post.hpp"
+#include "perfil.hpp"
 #include "armazenamento.hpp"
 
 /**
@@ -10,6 +11,12 @@
  * @brief Declarações das funções auxiliares para exibição de menus interativos.
  * * Este arquivo encapsula as telas de navegação secundárias do sistema (Posts, Listas, Comunidades e Perfis).
  */
+
+/**
+ * @brief Permite editar as informações de um perfil (curso, instituicao, bio, etc).
+ * @param alvo Referência ao perfil que será editado.
+ */
+void menuEditarPerfil(Perfil& alvo);
 
 /**
  * @brief Renderiza a tela de um Post específico, permitindo interações como curtidas e comentários.
@@ -27,12 +34,15 @@ void menuVerPostsLista(const std::vector<Post>& postsList, Armazenamento& db);
 
 /**
  * @brief Exibe uma lista de perfis e permite abrir um deles.
+ * @param perfisList Vetor contendo os perfis a serem listados.
+ * @param db Referência ao banco de dados central.
  */
 void menuVerPerfisLista(const std::vector<Perfil>& perfisList, Armazenamento& db);
 
 /**
  * @brief Exibe comunidades (todas ou filtradas) e permite criar/abrir.
- * @param filtro Se nullptr, usa a lista atual do banco a cada iteracao.
+ * @param db Referência ao banco de dados central.
+ * @param filtro Se nullptr, usa a lista atual de comunidades do banco. Se preenchido, usa a lista customizada.
  */
 void menuVerComunidadesLista(Armazenamento& db, const std::vector<Comunidade>* filtro = nullptr);
 

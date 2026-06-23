@@ -5,6 +5,11 @@
 #include "perfil.hpp"
 
 /**
+ * @file comentario.hpp
+ * @brief Declaração da classe Comentario.
+ */
+
+/**
  * @class Comentario
  * @brief Classe que representa um comentário feito em uma postagem.
  * * Vincula-se a um post específico através de IDs e gerencia suas próprias curtidas.
@@ -19,11 +24,11 @@ private:
 
 public:
     /**
-     * @brief Constrói um novo comentário completo.
+     * @brief Constrói um novo comentário completo (Geralmente oriundo do Banco de Dados).
      * @param id O identificador único numérico do comentário.
      * @param idPost O ID do post que está recebendo este comentário.
      * @param idAutor O ID do perfil que escreveu o comentário.
-     * @param texto O texto do comentário.
+     * @param texto O conteúdo em texto do comentário.
      */
     Comentario(int id, int idPost, int idAutor, std::string texto);
 
@@ -42,7 +47,7 @@ public:
 
     /**
      * @brief Retorna o total de curtidas que este comentário recebeu.
-     * @return O número de curtidas.
+     * @return O número total de curtidas.
      */
     int quantidadeDeCurtidas() const;
 
@@ -51,20 +56,39 @@ public:
      * @brief Métodos de acesso para leitura das propriedades do comentário.
      * @{
      */
+    
+    /** @brief Retorna o ID único do comentário. */
     int getId() const;
+    
+    /** @brief Retorna o ID do Post pai deste comentário. */
     int getIdPost() const;
+    
+    /** @brief Retorna o ID do autor (alias para idAutorObter). */
     int idAutorObter() const; 
+    
+    /** @brief Retorna o ID do perfil que escreveu o comentário. */
     int getIdAutor() const;
+    
+    /** @brief Retorna o conteúdo textual do comentário. */
     std::string getTexto() const;
+    
+    /** @brief Retorna o vetor contendo os IDs dos usuários que curtiram. */
     std::vector<int> getIdsCurtidas() const;
+    
     /** @} */
 
     /**
      * @name Setters (Persistência)
-     * @brief Métodos utilizados exclusivamente pelo GerenciadorCSV para carregar as curtidas.
+     * @brief Métodos utilizados exclusivamente pelo GerenciadorCSV para carregar estados.
      * @{
      */
+     
+    /**
+     * @brief Restaura a lista de curtidas a partir dos dados em disco.
+     * @param ids Vetor contendo os IDs dos usuários curtidores.
+     */
     void setIdsCurtidas(const std::vector<int>& ids);
+    
     /** @} */
 };
 

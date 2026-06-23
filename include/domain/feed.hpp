@@ -7,6 +7,11 @@
 #include <vector>
 
 /**
+ * @file feed.hpp
+ * @brief Declaração da classe Feed.
+ */
+
+/**
  * @class Feed
  * @brief Classe de interface visual encarregada de exibir dados e gerenciar os menus interativos.
  * * Atua como a View interativa do Feed, processando navegação, curtidas e comentários de maneira encapsulada.

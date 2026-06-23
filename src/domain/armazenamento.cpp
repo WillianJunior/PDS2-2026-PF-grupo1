@@ -215,7 +215,7 @@ std::vector<Post> Armazenamento::getPostsFeed() const {
         }
     }
     return feed;
-}
+} // LCOV_EXCL_LINE
 std::vector<Post>& Armazenamento::getTodosPostsMutavel() { return posts; }
 std::vector<Comentario>& Armazenamento::getTodosComentariosMutavel() { return comentarios; }
 const std::vector<Perfil>& Armazenamento::getTodosPerfis() const { return perfis; }

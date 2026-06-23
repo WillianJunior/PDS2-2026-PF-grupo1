@@ -10,6 +10,11 @@
 #include <string>
 
 /**
+ * @file armazenamento.hpp
+ * @brief Declaração do Banco de Dados em memória (Armazenamento).
+ */
+
+/**
  * @class Armazenamento
  * @brief Classe núcleo responsável por centralizar o gerenciamento de dados do sistema.
  * * Funciona como o Banco de Dados em memória RAM durante a execução do programa, controlando
@@ -33,7 +38,7 @@ private:
 
 public:
     /**
-     * @brief Inicializa o sistema de armazenamento temporário com valores padrões e deslogado.
+     * @brief Inicializa o sistema de armazenamento temporário com valores padrões e estado deslogado.
      */
     Armazenamento();
 
@@ -46,30 +51,30 @@ public:
 
     /**
      * @brief Lista todos os perfis armazenados no sistema (compatibilidade com testes).
-     * @return Vetor contendo cópias dos perfis.
+     * @return Uma referência constante para o vetor de perfis.
      */
     const std::vector<Perfil>& listarPerfis() const;
 
     /**
      * @brief Adiciona diretamente um objeto Perfil ao vetor (compatibilidade com testes).
-     * @param p O perfil a ser adicionado.
+     * @param p O perfil a ser adicionado à base.
      */
     void criarPerfil(const Perfil& p);
 
     /**
      * @brief Lista todas as comunidades armazenadas no sistema (compatibilidade com testes).
-     * @return Vetor contendo cópias das comunidades.
+     * @return Uma referência constante para o vetor de comunidades.
      */
     const std::vector<Comunidade>& listarComunidade() const;
 
     /**
      * @brief Adiciona diretamente um objeto Comunidade ao vetor (compatibilidade com testes).
-     * @param c A comunidade a ser adicionada.
+     * @param c A comunidade a ser adicionada à base.
      */
     void criarComunidade(const Comunidade& c);
 
     /**
-     * @brief Método utilitário fictício para feedbacks sem lançar exceções (compatibilidade com testes).
+     * @brief Método utilitário fictício para feedbacks de sucesso/erro sem lançar exceções (compatibilidade com testes).
      */
     void mensagemSucessoErro() const;
 
@@ -78,8 +83,13 @@ public:
      * @brief Métodos para carregar e salvar dados invocando o GerenciadorCSV.
      * @{
      */
+     
+    /** @brief Importa todos os dados dos arquivos CSV para a memória. */
     void carregarDados();
+    
+    /** @brief Exporta o estado atual da memória para os arquivos CSV. */
     void salvarDados();
+    
     /** @} */
 
     /**
@@ -87,12 +97,38 @@ public:
      * @brief Métodos para checar duplicidades, login e gerenciamento de estado do usuário ativo.
      * @{
      */
+     
+    /**
+     * @brief Verifica se o email informado já existe na base de dados.
+     * @param email O email a ser checado.
+     * @return true se o email for único, false se já estiver em uso.
+     */
     bool emailUnico(const std::string& email);
+    
+    /**
+     * @brief Verifica se o nome de usuário informado já existe na base de dados.
+     * @param nome O nome a ser checado.
+     * @return true se o nome for único, false se já estiver em uso.
+     */
     bool nomeUsuarioUnico(const std::string& nome);
+    
+    /**
+     * @brief Valida credenciais e inicia a sessão de um usuário.
+     * @param email Email do usuário.
+     * @param senha Senha de acesso.
+     * @return true se o login for bem-sucedido, false caso contrário.
+     */
     bool fazerLogin(const std::string& email, const std::string& senha);
+    
+    /** @brief Encerra a sessão do usuário atual. */
     void deslogar();
+    
+    /** @brief Retorna o ID do perfil atualmente logado. @return ID do perfil. */
     int getIdPerfilLogado() const;
+    
+    /** @brief Retorna o email do usuário atualmente logado. @return String com o email. */
     std::string getEmailLogado() const { return emailLogado; }
+    
     /** @} */
 
     /**
@@ -100,9 +136,39 @@ public:
      * @brief Regras de negócio para inserção segura de novos registros no sistema.
      * @{
      */
+     
+    /**
+     * @brief Registra um novo Usuário e seu respectivo Perfil simultaneamente.
+     * @param email Email para a nova conta.
+     * @param senha Senha de segurança.
+     * @param nome Nome de exibição público.
+     * @throw std::invalid_argument se os dados forem inválidos ou repetidos.
+     */
     void criarUsuarioEPerfil(std::string email, std::string senha, std::string nome);
+    
+    /**
+     * @brief Cria uma nova publicação.
+     * @param texto Conteúdo do post.
+     * @param idComunidade Opcional. ID da comunidade destino (Padrão: 0 para Global).
+     * @throw std::invalid_argument se o texto for vazio.
+     */
     void criarPost(std::string texto, int idComunidade = 0);
+    
+    /**
+     * @brief Cria uma nova comunidade gerenciada pelo usuário logado.
+     * @param nome Título do grupo.
+     * @param descricao Informações sobre a comunidade.
+     * @throw std::invalid_argument se as strings estiverem vazias.
+     */
     void criarComunidade(std::string nome, std::string descricao);
+    
+    /**
+     * @brief Registra um novo comentário em um post existente.
+     * @param idPost ID da publicação alvo.
+     * @param idAutor ID do perfil criador do comentário.
+     * @param texto O texto do comentário.
+     * @throw std::invalid_argument se o texto for vazio.
+     */
     void criarComentarioGlobal(int idPost, int idAutor, std::string texto);
     /** @} */
     
@@ -123,7 +189,11 @@ public:
     Post* getPostMutavel(int id);
     const Post* getPost(int id) const;
 
-   std::vector<Post> getPostsFeed() const;
+    /**
+     * @brief Gera o Feed de posts unindo postagens globais e postagens de comunidades que o usuário faz parte.
+     * @return Vetor contendo os posts liberados para visualização do usuário logado.
+     */
+    std::vector<Post> getPostsFeed() const;
     /** @} */
 
     /**
@@ -138,7 +208,7 @@ public:
 
     /**
      * @name Acesso Global Mutável (Interface Interativa)
-     * @brief Expõe as listas internamente para que o controlador visual (Main) possa aplicar curtidas.
+     * @brief Expõe as listas internamente para que o controlador visual (Main/Menus) possa aplicar curtidas.
      * @{
      */
     std::vector<Post>& getTodosPostsMutavel();
