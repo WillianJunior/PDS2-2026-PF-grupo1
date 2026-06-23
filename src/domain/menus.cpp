@@ -15,7 +15,7 @@ bool opcaoVoltar(const std::string &linha) { return linha == "B" || linha == "b"
 
 }
 
-void exibirResumoPerfil(const Perfil &alvo) {
+void Menus::exibirResumoPerfil(const Perfil &alvo) {
     ConsoleUtils::mostrarCabecalho("PERFIL DE @" + alvo.getNome());
     std::cout << "\n====================================\n";
     std::cout << "         PERFIL DE @" << alvo.getNome() << "\n";
@@ -27,24 +27,12 @@ void exibirResumoPerfil(const Perfil &alvo) {
     std::cout << "====================================\n\n";
 }
 
-std::string nomePerfil(Armazenamento &db, int id) {
-    Perfil *perfil = db.getPerfil(id);
-    return perfil ? perfil->getNome() : "Desconhecido";
-}
 
-std::vector<Comentario *> comentariosDoPost(const Post &post, Armazenamento &db) {
-    std::vector<Comentario *> resultado;
-    for (auto &comentario : db.getTodosComentariosMutavel()) {
-        if (comentario.getIdPost() == post.getId()) {
-            resultado.push_back(&comentario);
-        }
-    }
-    return resultado;
-}
 
-void exibirPostDetalhado(const Post &post, Armazenamento &db, const std::vector<Comentario *> &comentarios) {
+void Menus::exibirPostDetalhado(const Post &post, Armazenamento &db, const std::vector<Comentario *> &comentarios) {
+    Busca busca = Busca();
     std::cout << "\n////////////////Post//////////////////\n\n";
-    std::cout << "@" << nomePerfil(db, post.getIdAutor());
+    std::cout << "@" << busca.nomePerfil(db, post.getIdAutor());
     if (post.getIdComunidade() != 0) {
         Comunidade *comunidade = db.getComunidade(post.getIdComunidade());
         if (comunidade) {
@@ -63,22 +51,23 @@ void exibirPostDetalhado(const Post &post, Armazenamento &db, const std::vector<
     size_t contadorVisual = 1;
     for (auto it = comentarios.rbegin(); it != comentarios.rend(); ++it) {
         Comentario *comentario = *it;
-        std::cout << contadorVisual << " - @" << nomePerfil(db, comentario->getIdAutor()) << "\n";
+        std::cout << contadorVisual << " - @" << busca.nomePerfil(db, comentario->getIdAutor()) << "\n";
         std::cout << comentario->getTexto() << "\n";
         std::cout << "Curtidas: " << comentario->quantidadeDeCurtidas() << "\n\n";
         ++contadorVisual;
     }
 }
 
-void exibirListaPosts(const std::vector<Post> &postsList, Armazenamento &db) {
+void Menus::exibirListaPosts(const std::vector<Post> &postsList, Armazenamento &db) {
+    Busca busca = Busca();
     for (size_t i = 0; i < postsList.size(); ++i) {
         size_t idxReverso = postsList.size() - 1 - i;
-        std::cout << (i + 1) << " - @" << nomePerfil(db, postsList[idxReverso].getIdAutor()) << "\n";
+        std::cout << (i + 1) << " - @" << busca.nomePerfil(db, postsList[idxReverso].getIdAutor()) << "\n";
         std::cout << postsList[idxReverso].getConteudo() << "\n\n";
     }
 }
 
-bool tratarOpcaoPost(const std::string &opcao, Post &post, Armazenamento &db,
+bool Menus::tratarOpcaoPost(const std::string &opcao, Post &post, Armazenamento &db,
                      const std::vector<Comentario *> &comentarios, std::string &mensagem) {
     if (opcao == "F" || opcao == "f")
         return false;
@@ -135,7 +124,7 @@ bool tratarOpcaoPost(const std::string &opcao, Post &post, Armazenamento &db,
 }
 
 
-void menuEditarPerfil(Perfil &alvo) {
+void Menus::menuEditarPerfil(Perfil &alvo) {
     std::string mensagem;
     while (true) {
         ConsoleUtils::exibirMensagem(mensagem);
@@ -203,14 +192,15 @@ void menuEditarPerfil(Perfil &alvo) {
     }
 }
 
-void menuVisualizarPost(Post &post, Armazenamento &db) {
+void Menus::menuVisualizarPost(Post &post, Armazenamento &db) {
     std::string mensagem;
+    Busca busca = Busca();
     while (true) {
         ConsoleUtils::limparTela();
         ConsoleUtils::exibirMensagem(mensagem);
         mensagem.clear();
 
-        auto comentarios = comentariosDoPost(post, db);
+        auto comentarios = busca.comentariosDoPost(post, db);
         exibirPostDetalhado(post, db, comentarios);
 
         std::cout << "A) Curtir/Descurtir Post / B) Curtir/Descurtir "
@@ -227,7 +217,7 @@ void menuVisualizarPost(Post &post, Armazenamento &db) {
     }
 }
 
-void menuVerPostsLista(const std::vector<Post> &postsList, Armazenamento &db) {
+void Menus::menuVerPostsLista(const std::vector<Post> &postsList, Armazenamento &db) {
     std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
@@ -271,8 +261,9 @@ void menuVerPostsLista(const std::vector<Post> &postsList, Armazenamento &db) {
     }
 }
 
-void menuComunidade(int idComunidade, Armazenamento &db) {
+void Menus::menuComunidade(int idComunidade, Armazenamento &db) {
     std::string mensagem;
+    Busca busca = Busca();
     while (true) {
         Comunidade *com = db.getComunidade(idComunidade);
         if (!com)
@@ -281,9 +272,8 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
         Perfil *admin = db.getPerfil(com->getIdAdministrador());
         Perfil *eu = db.getPerfil(db.getIdPerfilLogado());
 
-        const auto &membros = com->getIdsMembros();
-        bool isMember = std::find(membros.begin(), membros.end(), db.getIdPerfilLogado()) != membros.end();
-
+        bool isMember = busca.usuarioE_MembroDaComunidade(db.getIdPerfilLogado(), idComunidade, db);
+        int tamanho = busca.numeroDeMembrosDaComunidade(idComunidade, db);
         ConsoleUtils::limparTela();
         ConsoleUtils::exibirMensagem(mensagem);
         mensagem.clear();
@@ -291,7 +281,7 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
         ConsoleUtils::mostrarCabecalho("COMUNIDADE: " + com->getNome());
         std::cout << "Descricao: " << com->getDescricao() << "\n";
         std::cout << "Administrador: @" << (admin ? admin->getNome() : "Desconhecido") << "\n";
-        std::cout << "Membros: " << membros.size() << "\n\n";
+        std::cout << "Membros: " << tamanho << "\n\n";
 
         auto postsDaComunidade = busca.buscaPosts(idComunidade, db);
         std::vector<Post> postsDaComunidadePlanos;
@@ -306,8 +296,9 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
         if (postsDaComunidadePlanos.empty()) {
             std::cout << "Nenhum post.\n\n";
         } else {
-            auto it = postsDaComunidade.rbegin();
-            for (size_t i = 0; i < std::min<size_t>(3, postsDaComunidade.size()); ++i) {
+            auto postsRecentes = busca.buscarPostsRecentesDaComunidade(idComunidade, 3, db);
+            auto it = postsRecentes.rbegin();
+            for (size_t i = 0; i < std::min<size_t>(3, postsRecentes.size()); ++i) {
                 std::cout << "-> " << (*it)->getConteudo() << "\n";
                 ++it;
             }
@@ -370,7 +361,7 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
     }
 }
 
-void menuVerPerfisLista(const std::vector<Perfil> &perfisList, Armazenamento &db) {
+void Menus::menuVerPerfisLista(const std::vector<Perfil> &perfisList, Armazenamento &db) {
     std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
@@ -418,7 +409,7 @@ void menuVerPerfisLista(const std::vector<Perfil> &perfisList, Armazenamento &db
     }
 }
 
-void menuVerComunidadesLista(Armazenamento &db, const std::vector<Comunidade> *filtro) {
+void Menus::menuVerComunidadesLista(Armazenamento &db, const std::vector<Comunidade> *filtro) {
     std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
@@ -489,8 +480,9 @@ void menuVerComunidadesLista(Armazenamento &db, const std::vector<Comunidade> *f
     }
 }
 
-void menuPerfil(int idAlvo, Armazenamento &db) {
+void Menus::menuPerfil(int idAlvo, Armazenamento &db) {
     std::string mensagem;
+    Busca busca = Busca();
     while (true) {
         ConsoleUtils::limparTela();
         Perfil *alvo = db.getPerfil(idAlvo);
@@ -503,23 +495,8 @@ void menuPerfil(int idAlvo, Armazenamento &db) {
         const bool souEu = (idAlvo == db.getIdPerfilLogado());
         Perfil *eu = db.getPerfil(db.getIdPerfilLogado());
         std::vector<int> minhasComunidades = eu ? eu->getIdsComunidades() : std::vector<int>();
-
+        const auto &postsPorAutor = busca.buscaPostsPorAutor(idAlvo, db.getIdPerfilLogado(), db);
         std::vector<Post> postsUsuario;
-        for (const auto &p : db.getTodosPosts()) {
-            if (p.getIdAutor() != idAlvo)
-                continue;
-            if (souEu) {
-                postsUsuario.push_back(p);
-            } else {
-                if (p.getIdComunidade() == 0) {
-                    postsUsuario.push_back(p);
-                } else if (std::find(minhasComunidades.begin(), minhasComunidades.end(), p.getIdComunidade()) !=
-                           minhasComunidades.end()) {
-                    postsUsuario.push_back(p);
-                }
-            }
-        }
-
         exibirResumoPerfil(*alvo);
 
         if (souEu) {

@@ -125,7 +125,7 @@ void Aplicacao::exibirMenuPrincipal() {
     } else if (opcao == 2) {
         executarFluxoPesquisa();
     } else if (opcao == 3) {
-        menuVerComunidadesLista(db, nullptr);
+        Menus::menuVerComunidadesLista(db, nullptr);
     } else if (opcao == 4) {
         executarFluxoVerPerfil();
     } else if (opcao == 5) {
@@ -250,12 +250,12 @@ void Aplicacao::executarFluxoPesquisa() {
         std::getline(std::cin, termo);
 
         if (cat == 1) {
-            menuVerPerfisLista(busca.buscarPerfis(termo, db), db);
+            Menus::menuVerPerfisLista(busca.buscarPerfis(termo, db), db);
         } else if (cat == 2) {
-            menuVerPostsLista(busca.buscarPosts(termo, db), db);
+            Menus::menuVerPostsLista(busca.buscarPosts(termo, db), db);
         } else if (cat == 3) {
             const auto achados = busca.buscarComunidades(termo, db);
-            menuVerComunidadesLista(db, &achados);
+            Menus::menuVerComunidadesLista(db, &achados);
         }
     }
 }
@@ -312,7 +312,7 @@ void Aplicacao::executarFluxoAlterarCredenciais() {
 }
 void Aplicacao::executarFluxoVerPerfil() {
     if (db.getIdPerfilLogado() > 0) {
-        menuPerfil(db.getIdPerfilLogado(), db);
+        Menus::menuPerfil(db.getIdPerfilLogado(), db);
     } else {                                                     // LCOV_EXCL_LINE
         mensagemAlerta = "[ERRO] Perfil logado nao encontrado."; // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE

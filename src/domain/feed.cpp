@@ -87,7 +87,7 @@ void Feed::verFeed(Armazenamento &db) {
                 if (postPtr) {
                     Post *postOriginal = db.getPostMutavel(postPtr->getId());
                     if (postOriginal) {
-                        menuVisualizarPost(*postOriginal, db);
+                        Menus::menuVisualizarPost(*postOriginal, db);
                     } else {
                         std::cout << "\n[ERRO] Post nao acessivel operacionalmente.\n"; // LCOV_EXCL_LINE
                     } // LCOV_EXCL_LINE

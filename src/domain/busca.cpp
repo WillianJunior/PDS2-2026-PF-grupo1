@@ -53,7 +53,6 @@ std::vector<Comunidade> Busca::buscarComunidades(const std::string &palavraChave
 std::vector<Post*> Busca::buscaPosts(int idComunidade, Armazenamento &db) {
     std::vector<Post*> achados;
 
-    // Iteramos por referência mutável para conseguir o endereço real do vetor interno
     for (auto &post : db.getTodosPostsMutavel()) {
         if (post.getIdComunidade() == idComunidade) {
             achados.push_back(&post);
@@ -92,7 +91,6 @@ std::vector<Post*> Busca::buscaPosts(Perfil perfil, Armazenamento &db) {
     std::vector<Post*> feed;
     const auto &comunidadesUsuario = perfil.getIdsComunidades();
 
-    // Iteramos por referência mutável para apontar para a única fonte da verdade
     for (auto &post : db.getTodosPostsMutavel()) {
         if (post.getIdComunidade() == 0 || std::find(comunidadesUsuario.begin(), comunidadesUsuario.end(),
                                                      post.getIdComunidade()) != comunidadesUsuario.end()) {
@@ -100,4 +98,58 @@ std::vector<Post*> Busca::buscaPosts(Perfil perfil, Armazenamento &db) {
         }
     }
     return feed;
+}
+
+std::vector<Post*> Busca::buscaPostsPorAutor(int idAlvo, int idLogado, Armazenamento &db) {
+    std::vector<Post*> resultados;
+    Perfil *eu = db.getPerfil(idLogado);
+    const auto &minhasComunidades = eu ? eu->getIdsComunidades() : std::vector<int>();
+
+    for (auto &p : db.getTodosPostsMutavel()) {
+        if (p.getIdAutor() != idAlvo) continue;
+
+        if (idAlvo == idLogado || p.getIdComunidade() == 0 || 
+            std::find(minhasComunidades.begin(), minhasComunidades.end(), p.getIdComunidade()) != minhasComunidades.end()) {
+            resultados.push_back(&p);
+        }
+    }
+    return resultados;
+}
+
+std::vector<Comentario *> Busca::comentariosDoPost(const Post &post, Armazenamento &db) {
+    std::vector<Comentario *> resultado;
+    for (auto &comentario : db.getTodosComentariosMutavel()) {
+        if (comentario.getIdPost() == post.getId()) {
+            resultado.push_back(&comentario);
+        }
+    }
+    return resultado;
+}
+
+bool Busca::usuarioE_MembroDaComunidade(int idUsuario, int idComunidade, const Armazenamento &db) {
+    const Comunidade *com = db.getComunidade(idComunidade);
+    if (!com) return false;
+    const auto &membros = com->getIdsMembros();
+    return std::find(membros.begin(), membros.end(), idUsuario) != membros.end();
+}
+
+int Busca::numeroDeMembrosDaComunidade(int idComunidade, const Armazenamento &db) {
+    const Comunidade *com = db.getComunidade(idComunidade);
+    if (!com) return 0;
+    return static_cast<int>(com->getIdsMembros().size());
+}
+std::vector<Post*> Busca::buscarPostsRecentesDaComunidade(int idComunidade, size_t limite, Armazenamento &db) {
+    auto todos = buscaPosts(idComunidade, db); // Reutiliza sua função existente
+    std::vector<Post*> recentes;
+
+    auto it = todos.rbegin();
+    for (size_t i = 0; i < std::min<size_t>(limite, todos.size()); ++i) {
+        if (*it) recentes.push_back(*it);
+        ++it;
+    }
+    return recentes;
+}
+std::string Busca::nomePerfil(Armazenamento &db, int id) {
+    Perfil *perfil = db.getPerfil(id);
+    return perfil ? perfil->getNome() : "Desconhecido";
 }

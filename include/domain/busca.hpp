@@ -76,6 +76,55 @@ class Busca {
      * @return Vetor de ponteiros para os posts originais dentro do armazenamento.
      */
     std::vector<Post *> buscaPosts(Perfil perfil, Armazenamento &db);
-};
+    /**
+     * @brief Busca e filtra as publicações criadas por um autor específico baseado nas regras de privacidade.
+     * @param idAlvo Identificador único do perfil dono das publicações.
+     * @param idLogado Identificador único do usuário que está solicitando a visualização.
+     * @param db Referência ao banco de dados mutável do sistema.
+     * @return Vetor de ponteiros para os posts originais filtrados do autor.
+     */
+    std::vector<Post *> buscaPostsPorAutor(int idAlvo, int idLogado, Armazenamento &db);
 
+    /**
+     * @brief Recupera de forma mutável a lista de comentários vinculados a uma publicação específica.
+     * @param post Referência constante para o Post alvo.
+     * @param db Referência ao banco de dados mutável do sistema.
+     * @return Vetor de ponteiros para os comentários originais pertencentes ao post.
+     */
+    std::vector<Comentario *> comentariosDoPost(const Post &post, Armazenamento &db);
+
+    /**
+     * @brief Verifica se um determinado usuário possui vínculo ativo de membro em uma comunidade.
+     * @param idUsuario Identificador único do perfil do usuário.
+     * @param idComunidade Identificador único da comunidade alvo.
+     * @param db Referência constante ao banco de dados para consulta.
+     * @return true Se o usuário for membro ativo, false caso contrário.
+     */
+    bool usuarioE_MembroDaComunidade(int idUsuario, int idComunidade, const Armazenamento &db);
+
+    /**
+     * @brief Obtém o número total de membros validados que pertencem a uma comunidade específica.
+     * @param idComunidade Identificador único da comunidade.
+     * @param db Referência constante ao banco de dados para consulta.
+     * @return Inteiro representando o total de membros vinculados.
+     */
+    int numeroDeMembrosDaComunidade(int idComunidade, const Armazenamento &db);
+
+    /**
+     * @brief Retorna uma lista contendo as publicações mais recentes de uma comunidade limitada por uma quantidade.
+     * @param idComunidade Identificador único da comunidade.
+     * @param limite Quantidade máxima de registros recentes que devem ser retornados.
+     * @param db Referência ao banco de dados mutável do sistema.
+     * @return Vetor de ponteiros para os posts mais recentes obedecendo ao limite.
+     */
+    std::vector<Post *> buscarPostsRecentesDaComunidade(int idComunidade, size_t limite, Armazenamento &db);
+
+    /**
+     * @brief Resolve de forma segura o nome associado a um ID de perfil, fornecendo um fallback de erro.
+     * @param db Referência ao banco de dados mutável para varredura.
+     * @param id Identificador único do perfil procurado.
+     * @return String contendo o nome real do usuário ou "Desconhecido" caso o registro não exista.
+     */
+    std::string nomePerfil(Armazenamento &db, int id);
+};
 #endif
