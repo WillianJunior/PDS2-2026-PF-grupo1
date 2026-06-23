@@ -28,7 +28,7 @@
 
 ### Responsabilidades de Realização
 
-- Exibir telas
+- Inicializar e controlar o loop principal do sistema
 - Controlar menus
 - Gerenciar fluxo de login
 - Gerenciar fluxo de cadastro
@@ -41,7 +41,7 @@
 - Armazenamento
 - Busca
 - Feed
-
+- RestaurarEntradaCin
 
 ## Armazenamento
 
@@ -93,6 +93,11 @@
 - Buscar posts
 - Filtrar resultados
 - Exibir resultados encontrados
+- Validar se usuário é membro de comunidade
+- Contabilizar número de membros
+- Filtrar posts por autor respeitando regras de privacidade
+- Agrupar comentários pertencentes a um post
+- Resolver nome de exibição de um perfil por ID
 
 ### Colaboradores
 
@@ -227,7 +232,6 @@
 
 ### Responsabilidades de Conhecimento
 
-- Estado atual de navegação do usuário
 - Entidades exibidas na interface (posts, perfis e comunidades)
 
 ### Responsabilidades de Realização
@@ -326,3 +330,15 @@
 
 - Armazenamento
 - Perfil
+
+## RestaurarEntradaCin
+
+### Responsabilidades de Conhecimento
+- Buffer original de entrada de dados (std::streambuf)
+
+### Responsabilidades de Realização
+- Reter o fluxo original do std::cin no construtor (RAII)
+- Restaurar automaticamente o buffer original no destrutor ao sair de escopo
+
+### Colaboradores
+- Nenhum (Classe utilitária autocontida)

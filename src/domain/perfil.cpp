@@ -15,12 +15,6 @@ void Perfil::entrarComunidade(int idComunidade) {
     }
 }
 
-void Perfil::sairComunidade(int idComunidade) {
-    auto it = std::find(idsComunidadesQueFazParte.begin(), idsComunidadesQueFazParte.end(), idComunidade);
-    if (it != idsComunidadesQueFazParte.end())
-        idsComunidadesQueFazParte.erase(it);
-}
-
 int Perfil::getId() const { return id; }
 
 const std::string &Perfil::getNome() const { return nome; }

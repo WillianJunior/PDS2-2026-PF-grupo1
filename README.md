@@ -43,402 +43,16 @@ A rede social educacional foi escolhida porque permite representar agregados e c
 ├── 2025019712.txt
 ├── 2025075086.txt
 ├── 2025116670.txt
-├── CMakeLists.txt
-├── Makefile
-├── README.md
 ├── bin
 │   ├── edusocial
 │   └── run_tests
-├── build
-│   ├── CMakeCache.txt
-│   ├── CMakeFiles
-│   │   ├── 3.28.3
-│   │   │   ├── CMakeCXXCompiler.cmake
-│   │   │   ├── CMakeDetermineCompilerABI_CXX.bin
-│   │   │   ├── CMakeSystem.cmake
-│   │   │   └── CompilerIdCXX
-│   │   │       ├── CMakeCXXCompilerId.cpp
-│   │   │       ├── a.out
-│   │   │       └── tmp
-│   │   ├── CMakeConfigureLog.yaml
-│   │   ├── CMakeDirectoryInformation.cmake
-│   │   ├── CMakeRuleHashes.txt
-│   │   ├── Continuous.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ContinuousBuild.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ContinuousConfigure.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ContinuousCoverage.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ContinuousMemCheck.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ContinuousStart.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ContinuousSubmit.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ContinuousTest.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ContinuousUpdate.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── Experimental.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ExperimentalBuild.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ExperimentalConfigure.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ExperimentalCoverage.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ExperimentalMemCheck.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ExperimentalStart.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ExperimentalSubmit.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ExperimentalTest.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── ExperimentalUpdate.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── Makefile.cmake
-│   │   ├── Makefile2
-│   │   ├── Nightly.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── NightlyBuild.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── NightlyConfigure.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── NightlyCoverage.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── NightlyMemCheck.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── NightlyMemoryCheck.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── NightlyStart.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── NightlySubmit.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── NightlyTest.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── NightlyUpdate.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   └── progress.make
-│   │   ├── TargetDirectories.txt
-│   │   ├── VerifyGlobs.cmake
-│   │   ├── cmake.check_cache
-│   │   ├── cmake.verify_globs
-│   │   ├── count_commits_alunos.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.internal
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   ├── depend.make
-│   │   │   ├── flags.make
-│   │   │   ├── link.txt
-│   │   │   ├── progress.make
-│   │   │   └── scripts
-│   │   │       ├── count_commits_alunos.cpp.o
-│   │   │       └── count_commits_alunos.cpp.o.d
-│   │   ├── edu_social_backend.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   ├── depend.make
-│   │   │   ├── flags.make
-│   │   │   ├── link.txt
-│   │   │   ├── progress.make
-│   │   │   └── src
-│   │   │       ├── main.cpp.gcno
-│   │   │       ├── main.cpp.o
-│   │   │       └── main.cpp.o.d
-│   │   ├── edu_social_core.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── cmake_clean_target.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   ├── depend.make
-│   │   │   ├── flags.make
-│   │   │   ├── link.txt
-│   │   │   ├── progress.make
-│   │   │   └── src
-│   │   │       └── domain
-│   │   │           ├── admin.cpp.gcno
-│   │   │           ├── admin.cpp.o
-│   │   │           ├── admin.cpp.o.d
-│   │   │           ├── aplicacao.cpp.gcno
-│   │   │           ├── aplicacao.cpp.o
-│   │   │           ├── aplicacao.cpp.o.d
-│   │   │           ├── armazenamento.cpp.gcda
-│   │   │           ├── armazenamento.cpp.gcno
-│   │   │           ├── armazenamento.cpp.o
-│   │   │           ├── armazenamento.cpp.o.d
-│   │   │           ├── busca.cpp.gcda
-│   │   │           ├── busca.cpp.gcno
-│   │   │           ├── busca.cpp.o
-│   │   │           ├── busca.cpp.o.d
-│   │   │           ├── comentario.cpp.gcda
-│   │   │           ├── comentario.cpp.gcno
-│   │   │           ├── comentario.cpp.o
-│   │   │           ├── comentario.cpp.o.d
-│   │   │           ├── comunidade.cpp.gcda
-│   │   │           ├── comunidade.cpp.gcno
-│   │   │           ├── comunidade.cpp.o
-│   │   │           ├── comunidade.cpp.o.d
-│   │   │           ├── console_utils.cpp.gcda
-│   │   │           ├── console_utils.cpp.gcno
-│   │   │           ├── console_utils.cpp.o
-│   │   │           ├── console_utils.cpp.o.d
-│   │   │           ├── feed.cpp.gcda
-│   │   │           ├── feed.cpp.gcno
-│   │   │           ├── feed.cpp.o
-│   │   │           ├── feed.cpp.o.d
-│   │   │           ├── gerenciador_csv.cpp.gcda
-│   │   │           ├── gerenciador_csv.cpp.gcno
-│   │   │           ├── gerenciador_csv.cpp.o
-│   │   │           ├── gerenciador_csv.cpp.o.d
-│   │   │           ├── menus.cpp.gcda
-│   │   │           ├── menus.cpp.gcno
-│   │   │           ├── menus.cpp.o
-│   │   │           ├── menus.cpp.o.d
-│   │   │           ├── perfil.cpp.gcda
-│   │   │           ├── perfil.cpp.gcno
-│   │   │           ├── perfil.cpp.o
-│   │   │           ├── perfil.cpp.o.d
-│   │   │           ├── post.cpp.gcda
-│   │   │           ├── post.cpp.gcno
-│   │   │           ├── post.cpp.o
-│   │   │           ├── post.cpp.o.d
-│   │   │           ├── usuario.cpp.gcda
-│   │   │           ├── usuario.cpp.gcno
-│   │   │           ├── usuario.cpp.o
-│   │   │           └── usuario.cpp.o.d
-│   │   ├── edu_social_tests.dir
-│   │   │   ├── DependInfo.cmake
-│   │   │   ├── build.make
-│   │   │   ├── cmake_clean.cmake
-│   │   │   ├── compiler_depend.make
-│   │   │   ├── compiler_depend.ts
-│   │   │   ├── depend.make
-│   │   │   ├── flags.make
-│   │   │   ├── link.txt
-│   │   │   ├── progress.make
-│   │   │   └── tests
-│   │   │       ├── test_armazenamento.cpp.gcda
-│   │   │       ├── test_armazenamento.cpp.gcno
-│   │   │       ├── test_armazenamento.cpp.o
-│   │   │       ├── test_armazenamento.cpp.o.d
-│   │   │       ├── test_busca.cpp.gcda
-│   │   │       ├── test_busca.cpp.gcno
-│   │   │       ├── test_busca.cpp.o
-│   │   │       ├── test_busca.cpp.o.d
-│   │   │       ├── test_comentario.cpp.gcda
-│   │   │       ├── test_comentario.cpp.gcno
-│   │   │       ├── test_comentario.cpp.o
-│   │   │       ├── test_comentario.cpp.o.d
-│   │   │       ├── test_comunidade.cpp.gcda
-│   │   │       ├── test_comunidade.cpp.gcno
-│   │   │       ├── test_comunidade.cpp.o
-│   │   │       ├── test_comunidade.cpp.o.d
-│   │   │       ├── test_feed.cpp.gcda
-│   │   │       ├── test_feed.cpp.gcno
-│   │   │       ├── test_feed.cpp.o
-│   │   │       ├── test_feed.cpp.o.d
-│   │   │       ├── test_gerenciador_csv.cpp.gcda
-│   │   │       ├── test_gerenciador_csv.cpp.gcno
-│   │   │       ├── test_gerenciador_csv.cpp.o
-│   │   │       ├── test_gerenciador_csv.cpp.o.d
-│   │   │       ├── test_main.cpp.gcda
-│   │   │       ├── test_main.cpp.gcno
-│   │   │       ├── test_main.cpp.o
-│   │   │       ├── test_main.cpp.o.d
-│   │   │       ├── test_menus.cpp.gcda
-│   │   │       ├── test_menus.cpp.gcno
-│   │   │       ├── test_menus.cpp.o
-│   │   │       ├── test_menus.cpp.o.d
-│   │   │       ├── test_perfil.cpp.gcda
-│   │   │       ├── test_perfil.cpp.gcno
-│   │   │       ├── test_perfil.cpp.o
-│   │   │       ├── test_perfil.cpp.o.d
-│   │   │       ├── test_post.cpp.gcda
-│   │   │       ├── test_post.cpp.gcno
-│   │   │       ├── test_post.cpp.o
-│   │   │       ├── test_post.cpp.o.d
-│   │   │       ├── test_usuario.cpp.gcda
-│   │   │       ├── test_usuario.cpp.gcno
-│   │   │       ├── test_usuario.cpp.o
-│   │   │       └── test_usuario.cpp.o.d
-│   │   ├── pkgRedirects
-│   │   └── progress.marks
-│   ├── CTestTestfile.cmake
-│   ├── DartConfiguration.tcl
-│   ├── Makefile
-│   ├── Testing
-│   │   └── Temporary
-│   │       ├── CTestCostData.txt
-│   │       └── LastTest.log
-│   ├── bin
-│   │   ├── count_commits_alunos
-│   │   ├── edu_social_backend
-│   │   └── edu_social_tests
-│   ├── cmake_install.cmake
-│   ├── compile_commands.json
-│   ├── data
-│   │   ├── comentarios.csv
-│   │   ├── comunidades.csv
-│   │   ├── perfis.csv
-│   │   ├── posts.csv
-│   │   └── usuarios.csv
-│   └── libedu_social_core.a
 ├── cmake-3.29.3-linux-x86_64.sh
+├── CMakeLists.txt
 ├── data
 ├── design
-│   ├── Diagrama_UML.png
-│   ├── Doxyfile
 │   ├── crc_cards.md
+│   ├── diagramaUML.png
+│   ├── Doxyfile
 │   ├── notas-C7.md
 │   └── user_stories.md
 ├── include
@@ -455,10 +69,11 @@ A rede social educacional foi escolhida porque permite representar agregados e c
 │       ├── menus.hpp
 │       ├── perfil.hpp
 │       ├── post.hpp
+│       ├── restaurar_entrada_cin.hpp
 │       └── usuario.hpp
+├── Makefile
+├── README.md
 ├── report
-│   ├── coverage.admin.cpp.82a5414617080d36cb01ca67f7b1df75.html
-│   ├── coverage.aplicacao.cpp.78e2b65368b03859b13d4ae6eb20a082.html
 │   ├── coverage.armazenamento.cpp.36aad38bf57c3da4a46048ae6f766745.html
 │   ├── coverage.armazenamento.hpp.6bfeb6631536af00d3d24676670172f8.html
 │   ├── coverage.busca.cpp.ca8a20712bf1e0e2512a6994467708e8.html
@@ -472,7 +87,6 @@ A rede social educacional foi escolhida porque permite representar agregados e c
 │   ├── coverage.html
 │   ├── coverage.menus.cpp.a0baf141fe4db60fbf3cf774d75eaf0f.html
 │   ├── coverage.perfil.cpp.10b5b1f7e9f1b62416e0595b06a2ce93.html
-│   ├── coverage.perfil.hpp.0a256732c6e576921110d01bc27ca3d2.html
 │   ├── coverage.post.cpp.c5c7acc94d8339fc4c07f3477e0d7930.html
 │   └── coverage.usuario.cpp.b2326018c79f0753995ba0a75b03c7a5.html
 ├── scripts
@@ -496,21 +110,26 @@ A rede social educacional foi escolhida porque permite representar agregados e c
 │   │   ├── menus.cpp
 │   │   ├── perfil.cpp
 │   │   ├── post.cpp
+│   │   ├── restaurar_entrada_cin.cpp
 │   │   └── usuario.cpp
 │   └── main.cpp
 └── tests
     ├── doctest
     │   └── doctest.h
+    ├── test_admin.cpp
+    ├── test_aplicacao.cpp
     ├── test_armazenamento.cpp
     ├── test_busca.cpp
     ├── test_comentario.cpp
     ├── test_comunidade.cpp
+    ├── test_console_utils.cpp
     ├── test_feed.cpp
     ├── test_gerenciador_csv.cpp
     ├── test_main.cpp
     ├── test_menus.cpp
     ├── test_perfil.cpp
     ├── test_post.cpp
+    ├── test_restaurar_entrada_cin.cpp
     └── test_usuario.cpp
 ```
 

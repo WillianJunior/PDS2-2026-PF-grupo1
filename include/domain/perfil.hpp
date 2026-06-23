@@ -53,12 +53,6 @@ class Perfil {
     void entrarComunidade(int idComunidade);
 
     /**
-     * @brief Remove o vínculo do perfil com uma comunidade.
-     * @param idComunidade O identificador da comunidade a ser deixada.
-     */
-    void sairComunidade(int idComunidade);
-
-    /**
      * @brief Verifica se o perfil tem privilégios de gerenciamento.
      * @return false por padrão. Subclasses (como Administrador) sobrescrevem para true.
      */

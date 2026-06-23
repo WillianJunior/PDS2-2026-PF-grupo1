@@ -30,14 +30,11 @@ TEST_SUITE("Perfil") {
         CHECK(p.getIdsComunidades().size() == 2);
     }
 
-    TEST_CASE("entrarComunidade e sairComunidade") {
+    TEST_CASE("entrarComunidade") {
         Perfil p("Curso", "Inst", 1);
         p.entrarComunidade(10);
         p.entrarComunidade(10);
         CHECK(p.getIdsComunidades().size() == 1);
-        p.sairComunidade(10);
-        CHECK(p.getIdsComunidades().size() == 0);
-        CHECK_NOTHROW(p.sairComunidade(99));
     }
 
     TEST_CASE("Metodos Adicionais (Cobertura total)") {

@@ -17,9 +17,6 @@ bool opcaoVoltar(const std::string &linha) { return linha == "B" || linha == "b"
 
 void Menus::exibirResumoPerfil(const Perfil &alvo) {
     ConsoleUtils::mostrarCabecalho("PERFIL DE @" + alvo.getNome());
-    std::cout << "\n====================================\n";
-    std::cout << "         PERFIL DE @" << alvo.getNome() << "\n";
-    std::cout << "====================================\n";
     std::cout << "Curso: " << (alvo.getCurso().empty() ? "(nao informado)" : alvo.getCurso()) << "\n";
     std::cout << "Instituicao: " << (alvo.getInstituicao().empty() ? "(nao informado)" : alvo.getInstituicao()) << "\n";
     std::cout << "Periodo: " << alvo.getPeriodo() << " Semestre\n";
@@ -493,10 +490,13 @@ void Menus::menuPerfil(int idAlvo, Armazenamento &db) {
         mensagem.clear();
 
         const bool souEu = (idAlvo == db.getIdPerfilLogado());
-        Perfil *eu = db.getPerfil(db.getIdPerfilLogado());
-        std::vector<int> minhasComunidades = eu ? eu->getIdsComunidades() : std::vector<int>();
+
         const auto &postsPorAutor = busca.buscaPostsPorAutor(idAlvo, db.getIdPerfilLogado(), db);
         std::vector<Post> postsUsuario;
+        for (const auto *p : postsPorAutor) {
+            if (p) postsUsuario.push_back(*p);
+        }
+
         exibirResumoPerfil(*alvo);
 
         if (souEu) {
@@ -525,7 +525,9 @@ void Menus::menuPerfil(int idAlvo, Armazenamento &db) {
             menuVerPostsLista(postsUsuario, db);
         } else if (souEu && opcao == 2) {
             menuEditarPerfil(*alvo);
-        } else if (opcao == 3) {
+        } else if (!souEu && opcao == 2) {
+            break;
+        } else if (souEu && opcao == 3) {
             break;
         } else {
             mensagem = "[ERRO] Opcao invalida.";
