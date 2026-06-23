@@ -37,7 +37,7 @@ public:
      * @brief Verifica se o usuário tem permissões de gerenciamento.
      * * @return true Sempre retorna verdadeiro para objetos desta classe.
      */
-    bool podeGerenciarComunidade() const;
+    bool podeGerenciarComunidade() const override;
 };
 
 #endif
