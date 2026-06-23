@@ -1,10 +1,10 @@
 # Edu Social Backend
 
-Backend de uma rede social educacional desenvolvido em C++17 com Crow, SQLite, CMake e Makefile.
+Backend de uma rede social educacional desenvolvido em C++ com CSV, CMake e Makefile.
 
 ## Integrantes
 
-Os integrantes do grupo sao identificados pelos arquivos de matricula presentes na raiz do repositorio:
+Os integrantes do grupo são identificados pelos arquivos de matricula presentes na raiz do repositório:
 
 - `2025019518`
 - `2025019704`
@@ -12,215 +12,562 @@ Os integrantes do grupo sao identificados pelos arquivos de matricula presentes 
 - `2025075086`
 - `2025116670`
 
-## Descricao do problema
+## Descrição do problema
 
-O sistema resolve o problema de comunicacao e colaboracao academica em um espaco social organizado por comunidades. A ideia central e permitir que usuarios entrem em comunidades, publiquem posts, respondam com comentarios, curtam conteudos e consumam um feed consolidado dos assuntos que acompanham.
+O sistema resolve o problema de falta de comunicação e colaboração acadêmica, por meio da criação de um espaço social organizado em comunidades. A ideia central é permitir que usuários entrem em comunidades cujos temas os interessem, publiquem posts, respondam com comentários, curtam conteúdos e consumam um feed consolidado dos assuntos que acompanham.
 
-O projeto foi estruturado para que a modelagem orientada a objetos fique visivel e defensavel. A arquitetura, o dominio, o schema do banco e a API contam a mesma historia do sistema.
+O projeto foi estruturado para que a modelagem orientada a objetos fique visível e defensável. Foram utilizadas ferramentas estratégicas como arquivos CSV de modo a tornar a experiência do usuário mais dinâmica.
 
 ## Objetivo principal
 
 Entregar uma base de backend que apresente:
 
-- modelagem OO clara
-- hierarquia real de classes
-- composicao explicita
-- polimorfismo justificavel
-- contratos `.hpp` completos
-- documentacao Doxygen inicial
-- schema coerente com o dominio
-- API documentada e chamavel
-- estrutura pronta para TDD
+- modelagem OO clara;
+- hierarquia de classes;
+- composição explícita;
+- polimorfismo justificável;
+- contratos `.hpp` completos;
+- documentacao Doxygen;
+- estrutura pronta para TDD.
 
-## Motivacao
+## Motivação
 
-A rede social educacional foi escolhida porque permite representar agregados e colaboracoes reais sem forcar abstracoes artificiais. Comunidades, posts, comentarios, feed e busca fornecem pontos naturais para mostrar heranca, composicao, polimorfismo e separacao de responsabilidades.
+A rede social educacional foi escolhida porque permite representar agregados e colaborações reais sem forçar abstrações artificiais. Comunidades, posts, comentários, feed e busca fornecem pontos naturais para mostrar herança, composição, polimorfismo e separação de responsabilidades.
 
 ## Estrutura oficial do repositorio
 
 ```txt
 .
-|-- README.md
-|-- CMakeLists.txt
-|-- Doxyfile
-|-- Makefile
-|-- build/
-|-- database/
-|   `-- schema.sql
-|-- design/
-|   |-- README.md
-|   |-- user_stories.md
-|   |-- crc_cards.md
-|   |-- CRC_Cartoes_Rede_Social_Educacional.pdf
-|   `-- User_Stories_Rede_Social_Educacional.pdf
-|-- include/
-|   |-- app/
-|   |   `-- app.h
-|   |-- database/
-|   |   |-- migration_runner.h
-|   |   `-- sqlite_connection.h
-|   |-- domain/
-|   |   |-- comment.hpp
-|   |   |-- community.hpp
-|   |   |-- content.hpp
-|   |   |-- feed.hpp
-|   |   |-- post.hpp
-|   |   |-- post_source.hpp
-|   |   |-- search_service.hpp
-|   |   `-- user.hpp
-|   `-- http/
-|       |-- api_routes.h
-|       |-- auth_routes.h
-|       |-- community_routes.h
-|       |-- feed_routes.h
-|       |-- health_routes.h
-|       |-- not_implemented_response.h
-|       |-- post_routes.h
-|       |-- search_routes.h
-|       `-- user_routes.h
-|-- scripts/
-|   |-- setup.ps1
-|   |-- setup.sh
-|   |-- run.ps1
-|   |-- run.sh
-|   |-- reset_db.ps1
-|   |-- reset_db.sh
-|   |-- test.ps1
-|   |-- test.sh
-|   |-- docs.ps1
-|   `-- docs.sh
-|-- src/
-|   |-- app/
-|   |   `-- app.cpp
-|   |-- database/
-|   |   |-- migration_runner.cpp
-|   |   `-- sqlite_connection.cpp
-|   |-- domain/
-|   |   |-- comment.cpp
-|   |   |-- community.cpp
-|   |   |-- content.cpp
-|   |   |-- feed.cpp
-|   |   |-- post.cpp
-|   |   |-- search_service.cpp
-|   |   `-- user.cpp
-|   |-- http/
-|   |   |-- api_routes.cpp
-|   |   |-- auth_routes.cpp
-|   |   |-- community_routes.cpp
-|   |   |-- feed_routes.cpp
-|   |   |-- health_routes.cpp
-|   |   |-- not_implemented_response.cpp
-|   |   |-- post_routes.cpp
-|   |   |-- search_routes.cpp
-|   |   `-- user_routes.cpp
-|   `-- main.cpp
-`-- tests/
-    |-- test_main.cpp
-    |-- comment_tests.cpp
-    |-- community_tests.cpp
-    |-- content_tests.cpp
-    |-- feed_tests.cpp
-    |-- post_tests.cpp
-    |-- search_service_tests.cpp
-    `-- user_tests.cpp
-```
-
-## Arquitetura final do sistema
-
-O sistema e organizado em quatro camadas:
-
-- `app`: bootstrap e inicializacao do processo
-- `domain`: entidades, agregados, abstrações e servicos do dominio
-- `database`: conexao SQLite e aplicacao do schema
-
-Fluxo arquitetural:
-
-
-Fluxo atual de bootstrap:
-
-```txt
-main.cpp
-  -> App::run()
-    -> cria database/app.db
-    -> aplica database/schema.sql
-    -> registra /health
-    -> registra a superficie completa da API
-    -> sobe o servidor
+├── 2025019518.txt
+├── 2025019704.txt
+├── 2025019712.txt
+├── 2025075086.txt
+├── 2025116670.txt
+├── CMakeLists.txt
+├── Makefile
+├── README.md
+├── bin
+│   ├── edusocial
+│   └── run_tests
+├── build
+│   ├── CMakeCache.txt
+│   ├── CMakeFiles
+│   │   ├── 3.28.3
+│   │   │   ├── CMakeCXXCompiler.cmake
+│   │   │   ├── CMakeDetermineCompilerABI_CXX.bin
+│   │   │   ├── CMakeSystem.cmake
+│   │   │   └── CompilerIdCXX
+│   │   │       ├── CMakeCXXCompilerId.cpp
+│   │   │       ├── a.out
+│   │   │       └── tmp
+│   │   ├── CMakeConfigureLog.yaml
+│   │   ├── CMakeDirectoryInformation.cmake
+│   │   ├── CMakeRuleHashes.txt
+│   │   ├── Continuous.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ContinuousBuild.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ContinuousConfigure.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ContinuousCoverage.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ContinuousMemCheck.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ContinuousStart.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ContinuousSubmit.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ContinuousTest.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ContinuousUpdate.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── Experimental.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ExperimentalBuild.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ExperimentalConfigure.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ExperimentalCoverage.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ExperimentalMemCheck.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ExperimentalStart.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ExperimentalSubmit.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ExperimentalTest.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── ExperimentalUpdate.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── Makefile.cmake
+│   │   ├── Makefile2
+│   │   ├── Nightly.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── NightlyBuild.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── NightlyConfigure.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── NightlyCoverage.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── NightlyMemCheck.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── NightlyMemoryCheck.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── NightlyStart.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── NightlySubmit.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── NightlyTest.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── NightlyUpdate.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   └── progress.make
+│   │   ├── TargetDirectories.txt
+│   │   ├── VerifyGlobs.cmake
+│   │   ├── cmake.check_cache
+│   │   ├── cmake.verify_globs
+│   │   ├── count_commits_alunos.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.internal
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   ├── depend.make
+│   │   │   ├── flags.make
+│   │   │   ├── link.txt
+│   │   │   ├── progress.make
+│   │   │   └── scripts
+│   │   │       ├── count_commits_alunos.cpp.o
+│   │   │       └── count_commits_alunos.cpp.o.d
+│   │   ├── edu_social_backend.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   ├── depend.make
+│   │   │   ├── flags.make
+│   │   │   ├── link.txt
+│   │   │   ├── progress.make
+│   │   │   └── src
+│   │   │       ├── main.cpp.gcno
+│   │   │       ├── main.cpp.o
+│   │   │       └── main.cpp.o.d
+│   │   ├── edu_social_core.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── cmake_clean_target.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   ├── depend.make
+│   │   │   ├── flags.make
+│   │   │   ├── link.txt
+│   │   │   ├── progress.make
+│   │   │   └── src
+│   │   │       └── domain
+│   │   │           ├── admin.cpp.gcno
+│   │   │           ├── admin.cpp.o
+│   │   │           ├── admin.cpp.o.d
+│   │   │           ├── aplicacao.cpp.gcno
+│   │   │           ├── aplicacao.cpp.o
+│   │   │           ├── aplicacao.cpp.o.d
+│   │   │           ├── armazenamento.cpp.gcda
+│   │   │           ├── armazenamento.cpp.gcno
+│   │   │           ├── armazenamento.cpp.o
+│   │   │           ├── armazenamento.cpp.o.d
+│   │   │           ├── busca.cpp.gcda
+│   │   │           ├── busca.cpp.gcno
+│   │   │           ├── busca.cpp.o
+│   │   │           ├── busca.cpp.o.d
+│   │   │           ├── comentario.cpp.gcda
+│   │   │           ├── comentario.cpp.gcno
+│   │   │           ├── comentario.cpp.o
+│   │   │           ├── comentario.cpp.o.d
+│   │   │           ├── comunidade.cpp.gcda
+│   │   │           ├── comunidade.cpp.gcno
+│   │   │           ├── comunidade.cpp.o
+│   │   │           ├── comunidade.cpp.o.d
+│   │   │           ├── console_utils.cpp.gcda
+│   │   │           ├── console_utils.cpp.gcno
+│   │   │           ├── console_utils.cpp.o
+│   │   │           ├── console_utils.cpp.o.d
+│   │   │           ├── feed.cpp.gcda
+│   │   │           ├── feed.cpp.gcno
+│   │   │           ├── feed.cpp.o
+│   │   │           ├── feed.cpp.o.d
+│   │   │           ├── gerenciador_csv.cpp.gcda
+│   │   │           ├── gerenciador_csv.cpp.gcno
+│   │   │           ├── gerenciador_csv.cpp.o
+│   │   │           ├── gerenciador_csv.cpp.o.d
+│   │   │           ├── menus.cpp.gcda
+│   │   │           ├── menus.cpp.gcno
+│   │   │           ├── menus.cpp.o
+│   │   │           ├── menus.cpp.o.d
+│   │   │           ├── perfil.cpp.gcda
+│   │   │           ├── perfil.cpp.gcno
+│   │   │           ├── perfil.cpp.o
+│   │   │           ├── perfil.cpp.o.d
+│   │   │           ├── post.cpp.gcda
+│   │   │           ├── post.cpp.gcno
+│   │   │           ├── post.cpp.o
+│   │   │           ├── post.cpp.o.d
+│   │   │           ├── usuario.cpp.gcda
+│   │   │           ├── usuario.cpp.gcno
+│   │   │           ├── usuario.cpp.o
+│   │   │           └── usuario.cpp.o.d
+│   │   ├── edu_social_tests.dir
+│   │   │   ├── DependInfo.cmake
+│   │   │   ├── build.make
+│   │   │   ├── cmake_clean.cmake
+│   │   │   ├── compiler_depend.make
+│   │   │   ├── compiler_depend.ts
+│   │   │   ├── depend.make
+│   │   │   ├── flags.make
+│   │   │   ├── link.txt
+│   │   │   ├── progress.make
+│   │   │   └── tests
+│   │   │       ├── test_armazenamento.cpp.gcda
+│   │   │       ├── test_armazenamento.cpp.gcno
+│   │   │       ├── test_armazenamento.cpp.o
+│   │   │       ├── test_armazenamento.cpp.o.d
+│   │   │       ├── test_busca.cpp.gcda
+│   │   │       ├── test_busca.cpp.gcno
+│   │   │       ├── test_busca.cpp.o
+│   │   │       ├── test_busca.cpp.o.d
+│   │   │       ├── test_comentario.cpp.gcda
+│   │   │       ├── test_comentario.cpp.gcno
+│   │   │       ├── test_comentario.cpp.o
+│   │   │       ├── test_comentario.cpp.o.d
+│   │   │       ├── test_comunidade.cpp.gcda
+│   │   │       ├── test_comunidade.cpp.gcno
+│   │   │       ├── test_comunidade.cpp.o
+│   │   │       ├── test_comunidade.cpp.o.d
+│   │   │       ├── test_feed.cpp.gcda
+│   │   │       ├── test_feed.cpp.gcno
+│   │   │       ├── test_feed.cpp.o
+│   │   │       ├── test_feed.cpp.o.d
+│   │   │       ├── test_gerenciador_csv.cpp.gcda
+│   │   │       ├── test_gerenciador_csv.cpp.gcno
+│   │   │       ├── test_gerenciador_csv.cpp.o
+│   │   │       ├── test_gerenciador_csv.cpp.o.d
+│   │   │       ├── test_main.cpp.gcda
+│   │   │       ├── test_main.cpp.gcno
+│   │   │       ├── test_main.cpp.o
+│   │   │       ├── test_main.cpp.o.d
+│   │   │       ├── test_menus.cpp.gcda
+│   │   │       ├── test_menus.cpp.gcno
+│   │   │       ├── test_menus.cpp.o
+│   │   │       ├── test_menus.cpp.o.d
+│   │   │       ├── test_perfil.cpp.gcda
+│   │   │       ├── test_perfil.cpp.gcno
+│   │   │       ├── test_perfil.cpp.o
+│   │   │       ├── test_perfil.cpp.o.d
+│   │   │       ├── test_post.cpp.gcda
+│   │   │       ├── test_post.cpp.gcno
+│   │   │       ├── test_post.cpp.o
+│   │   │       ├── test_post.cpp.o.d
+│   │   │       ├── test_usuario.cpp.gcda
+│   │   │       ├── test_usuario.cpp.gcno
+│   │   │       ├── test_usuario.cpp.o
+│   │   │       └── test_usuario.cpp.o.d
+│   │   ├── pkgRedirects
+│   │   └── progress.marks
+│   ├── CTestTestfile.cmake
+│   ├── DartConfiguration.tcl
+│   ├── Makefile
+│   ├── Testing
+│   │   └── Temporary
+│   │       ├── CTestCostData.txt
+│   │       └── LastTest.log
+│   ├── bin
+│   │   ├── count_commits_alunos
+│   │   ├── edu_social_backend
+│   │   └── edu_social_tests
+│   ├── cmake_install.cmake
+│   ├── compile_commands.json
+│   ├── data
+│   │   ├── comentarios.csv
+│   │   ├── comunidades.csv
+│   │   ├── perfis.csv
+│   │   ├── posts.csv
+│   │   └── usuarios.csv
+│   └── libedu_social_core.a
+├── cmake-3.29.3-linux-x86_64.sh
+├── data
+├── design
+│   ├── Diagrama_UML.png
+│   ├── Doxyfile
+│   ├── crc_cards.md
+│   ├── notas-C7.md
+│   └── user_stories.md
+├── include
+│   └── domain
+│       ├── admin.hpp
+│       ├── aplicacao.hpp
+│       ├── armazenamento.hpp
+│       ├── busca.hpp
+│       ├── comentario.hpp
+│       ├── comunidade.hpp
+│       ├── console_utils.hpp
+│       ├── feed.hpp
+│       ├── gerenciador_csv.hpp
+│       ├── menus.hpp
+│       ├── perfil.hpp
+│       ├── post.hpp
+│       └── usuario.hpp
+├── report
+│   ├── coverage.admin.cpp.82a5414617080d36cb01ca67f7b1df75.html
+│   ├── coverage.aplicacao.cpp.78e2b65368b03859b13d4ae6eb20a082.html
+│   ├── coverage.armazenamento.cpp.36aad38bf57c3da4a46048ae6f766745.html
+│   ├── coverage.armazenamento.hpp.6bfeb6631536af00d3d24676670172f8.html
+│   ├── coverage.busca.cpp.ca8a20712bf1e0e2512a6994467708e8.html
+│   ├── coverage.comentario.cpp.61bff116fbf623c0fe77b85baf74d8de.html
+│   ├── coverage.comunidade.cpp.db54dc74d00a9467a4d38b33b9d1a6f3.html
+│   ├── coverage.console_utils.cpp.049e4431eaa4a2d5f3f08616b7f94f0d.html
+│   ├── coverage.css
+│   ├── coverage.feed.cpp.0969b8d157a5ba498ae24327da1deaab.html
+│   ├── coverage.functions.html
+│   ├── coverage.gerenciador_csv.cpp.54c810f6d5bc2bc75188f6c15a35e75a.html
+│   ├── coverage.html
+│   ├── coverage.menus.cpp.a0baf141fe4db60fbf3cf774d75eaf0f.html
+│   ├── coverage.perfil.cpp.10b5b1f7e9f1b62416e0595b06a2ce93.html
+│   ├── coverage.perfil.hpp.0a256732c6e576921110d01bc27ca3d2.html
+│   ├── coverage.post.cpp.c5c7acc94d8339fc4c07f3477e0d7930.html
+│   └── coverage.usuario.cpp.b2326018c79f0753995ba0a75b03c7a5.html
+├── scripts
+│   ├── alunos.json
+│   ├── count_commits_alunos.cpp
+│   ├── coverage.sh
+│   ├── criar_usuario.in
+│   ├── demo.in
+│   └── meu_teste.in
+├── src
+│   ├── domain
+│   │   ├── admin.cpp
+│   │   ├── aplicacao.cpp
+│   │   ├── armazenamento.cpp
+│   │   ├── busca.cpp
+│   │   ├── comentario.cpp
+│   │   ├── comunidade.cpp
+│   │   ├── console_utils.cpp
+│   │   ├── feed.cpp
+│   │   ├── gerenciador_csv.cpp
+│   │   ├── menus.cpp
+│   │   ├── perfil.cpp
+│   │   ├── post.cpp
+│   │   └── usuario.cpp
+│   └── main.cpp
+└── tests
+    ├── doctest
+    │   └── doctest.h
+    ├── test_armazenamento.cpp
+    ├── test_busca.cpp
+    ├── test_comentario.cpp
+    ├── test_comunidade.cpp
+    ├── test_feed.cpp
+    ├── test_gerenciador_csv.cpp
+    ├── test_main.cpp
+    ├── test_menus.cpp
+    ├── test_perfil.cpp
+    ├── test_post.cpp
+    └── test_usuario.cpp
 ```
 
 ## Modelagem OO
 
 ### Hierarquia
 
-Existe uma hierarquia principal de conteudo:
+Existe um caso de aplicação de herança no projeto, sendo este:
 
-- `Content`
-- `Post : Content`
-- `Comment : Content`
+- `Admin` é um tipo de `Perfil`.
 
-`Content` concentra:
+Como os administradores das comunidades são tipos específicos de pessoas que criaram perfis, possuímos um caso claro de herança.
 
-- identificador
-- autor
-- corpo textual
-- timestamps
-- contador de curtidas
-- comportamento comum de edicao
-- contrato polimorfico de resumo
+### Composição
 
-### Composicao
+As relações de composição do sistema são:
 
-As relacoes de composicao do sistema sao:
-
-- `Community` compoe membros e posts
-- `Post` compoe comentarios
-
-Essas relacoes foram escolhidas porque representam posse real no dominio.
+- `Armazenamento` possui perfis, posts, comunidades, comentários e usuários;
+- `Post` possui comentários;
+- `Usuário` possui um único perfil contendo suas informações públicas, enquanto `Perfil` pertence a apenas um usuário (perfil 1:1 usuário);
+- `Comunidade` possui posts;
+- `Perfil` possui comunidades das quais participa;
+- `Perfil` possui posts que o usuário criou durante o uso da plataforma;
+- `Gerenciador CSV` possui dependência de perfis, posts, comunidades, usuários e comentários.
 
 ### Polimorfismo
 
 O sistema demonstra polimorfismo em dois pontos:
 
-1. `Content` permite tratar `Post` e `Comment` por uma interface comum
-2. `PostSource` permite tratar `Community` e `Feed` como fontes de listagem de posts
+NÃO LEMBRO, PROCURAR
 
 ### Classes principais
 
-- `User`: conta principal do sistema
-- `Community`: agregado central da plataforma
-- `Content`: abstracao base do conteudo publicavel
-- `Post`: publicacao principal de uma comunidade
-- `Comment`: resposta vinculada a um post
-- `Feed`: agregador de posts
-- `SearchService`: servico de busca do dominio
-- `PostSource`: interface de fonte de posts
+- `Admin`: guarda informações sobre o administrador de determinada comunidade;
+- `Armazenamento`: mantém coleção de objetos que serão utilizados. Central de dados;
+- `Busca`: responsável pelas operações de pesquisa (de usuários, comunidades e posts);
+- `Comentário`: resposta vinculada a um post;
+- `Comunidade`: representa grupos temáticos dentro da plataforma;
+- `Console Utils`: faz a limpeza da tela;
+- `Feed`: responsável pela organização e exibição das publicações;
+- `Gerenciador CSV`: responsável pela manutenção dos dados;
+- `Menus`: responsável pela interação com o usuário;
+- `Perfil`: representa as informações públicas de um usuário;
+- `Post`: publicação principal da comunidade;
+- `Usuário`: conta principal do participante da rede.
 
-## Banco de dados
+### Relações principais
 
-O schema atual reflete a arquitetura final do sistema. As tabelas definidas sao:
-
-- `users`
-- `communities`
-- `community_members`
-- `auth_tokens`
-- `posts`
-- `comments`
-- `likes`
-- `follows`
-- `password_reset_tokens`
-
-### Relacoes principais
-
-- uma comunidade pertence a um owner
-- uma comunidade possui membros
-- um post pertence a uma comunidade
-- um comentario pertence a um post
-- uma curtida referencia um item de conteudo
-- um usuario pode seguir outro usuario
+- uma comunidade pertence a um administrador;
+- uma comunidade possui membros;
+- um post pertence a uma comunidade;
+- um comentário pertence a um post;
+- uma curtida referencia um item de conteúdo;
 
 ## Como executar
 
-### Pre-requisitos
+### Pré-requisitos
 
 Windows:
 
@@ -307,13 +654,13 @@ O comando compila com instrumentacao, executa os testes e salva o HTML em
 `report/coverage.html` (pasta `report/` na raiz do projeto). No WSL, o relatorio
 abre automaticamente no navegador do Windows.
 
-Pre-requisito:
+Pré-requisito:
 
 ```bash
 sudo apt install gcovr
 ```
 
-Opcional — copiar o relatorio para outro diretorio:
+Opcional — copiar o relatório para outro diretório:
 
 ```bash
 make coverage COPY_REPORT_TO=/caminho/desejado/report
@@ -321,13 +668,7 @@ make coverage COPY_REPORT_TO=/caminho/desejado/report
 
 > **Nota:** `make coverage` nao funciona no PowerShell com MSVC. Use WSL ou Linux.
 
-> **Nota:** `make run` executa `setup` + `serve`. O `setup` pula a compilacao automaticamente se o binario ja existir em `build/bin/`. Para forcar um rebuild, delete o binario antes de rodar `make run`.
-
-### Demo automatica e scripts de entrada
-
-O sistema CLI aceita um arquivo de comandos como argumento. Isso permite rodar um fluxo completo
-(login, comunidades, posts, feed, busca, perfil, credenciais e logout) sem digitar cada opcao
-manualmente. Util para demonstracao, testes manuais repetiveis e validacao antes da entrega.
+> **Nota:** `make run` executa `setup` + `serve`. O `setup` pula a compilação automaticamente se o binário já existir em `build/bin/`. Para forçar um rebuild, delete o binário antes de rodar `make run`.
 
 #### Conta usada na demo
 
@@ -337,14 +678,14 @@ manualmente. Util para demonstracao, testes manuais repetiveis e validacao antes
 | Senha | `senha12345` |
 | Usuario | `demo_user` |
 
-A senha precisa ter **no minimo 8 caracteres** e **pelo menos 1 digito**.
+A senha precisa ter no mínimo 8 caracteres e pelo menos 1 dígito.
 
 #### Arquivos em `scripts/`
 
-| Arquivo | Descricao |
+| Arquivo | Descrição |
 |---------|-----------|
-| `scripts/demo.in` | Fluxo completo padrao da demo (comunidade `PDS II`, post, comentarios, feed, buscas, perfil, credenciais, logout) |
-| `scripts/meu_teste.in` | Mesmo fluxo de `demo.in`; util para testes locais sem alterar o script principal |
+| `scripts/demo.in` | Fluxo completo padrão da demo (comunidade `PDS II`, post, comentarios, feed, buscas, perfil, credenciais, logout) |
+| `scripts/meu_teste.in` | Mesmo fluxo de `demo.in`; útil para testes locais sem alterar o script principal |
 | `scripts/criar_usuario.in` | Apenas cria a conta demo (opcao 2 na tela inicial) |
 | `scripts/alunos.json` | Emails dos integrantes para o contador de commits |
 | `scripts/count_commits_alunos.cpp` | Programa que conta commits por aluno via `git` |
@@ -399,13 +740,13 @@ make commits alunos
 3. Criar post, curtir e comentar na comunidade
 4. Ver feed, curtir e comentar
 5. Buscar perfil, post e comunidade
-6. Ver perfil do usuario logado
+6. Ver perfil do usuário logado
 7. Abrir menu de alterar credenciais (voltar sem alterar)
 8. Deslogar e sair
 
-#### Persistencia dos dados
+#### Persistência dos dados
 
-Os dados ficam em arquivos CSV na **pasta de onde o programa e executado** (geralmente a raiz do repositorio):
+Os dados ficam em arquivos CSV na pasta de onde o programa é executado (geralmente a raiz do repositório):
 
 - `usuarios.csv`
 - `perfis.csv`
@@ -416,7 +757,7 @@ Os dados ficam em arquivos CSV na **pasta de onde o programa e executado** (gera
 Se a demo for executada varias vezes sem limpar, posts e comunidades se acumulam. Prefira
 `make run-demo-clean` quando quiser uma saida limpa e previsivel.
 
-#### Observacoes (Windows)
+#### Observações (Windows)
 
 - Passe o arquivo como **argumento** (`edu_social_backend.exe scripts/demo.in`), nao use
   redirecionamento `< scripts/demo.in` — caminhos com espaco (ex.: `PDS II`) podem falhar com `<`.
@@ -428,7 +769,7 @@ O Windows 11 pode bloquear a execucao de binarios compilados localmente via **Sm
 
 **Settings > Privacy & Security > Windows Security > App & Browser Control > Smart App Control > Off**
 
-Essa configuracao e por conta do usuario e nao requer permissao de administrador.
+Essa configuração é por conta do usuário e não requer permissão de administrador.
 
 Artefato gerado:
 
@@ -436,38 +777,18 @@ Artefato gerado:
 build/docs/html/index.html
 ```
 
-## Testes
-
-O projeto esta preparado para TDD com `doctest`. Existe uma suite base para:
-
-- `Content`
-- `Post`
-- `Comment`
-- `Community`
-- `Feed`
-- `User`
-- `SearchService`
-
 ## Doxygen
 
-O projeto possui uma configuracao real do Doxygen na raiz, em `Doxyfile`.
+O projeto possui uma configuração real do Doxygen na raiz, em `Doxyfile`.
 
-A documentacao e gerada a partir de:
+A documentação é gerada a partir de:
 
 - `README.md`
-- `design/README.md`
 - `design/user_stories.md`
 - `design/crc_cards.md`
 - todos os headers em `include/`
 
-Escopo atual da documentacao:
-
-- classes de dominio
-- contratos da camada HTTP
-- classes de infraestrutura de banco
-- bootstrap da aplicacao
-
-Comando de geracao:
+Comando de geração:
 
 ```bash
 make docs
@@ -479,1436 +800,73 @@ Saida esperada:
 build/docs/html/index.html
 ```
 
-## API do sistema
-
-### Base URL
-
-```txt
-http://localhost:18080
-```
-
-### Header JSON padrao
-
-```txt
-Content-Type: application/json
-```
-
-### Resposta padrao de endpoint ainda nao implementado
-
-Todos os endpoints ja registrados que ainda nao possuem regra de negocio respondem com:
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "POST",
-  "route": "/posts"
-}
-```
-
-### Status de implementacao usados neste README
-
-- `implemented`
-- `available, returns 501`
-
----
-
-## Endpoint: Create User
-
-- **Metodo:** `POST`
-- **Rota:** `/users`
-- **Objetivo:** cadastrar um novo usuario no sistema
-- **Autenticacao:** nao
-- **Parametros de rota:** nenhum
-- **Parametros de query:** nenhum
-- **Body esperado:** sim
-- **Status de implementacao:** `implemented`
-
-### Request schema
-
-```json
-{
-  "username": "user-example",
-  "full_name": "User Example",
-  "email": "user@example.com",
-  "password": "super-secret",
-  "bio": "Student profile"
-}
-```
-
-> Os campos `username`, `full_name`, `email` e `password` sao obrigatorios. `bio` e opcional.
-
-### Success response schema
-
-```json
-{
-  "id": 1,
-  "username": "user-example",
-  "full_name": "User Example",
-  "email": "user@example.com",
-  "bio": "Student profile",
-  "created_at": "2026-05-18T18:40:22Z"
-}
-```
-
-### Error response schemas
-
-**Campos ausentes (422):**
-```json
-{ "error": "Fields username, full_name, email and password are required." }
-```
-
-**Username ou email ja em uso (409):**
-```json
-{ "error": "Username or email already in use." }
-```
-
-**Body invalido (400):**
-```json
-{ "error": "Invalid JSON body." }
-```
-
-### Status codes
-
-- `201 Created`
-- `400 Bad Request`
-- `409 Conflict`
-- `422 Unprocessable Entity`
-- `500 Internal Server Error`
-
-### curl minimo
-
-```bash
-curl -X POST http://localhost:18080/users
-```
-
-### curl com body JSON
-
-```bash
-curl -X POST http://localhost:18080/users \
-  -H "Content-Type: application/json" \
-  -d "{\"username\":\"user-example\",\"full_name\":\"User Example\",\"email\":\"user@example.com\",\"password\":\"super-secret\",\"bio\":\"Student profile\"}"
-```
-
----
-
-## Endpoint: Health Check
-
-- **Metodo:** `GET`
-- **Rota:** `/health`
-- **Objetivo:** verificar se o servidor subiu e se o banco foi inicializado
-- **Autenticacao:** nao
-- **Parametros de rota:** nenhum
-- **Parametros de query:** nenhum
-- **Body esperado:** nenhum
-- **Status de implementacao:** `implemented`
-
-### Request example
-
-```bash
-curl -X GET http://localhost:18080/health
-```
-
-### Request example with header
-
-```bash
-curl -X GET http://localhost:18080/health -H "Accept: application/json"
-```
-
-### Response schema
-
-```json
-{
-  "status": "ok",
-  "database": "connected",
-  "service": "edu-social-backend"
-}
-```
-
-### Status codes
-
-- `200 OK`
-
----
-
-## Endpoint: Register User
-
-- **Metodo:** `POST`
-- **Rota:** `/auth/register`
-- **Objetivo:** cadastrar um novo usuario
-- **Autenticacao:** nao
-- **Parametros de rota:** nenhum
-- **Parametros de query:** nenhum
-- **Body esperado:** sim
-- **Status de implementacao:** `available, returns 501`
-
-### Request schema
-
-```json
-{
-  "username": "user-example",
-  "fullName": "User Example",
-  "email": "user@example.com",
-  "password": "super-secret",
-  "bio": "Student profile"
-}
-```
-
-### Success response schema
-
-```json
-{
-  "message": "User registered successfully.",
-  "user": {
-    "id": 1,
-    "username": "user-example",
-    "fullName": "User Example",
-    "email": "user@example.com",
-    "bio": "Student profile",
-    "joinedAt": "2026-05-14T23:00:00Z"
-  }
-}
-```
-
-### Error response schema
-
-```json
-{
-  "message": "Validation failed.",
-  "details": [
-    "Email is already in use."
-  ]
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "POST",
-  "route": "/auth/register"
-}
-```
-
-### Status codes
-
-- `201 Created`
-- `400 Bad Request`
-- `409 Conflict`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X POST http://localhost:18080/auth/register
-```
-
-### curl com headers
-
-```bash
-curl -X POST http://localhost:18080/auth/register \
-  -H "Accept: application/json" \
-  -H "Content-Type: application/json"
-```
-
-### curl com body JSON
-
-```bash
-curl -X POST http://localhost:18080/auth/register \
-  -H "Accept: application/json" \
-  -H "Content-Type: application/json" \
-  -d "{\"username\":\"user-example\",\"fullName\":\"User Example\",\"email\":\"user@example.com\",\"password\":\"super-secret\",\"bio\":\"Student profile\"}"
-```
-
----
-
-## Endpoint: Login
-
-- **Metodo:** `POST`
-- **Rota:** `/auth/login`
-- **Objetivo:** autenticar um usuario e devolver token
-- **Autenticacao:** nao
-- **Parametros de rota:** nenhum
-- **Parametros de query:** nenhum
-- **Body esperado:** sim
-- **Status de implementacao:** `available, returns 501`
-
-### Request schema
-
-```json
-{
-  "email": "user@example.com",
-  "password": "super-secret"
-}
-```
-
-### Success response schema
-
-```json
-{
-  "message": "Authentication succeeded.",
-  "accessToken": "token-example",
-  "expiresAt": "2026-05-15T23:00:00Z",
-  "user": {
-    "id": 1,
-    "username": "user-example",
-    "fullName": "User Example"
-  }
-}
-```
-
-### Error response schema
-
-```json
-{
-  "message": "Authentication failed.",
-  "details": [
-    "Invalid credentials."
-  ]
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "POST",
-  "route": "/auth/login"
-}
-```
-
-### Status codes
-
-- `200 OK`
-- `400 Bad Request`
-- `401 Unauthorized`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X POST http://localhost:18080/auth/login
-```
-
-### curl com headers
-
-```bash
-curl -X POST http://localhost:18080/auth/login \
-  -H "Accept: application/json" \
-  -H "Content-Type: application/json"
-```
-
-### curl com body JSON
-
-```bash
-curl -X POST http://localhost:18080/auth/login \
-  -H "Accept: application/json" \
-  -H "Content-Type: application/json" \
-  -d "{\"email\":\"user@example.com\",\"password\":\"super-secret\"}"
-```
-
----
-
-## Endpoint: Get User Profile
-
-- **Metodo:** `GET`
-- **Rota:** `/users/{id}`
-- **Objetivo:** consultar perfil resumido de um usuario
-- **Autenticacao:** sim
-- **Parametros de rota:** `id`
-- **Parametros de query:** nenhum
-- **Body esperado:** nenhum
-- **Status de implementacao:** `available, returns 501`
-
-### Success response schema
-
-```json
-{
-  "id": 1,
-  "username": "user-example",
-  "fullName": "User Example",
-  "email": "user@example.com",
-  "bio": "Student profile",
-  "joinedAt": "2026-05-14T23:00:00Z",
-  "followedUserIds": [2, 3],
-  "joinedCommunityIds": [10, 12]
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "GET",
-  "route": "/users/{id}"
-}
-```
-
-### Status codes
-
-- `200 OK`
-- `401 Unauthorized`
-- `404 Not Found`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X GET http://localhost:18080/users/1
-```
-
-### curl com headers
-
-```bash
-curl -X GET http://localhost:18080/users/1 \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer token-example"
-```
-
----
-
-## Endpoint: List Communities
-
-- **Metodo:** `GET`
-- **Rota:** `/communities`
-- **Objetivo:** listar comunidades cadastradas
-- **Autenticacao:** nao
-- **Parametros de rota:** nenhum
-- **Parametros de query:** `q`, `ownerId`
-- **Body esperado:** nenhum
-- **Status de implementacao:** `available, returns 501`
-
-### Success response schema
-
-```json
-{
-  "items": [
-    {
-      "id": 10,
-      "name": "PDS II",
-      "description": "Community for software design discussions",
-      "ownerId": 1,
-      "memberCount": 12,
-      "postCount": 5
-    }
-  ]
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "GET",
-  "route": "/communities"
-}
-```
-
-### Status codes
-
-- `200 OK`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X GET http://localhost:18080/communities
-```
-
-### curl com query
-
-```bash
-curl -X GET "http://localhost:18080/communities?q=pds&ownerId=1"
-```
-
----
-
-## Endpoint: Create Community
-
-- **Metodo:** `POST`
-- **Rota:** `/communities`
-- **Objetivo:** criar uma comunidade academica
-- **Autenticacao:** sim
-- **Parametros de rota:** nenhum
-- **Parametros de query:** nenhum
-- **Body esperado:** sim
-- **Status de implementacao:** `available, returns 501`
-
-### Request schema
-
-```json
-{
-  "ownerId": 1,
-  "name": "PDS II",
-  "description": "Community for software design discussions"
-}
-```
-
-### Success response schema
-
-```json
-{
-  "message": "Community created successfully.",
-  "community": {
-    "id": 10,
-    "ownerId": 1,
-    "name": "PDS II",
-    "description": "Community for software design discussions",
-    "memberCount": 1,
-    "postCount": 0
-  }
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "POST",
-  "route": "/communities"
-}
-```
-
-### Status codes
-
-- `201 Created`
-- `400 Bad Request`
-- `401 Unauthorized`
-- `409 Conflict`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X POST http://localhost:18080/communities
-```
-
-### curl com body JSON
-
-```bash
-curl -X POST http://localhost:18080/communities \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer token-example" \
-  -H "Content-Type: application/json" \
-  -d "{\"ownerId\":1,\"name\":\"PDS II\",\"description\":\"Community for software design discussions\"}"
-```
-
----
-
-## Endpoint: Get Community Details
-
-- **Metodo:** `GET`
-- **Rota:** `/communities/{id}`
-- **Objetivo:** consultar detalhes de uma comunidade
-- **Autenticacao:** nao
-- **Parametros de rota:** `id`
-- **Parametros de query:** nenhum
-- **Body esperado:** nenhum
-- **Status de implementacao:** `available, returns 501`
-
-### Success response schema
-
-```json
-{
-  "id": 10,
-  "ownerId": 1,
-  "name": "PDS II",
-  "description": "Community for software design discussions",
-  "memberCount": 12,
-  "postCount": 5,
-  "memberIds": [1, 2, 3]
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "GET",
-  "route": "/communities/{id}"
-}
-```
-
-### Status codes
-
-- `200 OK`
-- `404 Not Found`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X GET http://localhost:18080/communities/10
-```
-
----
-
-## Endpoint: Join Community
-
-- **Metodo:** `POST`
-- **Rota:** `/communities/{id}/members`
-- **Objetivo:** adicionar um usuario a uma comunidade
-- **Autenticacao:** sim
-- **Parametros de rota:** `id`
-- **Parametros de query:** nenhum
-- **Body esperado:** sim
-- **Status de implementacao:** `available, returns 501`
-
-### Request schema
-
-```json
-{
-  "userId": 2,
-  "roleInCommunity": "member"
-}
-```
-
-### Success response schema
-
-```json
-{
-  "message": "Member added successfully.",
-  "membership": {
-    "communityId": 10,
-    "userId": 2,
-    "roleInCommunity": "member"
-  }
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "POST",
-  "route": "/communities/{id}/members"
-}
-```
-
-### Status codes
-
-- `201 Created`
-- `400 Bad Request`
-- `401 Unauthorized`
-- `404 Not Found`
-- `409 Conflict`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X POST http://localhost:18080/communities/10/members
-```
-
-### curl com body JSON
-
-```bash
-curl -X POST http://localhost:18080/communities/10/members \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer token-example" \
-  -H "Content-Type: application/json" \
-  -d "{\"userId\":2,\"roleInCommunity\":\"member\"}"
-```
-
----
-
-## Endpoint: Remove Community Member
-
-- **Metodo:** `DELETE`
-- **Rota:** `/communities/{id}/members/{userId}`
-- **Objetivo:** remover um usuario de uma comunidade
-- **Autenticacao:** sim
-- **Parametros de rota:** `id`, `userId`
-- **Parametros de query:** nenhum
-- **Body esperado:** nenhum
-- **Status de implementacao:** `available, returns 501`
-
-### Success response schema
-
-```json
-{
-  "message": "Member removed successfully."
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "DELETE",
-  "route": "/communities/{id}/members/{userId}"
-}
-```
-
-### Status codes
-
-- `200 OK`
-- `401 Unauthorized`
-- `404 Not Found`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X DELETE http://localhost:18080/communities/10/members/2
-```
-
-### curl com headers
-
-```bash
-curl -X DELETE http://localhost:18080/communities/10/members/2 \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer token-example"
-```
-
----
-
-## Endpoint: List Community Posts
-
-- **Metodo:** `GET`
-- **Rota:** `/communities/{id}/posts`
-- **Objetivo:** listar posts de uma comunidade
-- **Autenticacao:** nao
-- **Parametros de rota:** `id`
-- **Parametros de query:** `authorId`
-- **Body esperado:** nenhum
-- **Status de implementacao:** `available, returns 501`
-
-### Success response schema
-
-```json
-{
-  "items": [
-    {
-      "id": 100,
-      "communityId": 10,
-      "authorId": 1,
-      "title": "Checkpoint review",
-      "body": "We need to review the headers.",
-      "likeCount": 4,
-      "commentCount": 2
-    }
-  ]
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "GET",
-  "route": "/communities/{id}/posts"
-}
-```
-
-### Status codes
-
-- `200 OK`
-- `404 Not Found`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X GET http://localhost:18080/communities/10/posts
-```
-
-### curl com query
-
-```bash
-curl -X GET "http://localhost:18080/communities/10/posts?authorId=1"
-```
-
----
-
-## Endpoint: Create Post
-
-- **Metodo:** `POST`
-- **Rota:** `/posts`
-- **Objetivo:** criar um post em uma comunidade
-- **Autenticacao:** sim
-- **Parametros de rota:** nenhum
-- **Parametros de query:** nenhum
-- **Body esperado:** sim
-- **Status de implementacao:** `available, returns 501`
-
-### Request schema
-
-```json
-{
-  "authorId": 1,
-  "communityId": 10,
-  "title": "Checkpoint review",
-  "body": "We need to review the headers."
-}
-```
-
-### Success response schema
-
-```json
-{
-  "message": "Post created successfully.",
-  "post": {
-    "id": 100,
-    "authorId": 1,
-    "communityId": 10,
-    "title": "Checkpoint review",
-    "body": "We need to review the headers.",
-    "likeCount": 0,
-    "commentCount": 0
-  }
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "POST",
-  "route": "/posts"
-}
-```
-
-### Status codes
-
-- `201 Created`
-- `400 Bad Request`
-- `401 Unauthorized`
-- `404 Not Found`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X POST http://localhost:18080/posts
-```
-
-### curl com body JSON
-
-```bash
-curl -X POST http://localhost:18080/posts \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer token-example" \
-  -H "Content-Type: application/json" \
-  -d "{\"authorId\":1,\"communityId\":10,\"title\":\"Checkpoint review\",\"body\":\"We need to review the headers.\"}"
-```
-
----
-
-## Endpoint: Get Post Details
-
-- **Metodo:** `GET`
-- **Rota:** `/posts/{id}`
-- **Objetivo:** consultar um post com seus metadados
-- **Autenticacao:** nao
-- **Parametros de rota:** `id`
-- **Parametros de query:** nenhum
-- **Body esperado:** nenhum
-- **Status de implementacao:** `available, returns 501`
-
-### Success response schema
-
-```json
-{
-  "id": 100,
-  "authorId": 1,
-  "communityId": 10,
-  "title": "Checkpoint review",
-  "body": "We need to review the headers.",
-  "likeCount": 4,
-  "commentCount": 2,
-  "comments": [
-    {
-      "id": 201,
-      "authorId": 2,
-      "postId": 100,
-      "body": "I agree with the plan."
-    }
-  ]
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "GET",
-  "route": "/posts/{id}"
-}
-```
-
-### Status codes
-
-- `200 OK`
-- `404 Not Found`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X GET http://localhost:18080/posts/100
-```
-
----
-
-## Endpoint: Create Comment
-
-- **Metodo:** `POST`
-- **Rota:** `/posts/{id}/comments`
-- **Objetivo:** criar comentario em um post
-- **Autenticacao:** sim
-- **Parametros de rota:** `id`
-- **Parametros de query:** nenhum
-- **Body esperado:** sim
-- **Status de implementacao:** `available, returns 501`
-
-### Request schema
-
-```json
-{
-  "authorId": 2,
-  "body": "I agree with the plan."
-}
-```
-
-### Success response schema
-
-```json
-{
-  "message": "Comment created successfully.",
-  "comment": {
-    "id": 201,
-    "authorId": 2,
-    "postId": 100,
-    "body": "I agree with the plan.",
-    "likeCount": 0
-  }
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "POST",
-  "route": "/posts/{id}/comments"
-}
-```
-
-### Status codes
-
-- `201 Created`
-- `400 Bad Request`
-- `401 Unauthorized`
-- `404 Not Found`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X POST http://localhost:18080/posts/100/comments
-```
-
-### curl com body JSON
-
-```bash
-curl -X POST http://localhost:18080/posts/100/comments \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer token-example" \
-  -H "Content-Type: application/json" \
-  -d "{\"authorId\":2,\"body\":\"I agree with the plan.\"}"
-```
-
----
-
-## Endpoint: List Post Comments
-
-- **Metodo:** `GET`
-- **Rota:** `/posts/{id}/comments`
-- **Objetivo:** listar comentarios de um post
-- **Autenticacao:** nao
-- **Parametros de rota:** `id`
-- **Parametros de query:** nenhum
-- **Body esperado:** nenhum
-- **Status de implementacao:** `available, returns 501`
-
-### Success response schema
-
-```json
-{
-  "items": [
-    {
-      "id": 201,
-      "authorId": 2,
-      "postId": 100,
-      "body": "I agree with the plan.",
-      "likeCount": 0
-    }
-  ]
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "GET",
-  "route": "/posts/{id}/comments"
-}
-```
-
-### Status codes
-
-- `200 OK`
-- `404 Not Found`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X GET http://localhost:18080/posts/100/comments
-```
-
----
-
-## Endpoint: Like Post
-
-- **Metodo:** `POST`
-- **Rota:** `/posts/{id}/likes`
-- **Objetivo:** registrar curtida em um post
-- **Autenticacao:** sim
-- **Parametros de rota:** `id`
-- **Parametros de query:** nenhum
-- **Body esperado:** sim
-- **Status de implementacao:** `available, returns 501`
-
-### Request schema
-
-```json
-{
-  "userId": 2
-}
-```
-
-### Success response schema
-
-```json
-{
-  "message": "Like registered successfully.",
-  "postId": 100,
-  "userId": 2
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "POST",
-  "route": "/posts/{id}/likes"
-}
-```
-
-### Status codes
-
-- `201 Created`
-- `400 Bad Request`
-- `401 Unauthorized`
-- `404 Not Found`
-- `409 Conflict`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X POST http://localhost:18080/posts/100/likes
-```
-
-### curl com body JSON
-
-```bash
-curl -X POST http://localhost:18080/posts/100/likes \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer token-example" \
-  -H "Content-Type: application/json" \
-  -d "{\"userId\":2}"
-```
-
----
 ## Funcionamento do Sistema
 
 ### Feed inical
-Ao iniciar o programa e fazer o login com sucesso, o terminal limpa a tela (clear) e exibe o Feed Principal baseado no endpoint /feed.
+
+Ao iniciar o programa e fazer o login com sucesso, o terminal limpa a tela (clear) e exibe o Feed Principal.
 O que o usuário vê: Um cabeçalho e uma lista vertical de posts enumerados para fácil seleção.
 
-Layout sugerido no terminal:
-
-
 ```
-======================================================================
-                     EDU SOCIAL - FEED                     
-======================================================================
-Comunidades integradas: [PDS II] [Cálculo I]
+////////////////////////////////////////
+        EDU SOCIAL MENU PRINCIPAL    
+////////////////////////////////////////
+1 - Ver Feed
+2 - Buscar
+3 - Ver Comunidades
+4 - Ver Perfil
+5 - Alterar Credenciais
+6 - Deslogar
 
-[1] TÍTULO: Tipos Abstratos de Dados
-    Usuário: @aluno_de_sistemas | COMUNIDADE: PDS II
-    "Pessoal, vocês poderiam me explicar o que diferencia um TADs de uma classe ?"
-    👍 14 curtidas | 💬 3 comentários
-
-[2] TÍTULO: Derivada de log(x)
-    AUTOR: @aluno_de_computação | COMUNIDADE: Cálculo I
-    "Alguém sabe calcular o log(x)..."
-    👍 4 curtidas | 💬 1 comentário
-
-======================================================================
-[V] Ver Post (Ex: V 1) | [C] Ver Comunidades | [P] Pesquisar | [S] Sair
-Digite sua opção: _
+Digite sua opcao desejada: 
 ```
 
-### Navegação por Comunidades (Listagem e Telas Internas)
+#### Listar Comunidades
 
-Quando o usuário digita C no menu principal, o sistema limpa a tela e chama o endpoint /communities.
-#### Listar Comunidades (GET /communities)
-
-O terminal exibe uma tabela limpa e organizada com as disciplinas disponíveis:
+O terminal exibe uma tabela limpa e organizada com as comunidades disponíveis:
 ```
-======================================================================
-                    COMUNIDADES ACADÊMICAS
-======================================================================
-ID   | Nome do Grupo          | Membros | Posts | Criador
------+------------------------+---------+-------+---------------------
-10   | PDS II                 | 12      | 5     | @professor_alex
-12   | Estruturas de Dados    | 45      | 18    | @prof_ana
-20   | Álgebra Linear         | 8       | 0     | @monitor_lucas
+///////////////////////////////////////
+            LISTA DE COMUNIDADES
+///////////////////////////////////////
 
-======================================================================
-[E] Entrar em Comunidade (Ex: E 10) | [V] Voltar
-Digite sua opção: _
+1 - PDS 2
+Matéria de PDS 2
 ```
-#### Visão de uma Comunidade Específica (GET /communities/{id})
+#### Visão de uma Comunidade Específica
 
-Se o usuário digitar E 10, o terminal exibe o painel daquela disciplina específica e os posts dela:
+  O terminal exibe o painel daquela disciplina específica e os posts dela:
 
-```shell
-======================================================================
-                     EDU SOCIAL - COMUNIDADE                 
-======================================================================
-COMUNIDADE: PDS II (ID: 10)
-Descrição: Discução sobre a matéria de PDS II
-Membros: 12 | Status: [Você é Membro]
+```
+///////////////////////////////////////
+        COMUNIDADE: PDS 2
+///////////////////////////////////////
+Descricao: Matéria de PDS 2
+Administrador: @maria
+Membros: 1
 
-[100] TÍTULO: Dúvida sobre polimorfismo
-    AUTOR: @aluno_de_controle
-    "Pesoal estou em dúvida sobre o que é polimorfismo..."
-    👍 4 curtidas | 💬 2 comentários
+=== POSTS RECENTES ===
+-> Eu amo PDS 2
 
-[105] TÍTULO: Dica de exercício
-    AUTOR: @professor_de_pds
-    "Pessoal uma ideais de exercício aqui..."
-    👍 1 curtida | 💬 0 comentários
+1 - Criar Post
+2 - Ver Posts
+3 - Voltar
 
-======================================================================
-[V] Ver Post (Ex: V 100) | [N] Novo Post | [P] Sair da Comunidade | [Voltar]
-Digite sua opção: _
+Digite sua opcao desejada: 
 ```
 
 ### Visualização Detalhada do Post
 
-Se o usuário estiver no feed ou na comunidade e digitar `V 100` (Ver Post 100), o terminal foca inteiramente na discussão daquela pergunta
+O terminal foca inteiramente na discussão daquela postagem:
 
 ```
-======================================================================
- POST #100
- Autor: @professor_de_pds
- Título: Dica de exercício
-----------------------------------------------------------------======
- "Pessoal uma ideais de exercício aqui: defina oq é o princípio de Liskov"
- 
- [ 👍 4 Curtidas ]
-======================================================================
- COMENTÁRIOS E RESPOSTAS:
-----------------------------------------------------------------------
- #201 por @aluno_de_sistemas:
- "Obrigado por compartilhar"
- 
- #202 por @monitor_lucas:
- "Acho que a galera ainda está com dúvidas nisso."
-======================================================================
-[L] Curtir Post | [R] Responder (Comentar) | [V] Voltar
-Digite sua opção: _
+///////////////////////////////////////
+              LISTA DE POSTS
+///////////////////////////////////////
+
+1 - @maria
+Eu amo PDS 2
+
+A) Selecionar Post / B) Voltar
+
+Digite sua opcao desejada: 
 ```
-
-
-
-## Endpoint: Remove Post Like
-
-- **Metodo:** `DELETE`
-- **Rota:** `/posts/{id}/likes/{userId}`
-- **Objetivo:** remover curtida de um post
-- **Autenticacao:** sim
-- **Parametros de rota:** `id`, `userId`
-- **Parametros de query:** nenhum
-- **Body esperado:** nenhum
-- **Status de implementacao:** `available, returns 501`
-
-### Success response schema
-
-```json
-{
-  "message": "Like removed successfully."
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "DELETE",
-  "route": "/posts/{id}/likes/{userId}"
-}
-```
-
-### Status codes
-
-- `200 OK`
-- `401 Unauthorized`
-- `404 Not Found`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X DELETE http://localhost:18080/posts/100/likes/2
-```
-
-### curl com headers
-
-```bash
-curl -X DELETE http://localhost:18080/posts/100/likes/2 \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer token-example"
-```
-
----
-
-## Endpoint: Get Feed
-
-- **Metodo:** `GET`
-- **Rota:** `/feed`
-- **Objetivo:** listar feed consolidado do usuario
-- **Autenticacao:** sim
-- **Parametros de rota:** nenhum
-- **Parametros de query:** `userId`, `communityId`, `limit`
-- **Body esperado:** nenhum
-- **Status de implementacao:** `available, returns 501`
-
-### Success response schema
-
-```json
-{
-  "ownerId": 1,
-  "title": "Main feed",
-  "sourceLabels": ["PDS II", "Databases"],
-  "items": [
-    {
-      "id": 100,
-      "communityId": 10,
-      "authorId": 1,
-      "title": "Checkpoint review",
-      "body": "We need to review the headers."
-    }
-  ]
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "GET",
-  "route": "/feed"
-}
-```
-
-### Status codes
-
-- `200 OK`
-- `400 Bad Request`
-- `401 Unauthorized`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X GET "http://localhost:18080/feed?userId=1"
-```
-
-### curl com query completa
-
-```bash
-curl -X GET "http://localhost:18080/feed?userId=1&communityId=10&limit=20" \
-  -H "Accept: application/json" \
-  -H "Authorization: Bearer token-example"
-```
-
----
-
-## Endpoint: Search
-
-- **Metodo:** `GET`
-- **Rota:** `/search`
-- **Objetivo:** buscar comunidades e posts
-- **Autenticacao:** nao
-- **Parametros de rota:** nenhum
-- **Parametros de query:** `q`, `type`, `authorId`
-- **Body esperado:** nenhum
-- **Status de implementacao:** `available, returns 501`
-
-### Request query values for `type`
-
-- `communities`
-- `posts`
-- `all`
-
-### Success response schema
-
-```json
-{
-  "query": "pds",
-  "type": "all",
-  "communities": [
-    {
-      "id": 10,
-      "name": "PDS II"
-    }
-  ],
-  "posts": [
-    {
-      "id": 100,
-      "title": "Checkpoint review",
-      "communityId": 10
-    }
-  ]
-}
-```
-
-### Current runtime response
-
-```json
-{
-  "message": "Feature not implemented yet.",
-  "status": "not_implemented",
-  "method": "GET",
-  "route": "/search"
-}
-```
-
-### Status codes
-
-- `200 OK`
-- `400 Bad Request`
-- `501 Not Implemented`
-
-### curl minimo
-
-```bash
-curl -X GET "http://localhost:18080/search?q=pds&type=all"
-```
-
-### curl com filtros
-
-```bash
-curl -X GET "http://localhost:18080/search?q=review&type=posts&authorId=1" \
-  -H "Accept: application/json"
-```
-
-## Relacao entre design e codigo
-
-- User Stories: [design/user_stories.md](./design/user_stories.md)
-- CRCs: [design/crc_cards.md](./design/crc_cards.md)
-- Arquitetura textual: [design/README.md](./design/README.md)
-- Contratos do dominio: `include/domain/`
-- Schema: `database/schema.sql`
-- Rotas HTTP: `src/http/`
-- Bootstrap: `src/app/app.cpp`
-
-## Fases e status
-
-### Estrutura e modelagem
-
-- [x] raiz consolidada
-- [x] legado removido
-- [x] schema alinhado ao dominio
-- [x] hierarquia `Content -> Post/Comment`
-- [x] composicao `Community -> Post` e `Post -> Comment`
-- [x] polimorfismo com `Content` e `PostSource`
-- [x] User Stories em texto
-- [x] CRCs em texto
-
-### HTTP e documentacao
-
-- [x] `GET /health` implementado
-- [x] todos os endpoints principais registrados
-- [x] endpoints nao implementados respondendo `501 Not Implemented`
-- [x] README com contratos completos da API
-- [x] README com `curl` para todos os endpoints
-- [x] Doxygen configurado
-
-### Build e testes
-
-- [x] CMake reorganizado
-- [x] Makefile com `setup`, `run`, `serve`, `reset-db`, `test`, `coverage`
-- [x] suites base com `doctest`
-- [x] `ctest` passando
-- [x] coverage executada com `make coverage` + `gcovr`
-
-### Comportamentos de negocio
-
-- [ ] cadastro real de usuario
-- [ ] login real
-- [ ] criacao real de comunidade
-- [ ] entrada real em comunidade
-- [ ] criacao real de post
-- [ ] criacao real de comentario
-- [ ] curtidas reais
-- [ ] feed real
-- [ ] busca real
-
-### Robustez final
-
-- [ ] validacoes defensivas completas
-- [ ] tratamento de excecoes em toda a camada HTTP
-- [ ] cobertura minima exigida consolidada
-- [ ] revisao final para apresentacao
