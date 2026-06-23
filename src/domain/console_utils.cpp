@@ -10,7 +10,7 @@ void ConsoleUtils::limparTela() {
 #if defined(_WIN32) || defined(_WIN64)
     std::system("cls"); // LCOV_EXCL_LINE
 #else
-    std::system("ls"); // LCOV_EXCL_LINE
+    std::system("clear"); // LCOV_EXCL_LINE
 #endif
 }
 

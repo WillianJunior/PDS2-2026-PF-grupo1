@@ -5,7 +5,6 @@
 #include "domain/comunidade.hpp"
 #include "domain/perfil.hpp"
 #include "domain/post.hpp"
-#include <memory>
 #include <string>
 #include <vector>
 
@@ -17,7 +16,7 @@
 /**
  * @class Busca
  * @brief Classe responsável pelo mecanismo de busca textual dentro da rede social.
- * * Capaz de iterar sobre o banco de dados filtrando perfis, posts e comunidades
+ * Capaz de iterar sobre o banco de dados filtrando perfis, posts e comunidades
  * que correspondam aos termos solicitados pelo usuário.
  */
 class Busca {
@@ -25,12 +24,8 @@ class Busca {
     std::vector<std::string> resultados;
 
   public:
-    /// @brief
-    /// @param palavraChave
-    /// @param db
-    /// @param idComunidade
-    /// @return
     void buscarPostsComunidade(const std::string &palavraChave, const Armazenamento &db, int idComunidade);
+
     /**
      * @brief Apresenta os resultados coletados na última busca formatados na tela.
      */
@@ -65,14 +60,22 @@ class Busca {
      * @return Vetor contendo as comunidades encontradas.
      */
     std::vector<Comunidade> buscarComunidades(const std::string &palavraChave, const Armazenamento &db) const;
-    /**
-     * @brief Função polimofica que realiza a varredura no sistema em busca de posts pertencentes a uma comunidade específica.
-     * @param palavraChave O termo textual desejado para a pesquisa.
-     * @param db Referência constante ao banco de dados do sistema.
-     */
-    std::vector<std::shared_ptr<Post>> buscaPosts(int idComunidade, const Armazenamento &db);
 
-    std::vector<std::shared_ptr<Post>> buscaPosts(Perfil perfil, const Armazenamento &db);
+    /**
+     * @brief Realiza a varredura no sistema em busca de posts pertencentes a uma comunidade específica.
+     * @param idComunidade O ID da comunidade desejada.
+     * @param db Referência ao banco de dados do sistema (mutável).
+     * @return Vetor de ponteiros para os posts originais dentro do armazenamento.
+     */
+    std::vector<Post *> buscaPosts(int idComunidade, Armazenamento &db);
+
+    /**
+     * @brief Monta o feed de posts visíveis para um determinado perfil.
+     * @param perfil O perfil logado.
+     * @param db Referência ao banco de dados do sistema (mutável).
+     * @return Vetor de ponteiros para os posts originais dentro do armazenamento.
+     */
+    std::vector<Post *> buscaPosts(Perfil perfil, Armazenamento &db);
 };
 
 #endif

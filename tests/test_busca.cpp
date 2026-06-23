@@ -17,7 +17,6 @@ TEST_SUITE("Busca") {
         auto perfis = b.buscarPerfis("C++", db);
 
         CHECK(perfis.size() == 2);
-
         CHECK(b.buscarPerfis("Inexistente", db).empty());
     }
 
@@ -66,7 +65,7 @@ TEST_SUITE("Busca") {
 
         db.criarComunidade("Teste", "Descricao");
 
-        int idComunidade = db.getTodasComunidades()[0].getId();
+        int idComunidade = db.listarComunidade()[0].getId();
 
         db.criarPost("Post 1", idComunidade);
         db.criarPost("Post 2", idComunidade);
@@ -75,5 +74,7 @@ TEST_SUITE("Busca") {
         auto posts = b.buscaPosts(idComunidade, db);
 
         CHECK(posts.size() == 2);
+        CHECK(posts[0]->getConteudo() == "Post 1"); // Acesso alterado de '.' para '->'
+        CHECK(posts[1]->getConteudo() == "Post 2");
     }
 }
