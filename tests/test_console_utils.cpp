@@ -1,5 +1,5 @@
-#include <doctest/doctest.h>
 #include "domain/console_utils.hpp"
+#include <doctest/doctest.h>
 
 TEST_SUITE("ConsoleUtils") {
     TEST_CASE("Garantir que chamadas de UI nao quebram nos testes") {

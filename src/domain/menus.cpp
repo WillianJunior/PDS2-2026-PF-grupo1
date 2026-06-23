@@ -1,17 +1,15 @@
 #include "domain/menus.hpp"
 #include "domain/comunidade.hpp"
+#include "domain/console_utils.hpp"
 #include "domain/perfil.hpp"
 #include <algorithm>
-#include "domain/console_utils.hpp"
 #include <iostream>
 #include <stdexcept>
 #include <string>
 
 namespace {
 
-bool opcaoVoltar(const std::string &linha) {
-    return linha == "B" || linha == "b" || linha == "V" || linha == "v";
-}
+bool opcaoVoltar(const std::string &linha) { return linha == "B" || linha == "b" || linha == "V" || linha == "v"; }
 
 bool lerInteiro(const std::string &linha, int &valor) {
     if (linha.empty())
@@ -35,18 +33,10 @@ void exibirResumoPerfil(const Perfil &alvo) {
     std::cout << "\n====================================\n";
     std::cout << "         PERFIL DE @" << alvo.getNome() << "\n";
     std::cout << "====================================\n";
-    std::cout << "Curso: "
-              << (alvo.getCurso().empty() ? "(nao informado)" : alvo.getCurso())
-              << "\n";
-    std::cout << "Instituicao: "
-              << (alvo.getInstituicao().empty() ? "(nao informado)"
-                                                : alvo.getInstituicao())
-              << "\n";
+    std::cout << "Curso: " << (alvo.getCurso().empty() ? "(nao informado)" : alvo.getCurso()) << "\n";
+    std::cout << "Instituicao: " << (alvo.getInstituicao().empty() ? "(nao informado)" : alvo.getInstituicao()) << "\n";
     std::cout << "Periodo: " << alvo.getPeriodo() << " Semestre\n";
-    std::cout << "Biografia: "
-              << (alvo.getDescricao().empty() ? "(nao informado)"
-                                              : alvo.getDescricao())
-              << "\n";
+    std::cout << "Biografia: " << (alvo.getDescricao().empty() ? "(nao informado)" : alvo.getDescricao()) << "\n";
     std::cout << "====================================\n\n";
 }
 
@@ -86,11 +76,9 @@ void exibirPostDetalhado(const Post &post, Armazenamento &db, const std::vector<
     size_t contadorVisual = 1;
     for (auto it = comentarios.rbegin(); it != comentarios.rend(); ++it) {
         Comentario *comentario = *it;
-        std::cout << contadorVisual << " - @"
-                  << nomePerfil(db, comentario->getIdAutor()) << "\n";
+        std::cout << contadorVisual << " - @" << nomePerfil(db, comentario->getIdAutor()) << "\n";
         std::cout << comentario->getTexto() << "\n";
-        std::cout << "Curtidas: " << comentario->quantidadeDeCurtidas()
-                  << "\n\n";
+        std::cout << "Curtidas: " << comentario->quantidadeDeCurtidas() << "\n\n";
         ++contadorVisual;
     }
 }
@@ -98,15 +86,13 @@ void exibirPostDetalhado(const Post &post, Armazenamento &db, const std::vector<
 void exibirListaPosts(const std::vector<Post> &postsList, Armazenamento &db) {
     for (size_t i = 0; i < postsList.size(); ++i) {
         size_t idxReverso = postsList.size() - 1 - i;
-        std::cout << (i + 1) << " - @"
-                  << nomePerfil(db, postsList[idxReverso].getIdAutor()) << "\n";
+        std::cout << (i + 1) << " - @" << nomePerfil(db, postsList[idxReverso].getIdAutor()) << "\n";
         std::cout << postsList[idxReverso].getConteudo() << "\n\n";
     }
 }
 
 bool tratarOpcaoPost(const std::string &opcao, Post &post, Armazenamento &db,
-                     const std::vector<Comentario *> &comentarios,
-                     std::string &mensagem) {
+                     const std::vector<Comentario *> &comentarios, std::string &mensagem) {
     if (opcao == "F" || opcao == "f")
         return false;
     if (opcao == "A" || opcao == "a") {
@@ -124,8 +110,7 @@ bool tratarOpcaoPost(const std::string &opcao, Post &post, Armazenamento &db,
             return false;
 
         int idx;
-        if (!lerInteiro(linhaIdx, idx) || idx < 1 ||
-            idx > static_cast<int>(comentarios.size())) {
+        if (!lerInteiro(linhaIdx, idx) || idx < 1 || idx > static_cast<int>(comentarios.size())) {
             mensagem = "[ERRO] Indice invalido!";
             return true;
         }
@@ -140,8 +125,7 @@ bool tratarOpcaoPost(const std::string &opcao, Post &post, Armazenamento &db,
         if (!std::getline(std::cin, texto))
             return false;
         try {
-            db.criarComentarioGlobal(post.getId(), db.getIdPerfilLogado(),
-                                     texto);
+            db.criarComentarioGlobal(post.getId(), db.getIdPerfilLogado(), texto);
             mensagem = "[SUCESSO] Comentario adicionado!";
         } catch (const std::invalid_argument &e) {
             mensagem = std::string("[ERRO] ") + e.what();
@@ -279,7 +263,7 @@ void menuVerPostsLista(const std::vector<Post> &postsList, Armazenamento &db) {
         std::cout << "A) Selecionar Post / B) Voltar\n\n";
         std::cout << "Digite sua opcao desejada: ";
         std::string opcao;
-        if (!std::getline(std::cin, opcao)) 
+        if (!std::getline(std::cin, opcao))
             break;
 
         if (opcao == "B" || opcao == "b")
@@ -291,8 +275,7 @@ void menuVerPostsLista(const std::vector<Post> &postsList, Armazenamento &db) {
                 break;
 
             int idx;
-            if (!lerInteiro(linhaIdx, idx) || idx < 1 ||
-                idx > static_cast<int>(postsList.size())) {
+            if (!lerInteiro(linhaIdx, idx) || idx < 1 || idx > static_cast<int>(postsList.size())) {
                 mensagem = "[ERRO] Indice invalido!";
                 continue;
             }
@@ -317,8 +300,7 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
         Perfil *eu = db.getPerfil(db.getIdPerfilLogado());
 
         const auto &membros = com->getIdsMembros();
-        bool isMember = std::find(membros.begin(), membros.end(),
-                                  db.getIdPerfilLogado()) != membros.end();
+        bool isMember = std::find(membros.begin(), membros.end(), db.getIdPerfilLogado()) != membros.end();
 
         ConsoleUtils::limparTela();
         exibirMensagem(mensagem);
@@ -328,8 +310,7 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
         std::cout << "        COMUNIDADE: " << com->getNome() << "\n";
         std::cout << "///////////////////////////////////////\n";
         std::cout << "Descricao: " << com->getDescricao() << "\n";
-        std::cout << "Administrador: @"
-                  << (admin ? admin->getNome() : "Desconhecido") << "\n";
+        std::cout << "Administrador: @" << (admin ? admin->getNome() : "Desconhecido") << "\n";
         std::cout << "Membros: " << membros.size() << "\n\n";
 
         std::vector<Post> postsDaComunidade;
@@ -343,8 +324,7 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
             std::cout << "Nenhum post.\n\n";
         } else {
             auto it = postsDaComunidade.rbegin();
-            for (size_t i = 0;
-                 i < std::min<size_t>(3, postsDaComunidade.size()); ++i) {
+            for (size_t i = 0; i < std::min<size_t>(3, postsDaComunidade.size()); ++i) {
                 std::cout << "-> " << it->getConteudo() << "\n";
                 ++it;
             }
@@ -352,10 +332,9 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
         }
 
         if (isMember) {
-            std::cout << "1 - Criar Post\n2 - Ver Posts\n3 - Voltar\n\n"; 
+            std::cout << "1 - Criar Post\n2 - Ver Posts\n3 - Voltar\n\n";
         } else {
-            std::cout
-                << "1 - Entrar na Comunidade\n2 - Ver Posts\n3 - Voltar\n\n";
+            std::cout << "1 - Entrar na Comunidade\n2 - Ver Posts\n3 - Voltar\n\n";
         }
 
         std::cout << "Digite sua opcao desejada: ";
@@ -408,8 +387,7 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
     }
 }
 
-void menuVerPerfisLista(const std::vector<Perfil> &perfisList,
-                        Armazenamento &db) {
+void menuVerPerfisLista(const std::vector<Perfil> &perfisList, Armazenamento &db) {
     std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
@@ -450,8 +428,7 @@ void menuVerPerfisLista(const std::vector<Perfil> &perfisList,
             if (!std::getline(std::cin, linhaIdx) || !lerInteiro(linhaIdx, idx))
                 break;
             if (idx >= 1 && idx <= static_cast<int>(perfisList.size())) {
-                menuPerfil(perfisList[static_cast<size_t>(idx - 1)].getId(),
-                           db);
+                menuPerfil(perfisList[static_cast<size_t>(idx - 1)].getId(), db);
             } else {
                 mensagem = "[ERRO] Indice invalido!";
             }
@@ -461,16 +438,14 @@ void menuVerPerfisLista(const std::vector<Perfil> &perfisList,
     }
 }
 
-void menuVerComunidadesLista(Armazenamento &db,
-                             const std::vector<Comunidade> *filtro) {
+void menuVerComunidadesLista(Armazenamento &db, const std::vector<Comunidade> *filtro) {
     std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
         exibirMensagem(mensagem);
         mensagem.clear();
 
-        const std::vector<Comunidade> &lista =
-            filtro != nullptr ? *filtro : db.getTodasComunidades();
+        const std::vector<Comunidade> &lista = filtro != nullptr ? *filtro : db.getTodasComunidades();
 
         std::cout << "\n///////////////////////////////////////\n";
         std::cout << "            LISTA DE COMUNIDADES\n";
@@ -485,8 +460,7 @@ void menuVerComunidadesLista(Armazenamento &db,
             }
         }
 
-        std::cout
-            << "A) Selecionar Comunidade / B) Voltar / C) Criar Comunidade\n\n";
+        std::cout << "A) Selecionar Comunidade / B) Voltar / C) Criar Comunidade\n\n";
         std::cout << "Digite sua opcao desejada: ";
         std::string opcao;
         if (!std::getline(std::cin, opcao))
@@ -549,7 +523,7 @@ void menuPerfil(int idAlvo, Armazenamento &db) {
         mensagem.clear();
 
         const bool souEu = (idAlvo == db.getIdPerfilLogado());
-        Perfil* eu = db.getPerfil(db.getIdPerfilLogado());
+        Perfil *eu = db.getPerfil(db.getIdPerfilLogado());
         std::vector<int> minhasComunidades = eu ? eu->getIdsComunidades() : std::vector<int>();
 
         std::vector<Post> postsUsuario;
@@ -561,12 +535,13 @@ void menuPerfil(int idAlvo, Armazenamento &db) {
             } else {
                 if (p.getIdComunidade() == 0) {
                     postsUsuario.push_back(p);
-                } else if (std::find(minhasComunidades.begin(), minhasComunidades.end(), p.getIdComunidade()) != minhasComunidades.end()) {
+                } else if (std::find(minhasComunidades.begin(), minhasComunidades.end(), p.getIdComunidade()) !=
+                           minhasComunidades.end()) {
                     postsUsuario.push_back(p);
                 }
             }
         }
-            
+
         exibirResumoPerfil(*alvo);
 
         if (souEu) {

@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
@@ -7,7 +8,6 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 #ifdef _WIN32
 #ifndef NOMINMAX
@@ -44,29 +44,27 @@ void configurarSaidaUtf8() {
     std::ios_base::sync_with_stdio(false);
 }
 
-std::string repetir(char c, int n) {
-    return std::string(static_cast<std::size_t>(n), c);
-}
+std::string repetir(char c, int n) { return std::string(static_cast<std::size_t>(n), c); }
 
-std::string padDireita(const std::string& texto, int largura) {
+std::string padDireita(const std::string &texto, int largura) {
     if (static_cast<int>(texto.size()) >= largura) {
         return texto;
     }
     return texto + std::string(static_cast<std::size_t>(largura - texto.size()), ' ');
 }
 
-std::string padEsquerda(const std::string& texto, int largura) {
+std::string padEsquerda(const std::string &texto, int largura) {
     if (static_cast<int>(texto.size()) >= largura) {
         return texto;
     }
     return std::string(static_cast<std::size_t>(largura - texto.size()), ' ') + texto;
 }
 
-std::string executarComando(const std::string& comando) {
+std::string executarComando(const std::string &comando) {
     std::string saida;
     char buffer[256];
 
-    FILE* pipe = POPEN(comando.c_str(), "r");
+    FILE *pipe = POPEN(comando.c_str(), "r");
     if (pipe == nullptr) {
         throw std::runtime_error("Falha ao executar comando: " + comando);
     }
@@ -86,14 +84,13 @@ std::string executarComando(const std::string& comando) {
     return saida;
 }
 
-int contarCommits(const std::string& email) {
+int contarCommits(const std::string &email) {
 #ifdef _WIN32
     const std::string redirecionarErro = " 2>nul";
 #else
     const std::string redirecionarErro = " 2>/dev/null";
 #endif
-    const std::string comando =
-        "git rev-list --all --author=\"" + email + "\" --count" + redirecionarErro;
+    const std::string comando = "git rev-list --all --author=\"" + email + "\" --count" + redirecionarErro;
 
     try {
         const std::string resultado = executarComando(comando);
@@ -101,7 +98,7 @@ int contarCommits(const std::string& email) {
             return 0;
         }
         return std::stoi(resultado);
-    } catch (const std::exception&) {
+    } catch (const std::exception &) {
         throw std::runtime_error("Erro ao consultar git para " + email);
     }
 }
@@ -113,18 +110,17 @@ std::string nomeRepositorio() {
     const std::string redirecionarErro = " 2>/dev/null";
 #endif
     try {
-        const std::string topo =
-            executarComando("git rev-parse --show-toplevel" + redirecionarErro);
+        const std::string topo = executarComando("git rev-parse --show-toplevel" + redirecionarErro);
         if (topo.empty()) {
             return fs::current_path().filename().string();
         }
         return fs::path(topo).filename().string();
-    } catch (const std::exception&) {
+    } catch (const std::exception &) {
         return fs::current_path().filename().string();
     }
 }
 
-std::vector<Aluno> carregarAlunos(const fs::path& caminho) {
+std::vector<Aluno> carregarAlunos(const fs::path &caminho) {
     if (!fs::exists(caminho)) {
         throw std::runtime_error("Arquivo de configuracao nao encontrado: " + caminho.string());
     }
@@ -175,7 +171,7 @@ std::vector<Aluno> carregarAlunos(const fs::path& caminho) {
     return alunos;
 }
 
-void imprimirCabecalho(const std::string& repo, const fs::path& config) {
+void imprimirCabecalho(const std::string &repo, const fs::path &config) {
     const std::string linhaDupla = repetir('=', kLineWidth);
 
     std::cout << '\n';
@@ -189,13 +185,13 @@ void imprimirCabecalho(const std::string& repo, const fs::path& config) {
     std::cout << linhaDupla << "\n\n";
 }
 
-void imprimirDetalheIntegrante(const ResultadoAluno& resultado) {
+void imprimirDetalheIntegrante(const ResultadoAluno &resultado) {
     const std::string linha = repetir('-', kLineWidth);
 
     std::cout << "  " << resultado.nome << '\n';
     std::cout << "  " << linha << '\n';
 
-    for (const auto& [email, quantidade] : resultado.detalhes) {
+    for (const auto &[email, quantidade] : resultado.detalhes) {
         std::cout << "    - " << padDireita(email, kEmailColumnWidth) << ' '
                   << padEsquerda(std::to_string(quantidade), 4) << " commit(s)\n";
     }
@@ -211,37 +207,35 @@ void imprimirDetalheIntegrante(const ResultadoAluno& resultado) {
     std::cout << ' ' << padEsquerda(std::to_string(resultado.total), 4) << " commit(s)\n\n";
 }
 
-void imprimirResumo(const std::vector<ResultadoAluno>& resultados, int totalGeral) {
+void imprimirResumo(const std::vector<ResultadoAluno> &resultados, int totalGeral) {
     const std::string linhaDupla = repetir('=', kLineWidth);
     const std::string linha = repetir('-', kLineWidth);
 
     int larguraNome = static_cast<int>(std::string("Integrante").size());
-    for (const auto& resultado : resultados) {
+    for (const auto &resultado : resultados) {
         larguraNome = std::max(larguraNome, static_cast<int>(resultado.nome.size()));
     }
 
     std::cout << linhaDupla << '\n';
-    std::cout << "  " << padDireita("Integrante", larguraNome) << "   "
-              << padEsquerda("Commits", 8) << '\n';
+    std::cout << "  " << padDireita("Integrante", larguraNome) << "   " << padEsquerda("Commits", 8) << '\n';
     std::cout << linha << '\n';
 
-    for (const auto& resultado : resultados) {
+    for (const auto &resultado : resultados) {
         std::cout << "  " << padDireita(resultado.nome, larguraNome) << "   "
                   << padEsquerda(std::to_string(resultado.total), 8) << '\n';
     }
 
     std::cout << linha << '\n';
-    std::cout << "  " << padDireita("TOTAL GERAL", larguraNome) << "   "
-              << padEsquerda(std::to_string(totalGeral), 8) << '\n';
+    std::cout << "  " << padDireita("TOTAL GERAL", larguraNome) << "   " << padEsquerda(std::to_string(totalGeral), 8)
+              << '\n';
     std::cout << linhaDupla << "\n\n";
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     try {
         configurarSaidaUtf8();
 
-        const fs::path config =
-            (argc > 1) ? fs::path(argv[1]) : fs::path("scripts/alunos.json");
+        const fs::path config = (argc > 1) ? fs::path(argv[1]) : fs::path("scripts/alunos.json");
 
         const std::vector<Aluno> alunos = carregarAlunos(config);
         const std::string repo = nomeRepositorio();
@@ -251,12 +245,12 @@ int main(int argc, char* argv[]) {
         std::vector<ResultadoAluno> resultados;
         int totalGeral = 0;
 
-        for (const Aluno& aluno : alunos) {
+        for (const Aluno &aluno : alunos) {
             ResultadoAluno resultado;
             resultado.nome = aluno.nome;
             resultado.total = 0;
 
-            for (const std::string& email : aluno.emails) {
+            for (const std::string &email : aluno.emails) {
                 const int quantidade = contarCommits(email);
                 resultado.detalhes.emplace_back(email, quantidade);
                 resultado.total += quantidade;
@@ -269,7 +263,7 @@ int main(int argc, char* argv[]) {
 
         imprimirResumo(resultados, totalGeral);
         return 0;
-    } catch (const std::exception& excecao) {
+    } catch (const std::exception &excecao) {
         std::cerr << "Erro: " << excecao.what() << '\n';
         return 1;
     }

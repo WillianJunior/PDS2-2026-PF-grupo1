@@ -1,11 +1,11 @@
-#include <doctest/doctest.h>
 #include "domain/armazenamento.hpp"
-#include "domain/perfil.hpp"
 #include "domain/comunidade.hpp"
+#include "domain/perfil.hpp"
 #include <cstdio>
+#include <doctest/doctest.h>
 #include <filesystem>
-#include <stdexcept>
 #include <fstream>
+#include <stdexcept>
 
 TEST_SUITE("Armazenamento") {
     TEST_CASE("Autenticação e Sessão") {
@@ -18,7 +18,7 @@ TEST_SUITE("Armazenamento") {
         CHECK(db.emailUnico("teste@ufmg.br") == false);
         CHECK(db.nomeUsuarioUnico("Tester") == false);
         CHECK(db.emailUnico("novo@ufmg.br") == true);
-        
+
         CHECK(db.fazerLogin("teste@ufmg.br", "errada") == false);
         CHECK(db.fazerLogin("errado@ufmg.br", "senha123") == false);
         CHECK(db.fazerLogin("teste@ufmg.br", "Senha123") == true);
@@ -37,13 +37,13 @@ TEST_SUITE("Armazenamento") {
 
         db.criarComunidade("Minha Com", "Desc");
         db.criarPost("Meu Post", 1);
-        db.criarPost("Meu Post Geral", 0); 
+        db.criarPost("Meu Post Geral", 0);
         db.criarComentarioGlobal(1, 1, "Meu Comentario");
 
         CHECK(db.getTodosPerfis().size() == 1);
         CHECK(db.getTodasComunidades().size() == 1);
         CHECK(db.getTodosPosts().size() == 2);
-        CHECK(db.getPostsFeed().size() == 2); 
+        CHECK(db.getPostsFeed().size() == 2);
 
         CHECK(db.getPerfil(1) != nullptr);
         CHECK(db.getPerfil(99) == nullptr);
@@ -58,7 +58,7 @@ TEST_SUITE("Armazenamento") {
         Perfil p("Eng", "UFRJ", 1);
         db.criarPerfil(p);
         CHECK(db.listarPerfis().size() == 2);
-        
+
         Comunidade c("Extra", 1);
         db.criarComunidade(c);
         CHECK(db.listarComunidade().size() == 2);
@@ -78,8 +78,8 @@ TEST_SUITE("Armazenamento") {
     TEST_CASE("Carregar e Salvar Dados (I/O Simulado)") {
         Armazenamento db;
         db.criarUsuarioEPerfil("a@b.c", "Senha12345", "A");
-        db.salvarDados(); 
-        db.carregarDados(); 
+        db.salvarDados();
+        db.carregarDados();
         CHECK(db.getTodosPerfis().size() >= 1);
         std::remove("data/usuarios.csv");
         std::remove("data/perfis.csv");
@@ -102,10 +102,10 @@ TEST_SUITE("Armazenamento") {
             Armazenamento db1;
             db1.criarUsuarioEPerfil("x@x.com", "Senha12345", "X");
             db1.salvarDados();
-        } 
+        }
         {
             Armazenamento db2;
-            db2.carregarDados(); 
+            db2.carregarDados();
             CHECK(db2.getTodosPerfis().size() >= 1);
         }
         std::remove("data/usuarios.csv");
@@ -125,11 +125,11 @@ TEST_SUITE("Armazenamento") {
         CHECK_THROWS_AS(db.criarUsuarioEPerfil("teste@ufmg.br", "Senha123", ""), std::invalid_argument);
         CHECK_THROWS_AS(db.criarUsuarioEPerfil("teste@ufmg.br", "123", "User"), std::invalid_argument);
         CHECK_THROWS_AS(db.criarUsuarioEPerfil("testeufmg.br", "Senha123", "User"), std::invalid_argument);
-        
+
         db.criarUsuarioEPerfil("teste@ufmg.br", "Senha123", "User");
         CHECK_THROWS_AS(db.criarUsuarioEPerfil("teste@ufmg.br", "NovaSenha12", "NovoUser"), std::invalid_argument);
         CHECK_THROWS_AS(db.criarUsuarioEPerfil("novo@ufmg.br", "NovaSenha12", "User"), std::invalid_argument);
-        
+
         db.fazerLogin("teste@ufmg.br", "Senha123");
         CHECK_THROWS_AS(db.criarPost(""), std::invalid_argument);
         CHECK_THROWS_AS(db.criarComunidade("", "desc"), std::invalid_argument);
@@ -142,15 +142,15 @@ TEST_SUITE("Armazenamento") {
         db.fazerLogin("teste@ufmg.br", "Senha123");
         db.criarComunidade("Com", "Desc");
         db.criarPost("Post", 1);
-        
-        const Armazenamento& constDb = db;
+
+        const Armazenamento &constDb = db;
         CHECK(constDb.getUsuario("teste@ufmg.br") != nullptr);
         CHECK(constDb.getComunidade(1) != nullptr);
         CHECK(constDb.getPost(1) != nullptr);
-        
+
         CHECK(db.getUsuario("teste@ufmg.br") != nullptr);
         CHECK(db.getComunidade(1) != nullptr);
-        
+
         CHECK(constDb.getUsuario("invalido@ufmg.br") == nullptr);
         CHECK(constDb.getComunidade(99) == nullptr);
         CHECK(constDb.getPost(99) == nullptr);
@@ -159,15 +159,15 @@ TEST_SUITE("Armazenamento") {
     TEST_CASE("Forcar erro de perfil logado nao encontrado ao criar comunidade") {
         Armazenamento db;
         db.criarUsuarioEPerfil("teste@ufmg.br", "Senha123", "Tester");
-        db.fazerLogin("teste@ufmg.br", "Senha123"); 
-        
+        db.fazerLogin("teste@ufmg.br", "Senha123");
+
         std::remove("data/usuarios.csv");
         std::remove("data/perfis.csv");
         std::remove("data/comunidades.csv");
         std::remove("data/posts.csv");
         std::remove("data/comentarios.csv");
-        
-        db.carregarDados(); 
+
+        db.carregarDados();
         CHECK_THROWS_AS(db.criarComunidade("Fantasma", "Sem dono"), std::runtime_error);
     }
 
@@ -175,12 +175,12 @@ TEST_SUITE("Armazenamento") {
         {
             Armazenamento dbPreparo;
             dbPreparo.criarUsuarioEPerfil("fantasma@uni.br", "Senha123", "Fantasma");
-            dbPreparo.salvarDados(); 
-        } 
-        
+            dbPreparo.salvarDados();
+        }
+
         std::ofstream("data/perfis.csv", std::ios::trunc).close();
         Armazenamento dbTeste;
-        dbTeste.carregarDados(); 
+        dbTeste.carregarDados();
         CHECK(dbTeste.fazerLogin("fantasma@uni.br", "Senha123") == false);
         std::remove("data/usuarios.csv");
         std::remove("data/perfis.csv");

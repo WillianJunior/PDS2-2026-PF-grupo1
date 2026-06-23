@@ -1,5 +1,5 @@
-#include <doctest/doctest.h>
 #include "domain/comunidade.hpp"
+#include <doctest/doctest.h>
 
 TEST_SUITE("Comunidade") {
     TEST_CASE("Construtores e Getters") {
@@ -16,9 +16,9 @@ TEST_SUITE("Comunidade") {
     TEST_CASE("Gerenciamento de Membros") {
         Comunidade c("Teste", 1);
         c.adicionarMembro(10);
-        c.entrarComunidade(10); 
+        c.entrarComunidade(10);
         CHECK(c.getIdsMembros().size() == 1);
-        
+
         c.removerMembro(10);
         CHECK(c.getIdsMembros().size() == 0);
         CHECK_NOTHROW(c.removerMembro(99));
@@ -33,100 +33,100 @@ TEST_SUITE("Comunidade") {
         CHECK_NOTHROW(c.exibirMembrosComunidade());
     }
     TEST_CASE("Nao adiciona membro duplicado") {
-    Comunidade c("Teste", 1);
+        Comunidade c("Teste", 1);
 
-    c.adicionarMembro(10);
-    c.adicionarMembro(10); 
+        c.adicionarMembro(10);
+        c.adicionarMembro(10);
 
-    CHECK(c.getIdsMembros().size() == 1);
-}
-TEST_CASE("Remover membro inexistente") {
-    Comunidade c("Teste", 1);
+        CHECK(c.getIdsMembros().size() == 1);
+    }
+    TEST_CASE("Remover membro inexistente") {
+        Comunidade c("Teste", 1);
 
-    c.adicionarMembro(5);
+        c.adicionarMembro(5);
 
-    CHECK_NOTHROW(c.removerMembro(99));
-    CHECK(c.getIdsMembros().size() == 1);
-}
-TEST_CASE("podePublicar sem membros") {
-    Comunidade c("Teste", 1);
+        CHECK_NOTHROW(c.removerMembro(99));
+        CHECK(c.getIdsMembros().size() == 1);
+    }
+    TEST_CASE("podePublicar sem membros") {
+        Comunidade c("Teste", 1);
 
-    CHECK(c.podePublicar(1) == true);  
-    CHECK(c.podePublicar(999) == false);
-}
-TEST_CASE("setIdsMembros sobrescreve lista") {
-    Comunidade c("Teste", 1);
+        CHECK(c.podePublicar(1) == true);
+        CHECK(c.podePublicar(999) == false);
+    }
+    TEST_CASE("setIdsMembros sobrescreve lista") {
+        Comunidade c("Teste", 1);
 
-    c.adicionarMembro(1);
-    c.setIdsMembros({7, 8, 9});
+        c.adicionarMembro(1);
+        c.setIdsMembros({7, 8, 9});
 
-    CHECK(c.getIdsMembros().size() == 3);
-    CHECK(c.getIdsMembros()[0] == 7);
-}
+        CHECK(c.getIdsMembros().size() == 3);
+        CHECK(c.getIdsMembros()[0] == 7);
+    }
 
-TEST_CASE("Adicionar e remover varios membros sequencialmente") {
-    Comunidade c("Teste", 1);
+    TEST_CASE("Adicionar e remover varios membros sequencialmente") {
+        Comunidade c("Teste", 1);
 
-    c.adicionarMembro(1);
-    c.adicionarMembro(2);
-    c.adicionarMembro(3);
+        c.adicionarMembro(1);
+        c.adicionarMembro(2);
+        c.adicionarMembro(3);
 
-    CHECK(c.getIdsMembros().size() == 3);
+        CHECK(c.getIdsMembros().size() == 3);
 
-    c.removerMembro(2);
-    CHECK(c.getIdsMembros().size() == 2);
-}
-TEST_CASE("entrarComunidade membro ja existente") {
-    Comunidade c("Teste", 1);
+        c.removerMembro(2);
+        CHECK(c.getIdsMembros().size() == 2);
+    }
+    TEST_CASE("entrarComunidade membro ja existente") {
+        Comunidade c("Teste", 1);
 
-    c.entrarComunidade(5);
-    c.entrarComunidade(5);
+        c.entrarComunidade(5);
+        c.entrarComunidade(5);
 
-    CHECK(c.getIdsMembros().size() == 1);
-}
-TEST_CASE("setIdsMembros vazio") {
-    Comunidade c("Teste", 1);
+        CHECK(c.getIdsMembros().size() == 1);
+    }
+    TEST_CASE("setIdsMembros vazio") {
+        Comunidade c("Teste", 1);
 
-    c.adicionarMembro(1);
-    c.setIdsMembros({});
+        c.adicionarMembro(1);
+        c.setIdsMembros({});
 
-    CHECK(c.getIdsMembros().empty());
-}
-TEST_CASE("podePublicar apos remover membro") {
-    Comunidade c("Teste", 1);
+        CHECK(c.getIdsMembros().empty());
+    }
+    TEST_CASE("podePublicar apos remover membro") {
+        Comunidade c("Teste", 1);
 
-    c.adicionarMembro(10);
-    c.removerMembro(10);
+        c.adicionarMembro(10);
+        c.removerMembro(10);
 
-    CHECK(c.podePublicar(10) == false);
-}
-TEST_CASE("administrador nao eh automaticamente membro") {
-    Comunidade c("Teste", 1);
+        CHECK(c.podePublicar(10) == false);
+    }
+    TEST_CASE("administrador nao eh automaticamente membro") {
+        Comunidade c("Teste", 1);
 
-    CHECK(c.getIdsMembros().empty());
-    CHECK(c.podePublicar(1) == true);
-}
-TEST_CASE("administrador nao eh automaticamente membro") {
-    Comunidade c("Teste", 1);
+        CHECK(c.getIdsMembros().empty());
+        CHECK(c.podePublicar(1) == true);
+    }
+    TEST_CASE("administrador nao eh automaticamente membro") {
+        Comunidade c("Teste", 1);
 
-    CHECK(c.getIdsMembros().empty());
-    CHECK(c.podePublicar(1) == true);
-}
-TEST_CASE("remover de lista vazia") {
-    Comunidade c("Teste", 1);
+        CHECK(c.getIdsMembros().empty());
+        CHECK(c.podePublicar(1) == true);
+    }
+    TEST_CASE("remover de lista vazia") {
+        Comunidade c("Teste", 1);
 
-    CHECK_NOTHROW(c.removerMembro(1));
-    CHECK(c.getIdsMembros().empty());
-}
-TEST_CASE("adicionar e depois sobrescrever membros") {
-    Comunidade c("Teste", 1);
+        CHECK_NOTHROW(c.removerMembro(1));
+        CHECK(c.getIdsMembros().empty());
+    }
+    TEST_CASE("adicionar e depois sobrescrever membros") {
+        Comunidade c("Teste", 1);
 
-    c.adicionarMembro(1);
-    c.adicionarMembro(2);
+        c.adicionarMembro(1);
+        c.adicionarMembro(2);
 
-    c.setIdsMembros({9});
+        c.setIdsMembros({9});
 
-    CHECK(c.getIdsMembros().size() == 1);
-    CHECK(c.getIdsMembros()[0] == 9);
-}
+        CHECK(c.getIdsMembros().size() == 1);
+        CHECK(c.getIdsMembros()[0] == 9);
+    }
 }

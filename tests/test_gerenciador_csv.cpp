@@ -1,7 +1,7 @@
-#include <doctest/doctest.h>
 #include "domain/gerenciador_csv.hpp"
-#include <fstream>
 #include <cstdio>
+#include <doctest/doctest.h>
+#include <fstream>
 
 TEST_SUITE("GerenciadorCSV") {
     TEST_CASE("Manipulacao de Strings e Inteiros") {
@@ -14,12 +14,12 @@ TEST_SUITE("GerenciadorCSV") {
         auto emptyInt = GerenciadorCSV::separarInteiros("", '|');
         CHECK(emptyInt.empty());
 
-        CHECK(GerenciadorCSV::juntarInteiros({1,2,3}, '|') == "1|2|3");
+        CHECK(GerenciadorCSV::juntarInteiros({1, 2, 3}, '|') == "1|2|3");
         CHECK(GerenciadorCSV::juntarInteiros({}, '|') == "");
     }
 
     TEST_CASE("Exportar e Importar CSV Fisico - Entidades Completas") {
-        std::vector<Usuario> usrs = { Usuario(1,"a@a.com", "senha", "UserA") };
+        std::vector<Usuario> usrs = {Usuario(1, "a@a.com", "senha", "UserA")};
         GerenciadorCSV::salvarUsuarios(usrs, "test_usrs.csv");
         auto uLido = GerenciadorCSV::carregarUsuarios("test_usrs.csv");
         CHECK(uLido.size() == 1);
@@ -62,15 +62,15 @@ TEST_SUITE("GerenciadorCSV") {
     TEST_CASE("Escapar e Desescapar Virgulas (Cobertura de Texto)") {
         Perfil p(1, "Nome, com virgula", "Descricao, super, com, virgula", "Curso", "Inst", 2);
         p.setIdsComunidades({1, 2});
-        
+
         GerenciadorCSV::salvarPerfis({p}, "test_virgula.csv");
         auto pLido = GerenciadorCSV::carregarPerfis("test_virgula.csv");
-        
+
         CHECK(pLido.size() == 1);
         CHECK(pLido[0].getNome() == "Nome, com virgula");
         CHECK(pLido[0].getDescricao() == "Descricao, super, com, virgula");
         CHECK(pLido[0].getIdsComunidades().size() == 2);
-        
+
         std::remove("test_virgula.csv");
     }
 

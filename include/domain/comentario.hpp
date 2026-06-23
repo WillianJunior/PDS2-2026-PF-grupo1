@@ -1,8 +1,8 @@
 #ifndef COMENTARIO_HPP
 #define COMENTARIO_HPP
+#include "perfil.hpp"
 #include <string>
 #include <vector>
-#include "perfil.hpp"
 
 /**
  * @file comentario.hpp
@@ -15,14 +15,14 @@
  * * Vincula-se a um post específico através de IDs e gerencia suas próprias curtidas.
  */
 class Comentario {
-private:
+  private:
     int id;
     int idPost;
     int idAutor;
     std::string texto;
     std::vector<int> idsCurtidas;
 
-public:
+  public:
     /**
      * @brief Constrói um novo comentário completo (Geralmente oriundo do Banco de Dados).
      * @param id O identificador único numérico do comentário.
@@ -37,7 +37,7 @@ public:
      * @param texto O conteúdo de texto do comentário.
      * @param autor Referência constante ao perfil do autor.
      */
-    Comentario(std::string texto, const Perfil& autor);
+    Comentario(std::string texto, const Perfil &autor);
 
     /**
      * @brief Registra ou remove a curtida de um usuário no comentário (efeito Toggle).
@@ -56,25 +56,25 @@ public:
      * @brief Métodos de acesso para leitura das propriedades do comentário.
      * @{
      */
-    
+
     /** @brief Retorna o ID único do comentário. */
     int getId() const;
-    
+
     /** @brief Retorna o ID do Post pai deste comentário. */
     int getIdPost() const;
-    
+
     /** @brief Retorna o ID do autor (alias para idAutorObter). */
-    int idAutorObter() const; 
-    
+    int idAutorObter() const;
+
     /** @brief Retorna o ID do perfil que escreveu o comentário. */
     int getIdAutor() const;
-    
+
     /** @brief Retorna o conteúdo textual do comentário. */
     std::string getTexto() const;
-    
+
     /** @brief Retorna o vetor contendo os IDs dos usuários que curtiram. */
     std::vector<int> getIdsCurtidas() const;
-    
+
     /** @} */
 
     /**
@@ -82,13 +82,13 @@ public:
      * @brief Métodos utilizados exclusivamente pelo GerenciadorCSV para carregar estados.
      * @{
      */
-     
+
     /**
      * @brief Restaura a lista de curtidas a partir dos dados em disco.
      * @param ids Vetor contendo os IDs dos usuários curtidores.
      */
-    void setIdsCurtidas(const std::vector<int>& ids);
-    
+    void setIdsCurtidas(const std::vector<int> &ids);
+
     /** @} */
 };
 

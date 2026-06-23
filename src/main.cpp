@@ -9,8 +9,7 @@ namespace {
 
 class RestaurarEntradaCin {
   public:
-    explicit RestaurarEntradaCin(std::streambuf *original)
-        : original_(original) {}
+    explicit RestaurarEntradaCin(std::streambuf *original) : original_(original) {}
     ~RestaurarEntradaCin() { std::cin.rdbuf(original_); }
 
     RestaurarEntradaCin(const RestaurarEntradaCin &) = delete;
@@ -31,8 +30,7 @@ int main(int argc, char *argv[]) {
         arquivoEntrada.open(argv[1]);
         if (!arquivoEntrada.is_open()) {
             ConsoleUtils::limparTela();
-            std::cerr << "[ERRO] Nao foi possivel abrir o arquivo de entrada: "
-                      << argv[1] << "\n";
+            std::cerr << "[ERRO] Nao foi possivel abrir o arquivo de entrada: " << argv[1] << "\n";
             return 1;
         }
 

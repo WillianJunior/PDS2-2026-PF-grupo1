@@ -14,7 +14,7 @@
  * de gerenciar o sistema ou atuar como administrador em comunidades.
  */
 class Administrador : public Perfil {
-public:
+  public:
     /**
      * @brief Construtor da classe Administrador.
      * * @param id Identificador único do administrador.
@@ -24,14 +24,8 @@ public:
      * @param instituicao Instituição de ensino.
      * @param periodo Período (semestre) atual.
      */
-    Administrador(
-        int id,
-        std::string nome,
-        std::string descricao,
-        std::string curso,
-        std::string instituicao,
-        int periodo
-    );
+    Administrador(int id, std::string nome, std::string descricao, std::string curso, std::string instituicao,
+                  int periodo);
 
     /**
      * @brief Verifica se o usuário tem permissões de gerenciamento.

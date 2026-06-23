@@ -1,5 +1,5 @@
-#include <doctest/doctest.h>
 #include "domain/admin.hpp"
+#include <doctest/doctest.h>
 
 TEST_SUITE("Administrador") {
     TEST_CASE("Criacao e verificacao de privilegios do Admin") {

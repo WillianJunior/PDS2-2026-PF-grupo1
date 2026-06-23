@@ -1,5 +1,5 @@
-#include <doctest/doctest.h>
 #include "domain/usuario.hpp"
+#include <doctest/doctest.h>
 
 TEST_SUITE("Usuario") {
     TEST_CASE("Construtor e Getters") {
@@ -19,7 +19,7 @@ TEST_SUITE("Usuario") {
     }
 
     TEST_CASE("alterarEmail") {
-        Usuario u(1,"aluno@ufmg.br", "senha123", "AlunoTester");
+        Usuario u(1, "aluno@ufmg.br", "senha123", "AlunoTester");
         CHECK(u.alterarEmail("errada", "novo@ufmg.br") == false);
         CHECK(u.alterarEmail("senha123", "novo@ufmg.br") == true);
         CHECK(u.getEmail() == "novo@ufmg.br");

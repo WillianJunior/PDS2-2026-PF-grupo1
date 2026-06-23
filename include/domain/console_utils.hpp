@@ -13,7 +13,7 @@
  * além de possuir proteções embutidas para não interferir em ambientes de teste.
  */
 class ConsoleUtils {
-public:
+  public:
     /**
      * @brief Limpa o terminal do usuário (cross-platform: clear/cls).
      * @note Se a variável de ambiente AMBIENTE_DE_TESTE estiver ativa, a função é ignorada.

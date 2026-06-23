@@ -61,33 +61,33 @@ class Post {
 
     /** @name Getters */
     /** @{ */
-    
+
     /** @brief Obtém o ID do post. */
     int getId() const;
-    
+
     /** @brief Obtém o ID do autor do post. */
     int getIdAutor() const;
-    
+
     /** @brief Obtém o ID da comunidade do post (0 para global). */
     int getIdComunidade() const;
-    
+
     /** @brief Obtém o conteúdo de texto do post. */
     const std::string &getConteudo() const;
-    
+
     /** @brief Obtém a lista de IDs dos usuários que curtiram o post. */
     const std::vector<int> &getIdsCurtidas() const;
-    
+
     /** @} */
 
     /** @name Setters (Persistência) */
     /** @{ */
-    
+
     /**
      * @brief Define a lista de curtidas de uma vez (Usado ao carregar do CSV).
      * @param ids Vetor contendo os IDs dos usuários que curtiram.
      */
     void setIdsCurtidas(const std::vector<int> &ids);
-    
+
     /** @} */
 };
 

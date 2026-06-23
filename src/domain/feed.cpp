@@ -1,14 +1,15 @@
 #include "domain/feed.hpp"
 #include "domain/menus.hpp"
+#include <console_utils.hpp>
 #include <iostream>
 #include <stdexcept>
 #include <string>
-#include <console_utils.hpp>
 
 namespace {
 
-bool lerInteiro(const std::string& linha, int& valor) {
-    if (linha.empty()) return false;
+bool lerInteiro(const std::string &linha, int &valor) {
+    if (linha.empty())
+        return false;
     try {
         size_t pos = 0;
         valor = std::stoi(linha, &pos);
@@ -18,9 +19,9 @@ bool lerInteiro(const std::string& linha, int& valor) {
     }
 }
 
-} 
+} // namespace
 
-void Feed::verFeed(Armazenamento& db) {
+void Feed::verFeed(Armazenamento &db) {
     while (true) {
         ConsoleUtils::limparTela();
         std::cout << "\n///////////////////////////////////////\n";
@@ -34,13 +35,13 @@ void Feed::verFeed(Armazenamento& db) {
         } else {
             int exibicaoIdx = 1;
             for (int i = static_cast<int>(todosPosts.size()) - 1; i >= 0; --i) {
-                Post& p = todosPosts.at(i);
-                Perfil* autor = db.getPerfil(p.getIdAutor());
+                Post &p = todosPosts.at(i);
+                Perfil *autor = db.getPerfil(p.getIdAutor());
                 std::string nomeAutor = autor ? autor->getNome() : "Desconhecido";
 
                 std::cout << exibicaoIdx << " - @" << nomeAutor;
                 if (p.getIdComunidade() != 0) {
-                    Comunidade* com = db.getComunidade(p.getIdComunidade());
+                    Comunidade *com = db.getComunidade(p.getIdComunidade());
                     if (com) {
                         std::cout << " (" << com->getNome() << ")";
                     }
@@ -61,16 +62,16 @@ void Feed::verFeed(Armazenamento& db) {
         } else if (opcao == "B" || opcao == "b") {
             std::cout << "Digite o texto do seu post global: ";
             std::string txt;
-            if (std::getline(std::cin, txt)) { 
+            if (std::getline(std::cin, txt)) {
                 try {
-                    db.criarPost(txt, 0); 
+                    db.criarPost(txt, 0);
                     std::cout << "\n[SUCESSO] Post global publicado! Pressione ENTER para recarregar...";
                     std::cin.get();
-                } catch (const std::invalid_argument& e) {
+                } catch (const std::invalid_argument &e) {
                     std::cout << "\n[ERRO] " << e.what() << "\n";
                 }
             }
-            continue; 
+            continue;
         } else if (opcao == "A" || opcao == "a") {
             if (todosPosts.empty()) {
                 std::cout << "\n[ERRO] Nao ha posts para selecionar.\n";
@@ -79,7 +80,8 @@ void Feed::verFeed(Armazenamento& db) {
             std::cout << "Qual Post deseja selecionar: ";
             int escolhaIdx;
             std::string linhaIdx;
-            if (!std::getline(std::cin, linhaIdx)) break;
+            if (!std::getline(std::cin, linhaIdx))
+                break;
             if (!lerInteiro(linhaIdx, escolhaIdx)) {
                 std::cout << "\n[ERRO] Indice invalido!\n";
                 continue;
@@ -87,9 +89,9 @@ void Feed::verFeed(Armazenamento& db) {
 
             if (escolhaIdx >= 1 && escolhaIdx <= static_cast<int>(todosPosts.size())) {
                 int vetorIdx = static_cast<int>(todosPosts.size()) - escolhaIdx;
-                
-                Post* postOriginal = db.getPostMutavel(todosPosts.at(vetorIdx).getId());
-                
+
+                Post *postOriginal = db.getPostMutavel(todosPosts.at(vetorIdx).getId());
+
                 if (postOriginal) {
                     menuVisualizarPost(*postOriginal, db);
                 } else {
@@ -104,10 +106,8 @@ void Feed::verFeed(Armazenamento& db) {
     }
 }
 
-void Feed::exibirPosts(const std::vector<Post>& posts) { (void)posts; }
+void Feed::exibirPosts(const std::vector<Post> &posts) { (void)posts; }
 
-void Feed::exibirPerfis(const std::vector<Perfil>& perfis) { (void)perfis; }
+void Feed::exibirPerfis(const std::vector<Perfil> &perfis) { (void)perfis; }
 
-void Feed::exibirComunidades(const std::vector<Comunidade>& comunidades) {
-    (void)comunidades;
-}
+void Feed::exibirComunidades(const std::vector<Comunidade> &comunidades) { (void)comunidades; }

@@ -1,5 +1,5 @@
-#include <doctest/doctest.h>
 #include "domain/perfil.hpp"
+#include <doctest/doctest.h>
 
 TEST_SUITE("Perfil") {
     TEST_CASE("Construtores e Getters") {
@@ -33,11 +33,11 @@ TEST_SUITE("Perfil") {
     TEST_CASE("entrarComunidade e sairComunidade") {
         Perfil p("Curso", "Inst", 1);
         p.entrarComunidade(10);
-        p.entrarComunidade(10); 
+        p.entrarComunidade(10);
         CHECK(p.getIdsComunidades().size() == 1);
         p.sairComunidade(10);
         CHECK(p.getIdsComunidades().size() == 0);
-        CHECK_NOTHROW(p.sairComunidade(99)); 
+        CHECK_NOTHROW(p.sairComunidade(99));
     }
 
     TEST_CASE("Metodos Adicionais (Cobertura total)") {

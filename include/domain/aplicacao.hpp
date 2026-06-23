@@ -12,16 +12,16 @@
 /**
  * @class Aplicacao
  * @brief Classe orquestradora que gerencia o loop principal e as transições de tela.
- * * Controla o estado de execução (rodando ou parado), gerencia a injeção do banco 
+ * * Controla o estado de execução (rodando ou parado), gerencia a injeção do banco
  * de dados na memória e direciona os fluxos de menu de acordo com o estado de login do usuário.
  */
 class Aplicacao {
   private:
-    Armazenamento db;              /**< Referência para o banco de dados em memória. */
-    Busca busca;                   /**< Instância do serviço de busca. */
-    bool rodando;                  /**< Flag que mantém o loop principal ativo. */
-    bool modoAutomatico;           /**< Flag para rodar em modo de teste/demonstração sem pausas. */
-    std::string mensagemAlerta;    /**< Buffer para exibir mensagens de sucesso ou erro no topo das telas. */
+    Armazenamento db;           /**< Referência para o banco de dados em memória. */
+    Busca busca;                /**< Instância do serviço de busca. */
+    bool rodando;               /**< Flag que mantém o loop principal ativo. */
+    bool modoAutomatico;        /**< Flag para rodar em modo de teste/demonstração sem pausas. */
+    std::string mensagemAlerta; /**< Buffer para exibir mensagens de sucesso ou erro no topo das telas. */
 
     /** @name Fluxos de Tela */
     /** @{ */

@@ -1,8 +1,8 @@
 #ifndef COMUNIDADE_HPP
 #define COMUNIDADE_HPP
+#include "post.hpp"
 #include <string>
 #include <vector>
-#include "post.hpp"
 
 /**
  * @file comunidade.hpp
@@ -16,14 +16,14 @@
  * Elas possuem um administrador responsável e regras de permissão para postagens.
  */
 class Comunidade {
-private:
+  private:
     int id;
     std::string nome;
     std::string descricao;
     int idAdministrador;
     std::vector<int> idsMembros;
 
-public:
+  public:
     /**
      * @brief Construtor completo para instanciar uma Comunidade recuperada do banco de dados.
      * @param id Identificador único da comunidade.
@@ -72,33 +72,33 @@ public:
 
     /** @name Getters */
     /** @{ */
-    
+
     /** @brief Retorna o ID da comunidade. */
     int getId() const;
-    
+
     /** @brief Retorna o nome da comunidade. */
-    const std::string& getNome() const;
-    
+    const std::string &getNome() const;
+
     /** @brief Retorna a descrição da comunidade. */
-    const std::string& getDescricao() const;
-    
+    const std::string &getDescricao() const;
+
     /** @brief Retorna o ID do administrador. */
     int getIdAdministrador() const;
-    
+
     /** @brief Retorna a lista de IDs de todos os membros. */
-    const std::vector<int>& getIdsMembros() const;
-    
+    const std::vector<int> &getIdsMembros() const;
+
     /** @} */
 
     /** @name Setters (Persistência) */
     /** @{ */
-    
+
     /**
      * @brief Define a lista completa de membros de uma vez (Usado pelo GerenciadorCSV).
      * @param ids Vetor contendo os IDs dos membros.
      */
-    void setIdsMembros(const std::vector<int>& ids);
-    
+    void setIdsMembros(const std::vector<int> &ids);
+
     /** @} */
 };
 

@@ -28,7 +28,8 @@ bool lerLinha(std::string &destino) {
 
 void abortarEntradaAutomatica(const std::string &motivo) {
     std::cerr << "\n[demo] Entrada automatica interrompida: " << motivo << "\n";
-    if (std::getenv("AMBIENTE_DE_TESTE") != nullptr) throw std::runtime_error("EXIT_1");
+    if (std::getenv("AMBIENTE_DE_TESTE") != nullptr)
+        throw std::runtime_error("EXIT_1");
     std::exit(1); // LCOV_EXCL_LINE
 }
 
@@ -40,7 +41,8 @@ void exibirMensagem(const std::string &mensagem) {
 
 bool lerOpcaoNumerica(int &valor, bool modoAutomatico, std::string &mensagemErro) {
     if (!(std::cin >> valor)) {
-        if (std::cin.eof()) return false; 
+        if (std::cin.eof())
+            return false;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         if (!modoAutomatico) {
@@ -52,7 +54,7 @@ bool lerOpcaoNumerica(int &valor, bool modoAutomatico, std::string &mensagemErro
     return true;
 }
 
-}  // namespace
+} // namespace
 
 Aplicacao::Aplicacao(bool modoAutomatico)
     : db(), busca(), rodando(true), modoAutomatico(modoAutomatico), mensagemAlerta("") {}
@@ -87,7 +89,7 @@ void Aplicacao::exibirTelaInicial() {
 
     int opcao;
     if (!lerOpcaoNumerica(opcao, modoAutomatico, mensagemAlerta)) {
-        if (modoAutomatico || std::cin.eof()) { 
+        if (modoAutomatico || std::cin.eof()) {
             parar();
         }
         return;
@@ -120,7 +122,7 @@ void Aplicacao::exibirMenuPrincipal() {
 
     int opcao;
     if (!lerOpcaoNumerica(opcao, modoAutomatico, mensagemAlerta)) {
-        if (modoAutomatico || std::cin.eof()) { 
+        if (modoAutomatico || std::cin.eof()) {
             parar();
         }
         return;
@@ -149,12 +151,14 @@ void Aplicacao::executarLogin() {
         std::string email, senha;
         std::cout << "Email: ";
         if (!lerLinha(email)) {
-            if (modoAutomatico) abortarEntradaAutomatica("fim inesperado ao ler email.");
+            if (modoAutomatico)
+                abortarEntradaAutomatica("fim inesperado ao ler email.");
             break;
         }
         std::cout << "Senha: ";
         if (!lerLinha(senha)) {
-            if (modoAutomatico) abortarEntradaAutomatica("fim inesperado ao ler senha.");
+            if (modoAutomatico)
+                abortarEntradaAutomatica("fim inesperado ao ler senha.");
             break;
         }
 
@@ -164,15 +168,16 @@ void Aplicacao::executarLogin() {
         }
 
         if (modoAutomatico) {
-            abortarEntradaAutomatica(
-                "login falhou. Verifique email/senha no arquivo (use opcao 1, nao 2).");
+            abortarEntradaAutomatica("login falhou. Verifique email/senha no arquivo (use opcao 1, nao 2).");
         }
 
         std::cout << "\n[ERRO] Email ou senha invalidos.\n";
         std::cout << "1 - Tentar novamente / 2 - Voltar\nEscolha: ";
         int sub;
-        if (!lerOpcaoNumerica(sub, modoAutomatico, mensagemAlerta)) break;
-        if (sub == 2) break;
+        if (!lerOpcaoNumerica(sub, modoAutomatico, mensagemAlerta))
+            break;
+        if (sub == 2)
+            break;
     }
 }
 
@@ -185,19 +190,22 @@ void Aplicacao::executarCriarUsuario() {
 
         std::cout << "Nome de usuario: ";
         if (!lerLinha(nome)) {
-            if (modoAutomatico) abortarEntradaAutomatica("fim inesperado ao ler nome.");
+            if (modoAutomatico)
+                abortarEntradaAutomatica("fim inesperado ao ler nome.");
             break;
         }
 
         std::cout << "Email: ";
         if (!lerLinha(email)) {
-            if (modoAutomatico) abortarEntradaAutomatica("fim inesperado ao ler email.");
+            if (modoAutomatico)
+                abortarEntradaAutomatica("fim inesperado ao ler email.");
             break;
         }
 
         std::cout << "Senha (minimo 8 caracteres, com pelo menos 1 digito): ";
         if (!lerLinha(senha)) {
-            if (modoAutomatico) abortarEntradaAutomatica("fim inesperado ao ler senha.");
+            if (modoAutomatico)
+                abortarEntradaAutomatica("fim inesperado ao ler senha.");
             break;
         }
 
@@ -225,7 +233,8 @@ void Aplicacao::executarCriarUsuario() {
                 const std::string msg = e.what();
                 if (msg.find("email") != std::string::npos) {
                     std::cout << "[demo] Usuario ja existe; seguindo com login.\n";
-                    if (std::getenv("AMBIENTE_DE_TESTE") != nullptr) throw std::runtime_error("EXIT_0");
+                    if (std::getenv("AMBIENTE_DE_TESTE") != nullptr)
+                        throw std::runtime_error("EXIT_0");
                     std::exit(0); // LCOV_EXCL_LINE
                 }
                 abortarEntradaAutomatica(msg);
@@ -246,7 +255,8 @@ void Aplicacao::executarFluxoPesquisa() {
     std::cout << "1 - Perfil\n2 - Post\n3 - Comunidade\n4 - Voltar\nEscolha: ";
 
     int cat;
-    if (!lerOpcaoNumerica(cat, modoAutomatico, mensagemAlerta)) return;
+    if (!lerOpcaoNumerica(cat, modoAutomatico, mensagemAlerta))
+        return;
 
     if (cat >= 1 && cat <= 3) {
         std::string termo;
@@ -266,9 +276,9 @@ void Aplicacao::executarFluxoPesquisa() {
 
 void Aplicacao::executarFluxoAlterarCredenciais() {
     Usuario *usuario = db.getUsuario(db.getEmailLogado());
-    if (!usuario) { // LCOV_EXCL_LINE 
+    if (!usuario) {                                               // LCOV_EXCL_LINE
         mensagemAlerta = "[ERRO] Usuario logado nao encontrado."; // LCOV_EXCL_LINE
-        return; // LCOV_EXCL_LINE
+        return;                                                   // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE
 
     std::cout << "\n1 - Alterar Senha\n";
@@ -277,7 +287,8 @@ void Aplicacao::executarFluxoAlterarCredenciais() {
     std::cout << "Escolha: ";
 
     int sub;
-    if (!lerOpcaoNumerica(sub, modoAutomatico, mensagemAlerta)) return;
+    if (!lerOpcaoNumerica(sub, modoAutomatico, mensagemAlerta))
+        return;
 
     if (sub == 1) {
         std::string atual, nova;
@@ -303,12 +314,11 @@ void Aplicacao::executarFluxoAlterarCredenciais() {
 
         if (novoEmail.find('@') == std::string::npos) {
             mensagemAlerta = "[ERRO] Formato de email invalido. Deve conter '@'.";
-        } 
-        else if (!db.emailUnico(novoEmail) && novoEmail != db.getEmailLogado()) {
+        } else if (!db.emailUnico(novoEmail) && novoEmail != db.getEmailLogado()) {
             mensagemAlerta = "[ERRO] Email repetido ou ja em uso!";
         } else if (usuario->alterarEmail(atual, novoEmail)) {
             mensagemAlerta = "[SUCESSO] Email alterado! Faca login novamente com o novo email.";
-            db.deslogar(); 
+            db.deslogar();
         } else {
             mensagemAlerta = "[ERRO] Senha atual incorreta.";
         }
@@ -317,7 +327,7 @@ void Aplicacao::executarFluxoAlterarCredenciais() {
 void Aplicacao::executarFluxoVerPerfil() {
     if (db.getIdPerfilLogado() > 0) {
         menuPerfil(db.getIdPerfilLogado(), db);
-    } else { // LCOV_EXCL_LINE 
+    } else {                                                     // LCOV_EXCL_LINE
         mensagemAlerta = "[ERRO] Perfil logado nao encontrado."; // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE
 }

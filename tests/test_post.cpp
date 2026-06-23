@@ -1,7 +1,7 @@
-#include <doctest/doctest.h>
-#include "domain/post.hpp"
 #include "domain/comentario.hpp"
 #include "domain/perfil.hpp"
+#include "domain/post.hpp"
+#include <doctest/doctest.h>
 
 TEST_SUITE("Post") {
     TEST_CASE("Construtores e Getters") {
