@@ -2,6 +2,7 @@
 #include "domain/comunidade.hpp"
 #include "domain/console_utils.hpp"
 #include "domain/perfil.hpp"
+#include "domain/console_utils.hpp"
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
@@ -11,25 +12,10 @@ namespace {
 
 bool opcaoVoltar(const std::string &linha) { return linha == "B" || linha == "b" || linha == "V" || linha == "v"; }
 
-bool lerInteiro(const std::string &linha, int &valor) {
-    if (linha.empty())
-        return false;
-    try {
-        size_t pos = 0;
-        valor = std::stoi(linha, &pos);
-        return pos == linha.size();
-    } catch (...) {
-        return false;
-    }
-}
-
-void exibirMensagem(const std::string &mensagem) {
-    if (!mensagem.empty()) {
-        std::cout << mensagem << "\n\n";
-    }
 }
 
 void exibirResumoPerfil(const Perfil &alvo) {
+    ConsoleUtils::mostrarCabecalho("PERFIL DE @" + alvo.getNome());
     std::cout << "\n====================================\n";
     std::cout << "         PERFIL DE @" << alvo.getNome() << "\n";
     std::cout << "====================================\n";
@@ -110,7 +96,7 @@ bool tratarOpcaoPost(const std::string &opcao, Post &post, Armazenamento &db,
             return false;
 
         int idx;
-        if (!lerInteiro(linhaIdx, idx) || idx < 1 || idx > static_cast<int>(comentarios.size())) {
+        if (!ConsoleUtils::lerInteiro(linhaIdx, idx) || idx < 1 || idx > static_cast<int>(comentarios.size())) {
             mensagem = "[ERRO] Indice invalido!";
             return true;
         }
@@ -147,12 +133,11 @@ bool tratarOpcaoPost(const std::string &opcao, Post &post, Armazenamento &db,
     return true;
 }
 
-} // namespace
 
 void menuEditarPerfil(Perfil &alvo) {
     std::string mensagem;
     while (true) {
-        exibirMensagem(mensagem);
+        ConsoleUtils::exibirMensagem(mensagem);
         mensagem.clear();
 
         std::cout << "--- EDITAR PERFIL ---\n";
@@ -170,7 +155,7 @@ void menuEditarPerfil(Perfil &alvo) {
             break;
 
         int opcao;
-        if (!lerInteiro(linha, opcao)) {
+        if (!ConsoleUtils::lerInteiro(linha, opcao)) {
             mensagem = "[ERRO] Opcao invalida.";
             continue;
         }
@@ -205,7 +190,7 @@ void menuEditarPerfil(Perfil &alvo) {
             if (!std::getline(std::cin, linhaPeriodo))
                 break;
             int periodo;
-            if (!lerInteiro(linhaPeriodo, periodo) || periodo < 1) {
+            if (!ConsoleUtils::lerInteiro(linhaPeriodo, periodo) || periodo < 1) {
                 mensagem = "[ERRO] Periodo invalido.";
                 continue;
             }
@@ -221,7 +206,7 @@ void menuVisualizarPost(Post &post, Armazenamento &db) {
     std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
-        exibirMensagem(mensagem);
+        ConsoleUtils::exibirMensagem(mensagem);
         mensagem.clear();
 
         auto comentarios = comentariosDoPost(post, db);
@@ -245,13 +230,9 @@ void menuVerPostsLista(const std::vector<Post> &postsList, Armazenamento &db) {
     std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
-        exibirMensagem(mensagem);
+        ConsoleUtils::exibirMensagem(mensagem);
         mensagem.clear();
-
-        std::cout << "\n///////////////////////////////////////\n";
-        std::cout << "              LISTA DE POSTS\n";
-        std::cout << "///////////////////////////////////////\n\n";
-
+        ConsoleUtils::mostrarCabecalho("LISTA DE POSTS");
         if (postsList.empty()) {
             std::cout << "Nenhum post encontrado.\n\n";
             std::cout << "Pressione ENTER para voltar...";
@@ -275,7 +256,7 @@ void menuVerPostsLista(const std::vector<Post> &postsList, Armazenamento &db) {
                 break;
 
             int idx;
-            if (!lerInteiro(linhaIdx, idx) || idx < 1 || idx > static_cast<int>(postsList.size())) {
+            if (!ConsoleUtils::lerInteiro(linhaIdx, idx) || idx < 1 || idx > static_cast<int>(postsList.size())) {
                 mensagem = "[ERRO] Indice invalido!";
                 continue;
             }
@@ -303,12 +284,9 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
         bool isMember = std::find(membros.begin(), membros.end(), db.getIdPerfilLogado()) != membros.end();
 
         ConsoleUtils::limparTela();
-        exibirMensagem(mensagem);
+        ConsoleUtils::exibirMensagem(mensagem);
         mensagem.clear();
-
-        std::cout << "\n///////////////////////////////////////\n";
-        std::cout << "        COMUNIDADE: " << com->getNome() << "\n";
-        std::cout << "///////////////////////////////////////\n";
+        ConsoleUtils::mostrarCabecalho("COMUNIDADE: " + com->getNome());
         std::cout << "Descricao: " << com->getDescricao() << "\n";
         std::cout << "Administrador: @" << (admin ? admin->getNome() : "Desconhecido") << "\n";
         std::cout << "Membros: " << membros.size() << "\n\n";
@@ -343,7 +321,7 @@ void menuComunidade(int idComunidade, Armazenamento &db) {
             break;
 
         int opcao;
-        if (!lerInteiro(linha, opcao)) {
+        if (!ConsoleUtils::lerInteiro(linha, opcao)) {
             mensagem = "[ERRO] Opcao invalida.";
             continue;
         }
@@ -391,13 +369,10 @@ void menuVerPerfisLista(const std::vector<Perfil> &perfisList, Armazenamento &db
     std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
-        exibirMensagem(mensagem);
+        ConsoleUtils::exibirMensagem(mensagem);
         mensagem.clear();
 
-        std::cout << "\n///////////////////////////////////////\n";
-        std::cout << "              LISTA DE PERFIS\n";
-        std::cout << "///////////////////////////////////////\n\n";
-
+        ConsoleUtils::mostrarCabecalho("LISTA DE PERFIS");
         if (perfisList.empty()) {
             std::cout << "Nenhum perfil encontrado.\n\n";
             std::cout << "Pressione ENTER para voltar...";
@@ -425,7 +400,7 @@ void menuVerPerfisLista(const std::vector<Perfil> &perfisList, Armazenamento &db
             std::cout << "Qual Perfil deseja selecionar: ";
             int idx;
             std::string linhaIdx;
-            if (!std::getline(std::cin, linhaIdx) || !lerInteiro(linhaIdx, idx))
+            if (!std::getline(std::cin, linhaIdx) || !ConsoleUtils::lerInteiro(linhaIdx, idx))
                 break;
             if (idx >= 1 && idx <= static_cast<int>(perfisList.size())) {
                 menuPerfil(perfisList[static_cast<size_t>(idx - 1)].getId(), db);
@@ -442,14 +417,12 @@ void menuVerComunidadesLista(Armazenamento &db, const std::vector<Comunidade> *f
     std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
-        exibirMensagem(mensagem);
+        ConsoleUtils::exibirMensagem(mensagem);
         mensagem.clear();
 
         const std::vector<Comunidade> &lista = filtro != nullptr ? *filtro : db.getTodasComunidades();
 
-        std::cout << "\n///////////////////////////////////////\n";
-        std::cout << "            LISTA DE COMUNIDADES\n";
-        std::cout << "///////////////////////////////////////\n\n";
+        ConsoleUtils::mostrarCabecalho("LISTA DE COMUNIDADES");
 
         if (lista.empty()) {
             std::cout << "Nenhuma comunidade encontrada.\n\n";
@@ -498,7 +471,7 @@ void menuVerComunidadesLista(Armazenamento &db, const std::vector<Comunidade> *f
             std::cout << "Qual Comunidade deseja selecionar: ";
             int idx;
             std::string linhaIdx;
-            if (!std::getline(std::cin, linhaIdx) || !lerInteiro(linhaIdx, idx))
+            if (!std::getline(std::cin, linhaIdx) || !ConsoleUtils::lerInteiro(linhaIdx, idx))
                 break;
             if (idx >= 1 && idx <= static_cast<int>(lista.size())) {
                 menuComunidade(lista[static_cast<size_t>(idx - 1)].getId(), db);
@@ -519,7 +492,7 @@ void menuPerfil(int idAlvo, Armazenamento &db) {
         if (!alvo)
             break;
 
-        exibirMensagem(mensagem);
+        ConsoleUtils::exibirMensagem(mensagem);
         mensagem.clear();
 
         const bool souEu = (idAlvo == db.getIdPerfilLogado());
@@ -561,7 +534,7 @@ void menuPerfil(int idAlvo, Armazenamento &db) {
             break;
 
         int opcao;
-        if (!lerInteiro(linha, opcao)) {
+        if (!ConsoleUtils::lerInteiro(linha, opcao)) {
             mensagem = "[ERRO] Opcao invalida.";
             continue;
         }

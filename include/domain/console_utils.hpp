@@ -1,5 +1,6 @@
 #ifndef CONSOLE_UTILS_H
 #define CONSOLE_UTILS_H
+#include <string>
 
 /**
  * @file console_utils.hpp
@@ -25,6 +26,10 @@ class ConsoleUtils {
      * @note Se a variável de ambiente AMBIENTE_DE_TESTE estiver ativa, a função é ignorada.
      */
     static void aguardarUsuario();
+
+    static bool lerInteiro(const std::string &linha, int &valor);
+    static void mostrarCabecalho(const std::string &titulo);
+    static void exibirMensagem(const std::string &mensagem);
 };
 
 #endif

@@ -1,33 +1,15 @@
 #include "domain/feed.hpp"
 #include "domain/menus.hpp"
+#
 #include <console_utils.hpp>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 
-namespace {
-
-bool lerInteiro(const std::string &linha, int &valor) {
-    if (linha.empty())
-        return false;
-    try {
-        size_t pos = 0;
-        valor = std::stoi(linha, &pos);
-        return pos == linha.size();
-    } catch (...) {
-        return false;
-    }
-}
-
-} // namespace
-
 void Feed::verFeed(Armazenamento &db) {
     while (true) {
         ConsoleUtils::limparTela();
-        std::cout << "\n///////////////////////////////////////\n";
-        std::cout << "           EDU SOCIAL FEED\n";
-        std::cout << "///////////////////////////////////////\n\n";
-
+        ConsoleUtils::mostrarCabecalho("EDU SOCIAL FEED");
         auto todosPosts = db.getPostsFeed();
 
         if (todosPosts.empty()) {
@@ -82,7 +64,7 @@ void Feed::verFeed(Armazenamento &db) {
             std::string linhaIdx;
             if (!std::getline(std::cin, linhaIdx))
                 break;
-            if (!lerInteiro(linhaIdx, escolhaIdx)) {
+            if (!ConsoleUtils::lerInteiro(linhaIdx, escolhaIdx)) {
                 std::cout << "\n[ERRO] Indice invalido!\n";
                 continue;
             }

@@ -33,11 +33,6 @@ void abortarEntradaAutomatica(const std::string &motivo) {
     std::exit(1); // LCOV_EXCL_LINE
 }
 
-void exibirMensagem(const std::string &mensagem) {
-    if (!mensagem.empty()) {
-        std::cout << mensagem << "\n\n";
-    }
-}
 
 bool lerOpcaoNumerica(int &valor, bool modoAutomatico, std::string &mensagemErro) {
     if (!(std::cin >> valor)) {
@@ -76,12 +71,9 @@ void Aplicacao::executar() {
 
 void Aplicacao::exibirTelaInicial() {
     ConsoleUtils::limparTela();
-    exibirMensagem(mensagemAlerta);
+    ConsoleUtils::exibirMensagem(mensagemAlerta);
     mensagemAlerta.clear();
-
-    std::cout << "\n////////////////////////////////////////\n";
-    std::cout << "        EDU SOCIAL TELA INICIAL         \n";
-    std::cout << "////////////////////////////////////////\n";
+    ConsoleUtils::mostrarCabecalho("EDU SOCIAL TELA INICIAL");
     std::cout << "1 - Login\n";
     std::cout << "2 - Criar Usuario\n";
     std::cout << "3 - Sair\n\n";
@@ -106,12 +98,9 @@ void Aplicacao::exibirTelaInicial() {
 
 void Aplicacao::exibirMenuPrincipal() {
     ConsoleUtils::limparTela();
-    exibirMensagem(mensagemAlerta);
+    ConsoleUtils::exibirMensagem(mensagemAlerta);
     mensagemAlerta.clear();
-
-    std::cout << "\n////////////////////////////////////////\n";
-    std::cout << "           EDU SOCIAL MENU PRINCIPAL    \n";
-    std::cout << "////////////////////////////////////////\n";
+    ConsoleUtils::mostrarCabecalho("EDU SOCIAL MENU PRINCIPAL");
     std::cout << "1 - Ver Feed\n";
     std::cout << "2 - Buscar\n";
     std::cout << "3 - Ver Comunidades\n";
@@ -247,10 +236,7 @@ void Aplicacao::executarCriarUsuario() {
 }
 
 void Aplicacao::executarFluxoPesquisa() {
-    std::cout << "\n////////////////////////////////////////\n";
-    std::cout << "           EDU SOCIAL - PESQUISA    \n";
-    std::cout << "////////////////////////////////////////\n";
-
+    ConsoleUtils::mostrarCabecalho("EDU SOCIAL - PESQUISA");
     std::cout << "\nO que voce quer buscar?\n";
     std::cout << "1 - Perfil\n2 - Post\n3 - Comunidade\n4 - Voltar\nEscolha: ";
 
