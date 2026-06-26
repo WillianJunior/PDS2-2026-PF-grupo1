@@ -2,8 +2,6 @@ build/*
 !build/.gitkeep
 cmake-build-*/
 out/
-database/app.db
-data/*
 !data/.gitkeep
 .vscode/
 coverage/

@@ -1,0 +1,4 @@
+id,email,senha,nome
+1,usuario@email.com,12345678,usuario
+2,aluno@email.com,12345678,aluno
+3,professor@email.com,12345678,professor
