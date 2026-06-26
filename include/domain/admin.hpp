@@ -1,6 +1,7 @@
 #ifndef ADMINISTRADOR_HPP
 #define ADMINISTRADOR_HPP
 #include "domain/perfil.hpp"
+#include "domain/comunidade.hpp"
 
 /**
  * @file admin.hpp
@@ -32,6 +33,16 @@ class Administrador : public Perfil {
      * * @return true Sempre retorna verdadeiro para objetos desta classe.
      */
     bool podeGerenciarComunidade() const override;
+
+    /**
+     * @brief Verifica se o usuário tem permissões de gerenciamento.
+     * * @return true Sempre retorna verdadeiro para objetos desta classe.
+     */
+    bool validarAdministracao(const Comunidade&) const;
+
+    bool editarDescricaoComunidade(Comunidade&,const std::string&) const;
+
+    bool editarNomeComunidade(Comunidade&,const std::string&) const;
 };
 
 #endif

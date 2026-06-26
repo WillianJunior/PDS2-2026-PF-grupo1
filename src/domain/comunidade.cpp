@@ -38,3 +38,7 @@ int Comunidade::getIdAdministrador() const { return idAdministrador; }
 const std::vector<int> &Comunidade::getIdsMembros() const { return idsMembros; }
 
 void Comunidade::setIdsMembros(const std::vector<int> &ids) { idsMembros = ids; }
+
+void Comunidade::setNome(const std::string &novoNome) { nome = novoNome; }
+
+void Comunidade::setDescricao(const std::string &novaDescricao) { descricao = novaDescricao; }

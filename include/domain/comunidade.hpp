@@ -100,6 +100,9 @@ class Comunidade {
     void setIdsMembros(const std::vector<int> &ids);
 
     /** @} */
+
+    void setNome(const std::string &nome);
+    void setDescricao(const std::string &descricao);
 };
 
 #endif
