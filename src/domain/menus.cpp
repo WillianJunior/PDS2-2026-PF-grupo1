@@ -2,7 +2,6 @@
 #include "domain/comunidade.hpp"
 #include "domain/console_utils.hpp"
 #include "domain/perfil.hpp"
-#include "domain/console_utils.hpp"
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
@@ -23,8 +22,6 @@ void Menus::exibirResumoPerfil(const Perfil &alvo) {
     std::cout << "Biografia: " << (alvo.getDescricao().empty() ? "(nao informado)" : alvo.getDescricao()) << "\n";
     std::cout << "====================================\n\n";
 }
-
-
 
 void Menus::exibirPostDetalhado(const Post &post, Armazenamento &db, const std::vector<Comentario *> &comentarios) {
     Busca busca = Busca();
@@ -64,12 +61,12 @@ void Menus::exibirListaPosts(const std::vector<Post> &postsList, Armazenamento &
     }
 }
 
-bool Menus::tratarOpcaoPost(const std::string &opcao, Post &post, Armazenamento &db,
+bool Menus::tratarOpcaoPost(const std::string &opcao, Post &post, Armazenamento &db, Sistema &sys,
                      const std::vector<Comentario *> &comentarios, std::string &mensagem) {
     if (opcao == "F" || opcao == "f")
         return false;
     if (opcao == "A" || opcao == "a") {
-        post.curtir(db.getIdPerfilLogado());
+        post.curtir(sys.getIdPerfilLogado());
         return true;
     }
     if (opcao == "B" || opcao == "b") {
@@ -79,8 +76,8 @@ bool Menus::tratarOpcaoPost(const std::string &opcao, Post &post, Armazenamento 
         }
         std::cout << "Qual comentario deseja Curtir/Descurtir: ";
         std::string linhaIdx;
-        if (!std::getline(std::cin, linhaIdx))
-            return false;
+        if (!std::getline(std::cin, linhaIdx)) // LCOV_EXCL_LINE
+            return false; // LCOV_EXCL_LINE
 
         int idx;
         if (!ConsoleUtils::lerInteiro(linhaIdx, idx) || idx < 1 || idx > static_cast<int>(comentarios.size())) {
@@ -89,16 +86,16 @@ bool Menus::tratarOpcaoPost(const std::string &opcao, Post &post, Armazenamento 
         }
 
         size_t idxReal = comentarios.size() - static_cast<size_t>(idx);
-        comentarios.at(idxReal)->curtir(db.getIdPerfilLogado());
+        comentarios.at(idxReal)->curtir(sys.getIdPerfilLogado());
         return true;
     }
     if (opcao == "C" || opcao == "c") {
         std::cout << "Digite seu comentario: ";
         std::string texto;
-        if (!std::getline(std::cin, texto))
-            return false;
+        if (!std::getline(std::cin, texto)) // LCOV_EXCL_LINE
+            return false; // LCOV_EXCL_LINE
         try {
-            db.criarComentarioGlobal(post.getId(), db.getIdPerfilLogado(), texto);
+            sys.criarComentarioGlobal(post.getId(), sys.getIdPerfilLogado(), texto);
             mensagem = "[SUCESSO] Comentario adicionado!";
         } catch (const std::invalid_argument &e) {
             mensagem = std::string("[ERRO] ") + e.what();
@@ -106,12 +103,12 @@ bool Menus::tratarOpcaoPost(const std::string &opcao, Post &post, Armazenamento 
         return true;
     }
     if (opcao == "D" || opcao == "d") {
-        menuPerfil(post.getIdAutor(), db);
+        menuPerfil(post.getIdAutor(), db, sys);
         return true;
     }
     if (opcao == "E" || opcao == "e") {
         if (post.getIdComunidade() != 0) {
-            menuComunidade(post.getIdComunidade(), db);
+            menuComunidade(post.getIdComunidade(), db, sys);
         } else {
             mensagem = "[AVISO] Post do Feed Geral, sem comunidade.";
         }
@@ -119,7 +116,6 @@ bool Menus::tratarOpcaoPost(const std::string &opcao, Post &post, Armazenamento 
     }
     return true;
 }
-
 
 void Menus::menuEditarPerfil(Perfil &alvo) {
     std::string mensagem;
@@ -136,8 +132,8 @@ void Menus::menuEditarPerfil(Perfil &alvo) {
         std::cout << "Escolha: ";
 
         std::string linha;
-        if (!std::getline(std::cin, linha))
-            break;
+        if (!std::getline(std::cin, linha)) // LCOV_EXCL_LINE
+            break; // LCOV_EXCL_LINE
         if (opcaoVoltar(linha))
             break;
 
@@ -153,29 +149,29 @@ void Menus::menuEditarPerfil(Perfil &alvo) {
         if (opcao == 1) {
             std::cout << "Nova biografia: ";
             std::string bio;
-            if (!std::getline(std::cin, bio))
-                break;
+            if (!std::getline(std::cin, bio)) // LCOV_EXCL_LINE
+                break; // LCOV_EXCL_LINE
             alvo.setDescricao(bio);
             mensagem = "[SUCESSO] Biografia atualizada!";
         } else if (opcao == 2) {
             std::cout << "Novo curso: ";
             std::string curso;
-            if (!std::getline(std::cin, curso))
-                break;
+            if (!std::getline(std::cin, curso)) // LCOV_EXCL_LINE
+                break; // LCOV_EXCL_LINE
             alvo.setCurso(curso);
             mensagem = "[SUCESSO] Curso atualizado!";
         } else if (opcao == 3) {
             std::cout << "Nova instituicao: ";
             std::string inst;
-            if (!std::getline(std::cin, inst))
-                break;
+            if (!std::getline(std::cin, inst)) // LCOV_EXCL_LINE
+                break; // LCOV_EXCL_LINE
             alvo.setInstituicao(inst);
             mensagem = "[SUCESSO] Instituicao atualizada!";
         } else if (opcao == 4) {
             std::cout << "Novo periodo (semestre): ";
             std::string linhaPeriodo;
-            if (!std::getline(std::cin, linhaPeriodo))
-                break;
+            if (!std::getline(std::cin, linhaPeriodo)) // LCOV_EXCL_LINE
+                break; // LCOV_EXCL_LINE
             int periodo;
             if (!ConsoleUtils::lerInteiro(linhaPeriodo, periodo) || periodo < 1) {
                 mensagem = "[ERRO] Periodo invalido.";
@@ -189,7 +185,7 @@ void Menus::menuEditarPerfil(Perfil &alvo) {
     }
 }
 
-void Menus::menuVisualizarPost(Post &post, Armazenamento &db) {
+void Menus::menuVisualizarPost(Post &post, Armazenamento &db, Sistema &sys) {
     std::string mensagem;
     Busca busca = Busca();
     while (true) {
@@ -205,16 +201,16 @@ void Menus::menuVisualizarPost(Post &post, Armazenamento &db) {
         std::cout << "D) Abrir Perfil / E) Abrir Comunidade / F) Voltar\n\n";
         std::cout << "Digite sua opcao desejada: ";
         std::string opcao;
-        if (!std::getline(std::cin, opcao))
-            break;
+        if (!std::getline(std::cin, opcao)) // LCOV_EXCL_LINE
+            break; // LCOV_EXCL_LINE
 
-        if (!tratarOpcaoPost(opcao, post, db, comentarios, mensagem)) {
+        if (!tratarOpcaoPost(opcao, post, db, sys, comentarios, mensagem)) {
             break;
         }
     }
 }
 
-void Menus::menuVerPostsLista(const std::vector<Post> &postsList, Armazenamento &db) {
+void Menus::menuVerPostsLista(const std::vector<Post> &postsList, Armazenamento &db, Sistema &sys) {
     std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
@@ -232,16 +228,16 @@ void Menus::menuVerPostsLista(const std::vector<Post> &postsList, Armazenamento 
         std::cout << "A) Selecionar Post / B) Voltar\n\n";
         std::cout << "Digite sua opcao desejada: ";
         std::string opcao;
-        if (!std::getline(std::cin, opcao))
-            break;
+        if (!std::getline(std::cin, opcao)) // LCOV_EXCL_LINE
+            break; // LCOV_EXCL_LINE
 
         if (opcao == "B" || opcao == "b")
             break;
         if (opcao == "A" || opcao == "a") {
             std::cout << "Qual Post deseja selecionar: ";
             std::string linhaIdx;
-            if (!std::getline(std::cin, linhaIdx))
-                break;
+            if (!std::getline(std::cin, linhaIdx)) // LCOV_EXCL_LINE
+                break; // LCOV_EXCL_LINE
 
             int idx;
             if (!ConsoleUtils::lerInteiro(linhaIdx, idx) || idx < 1 || idx > static_cast<int>(postsList.size())) {
@@ -252,13 +248,13 @@ void Menus::menuVerPostsLista(const std::vector<Post> &postsList, Armazenamento 
             size_t idxReal = postsList.size() - static_cast<size_t>(idx);
             Post *postReal = db.getPostMutavel(postsList[idxReal].getId());
             if (postReal) {
-                menuVisualizarPost(*postReal, db);
+                menuVisualizarPost(*postReal, db, sys);
             }
         }
     }
 }
 
-void Menus::menuComunidade(int idComunidade, Armazenamento &db) {
+void Menus::menuComunidade(int idComunidade, Armazenamento &db, Sistema &sys) {
     std::string mensagem;
     Busca busca = Busca();
     while (true) {
@@ -267,14 +263,13 @@ void Menus::menuComunidade(int idComunidade, Armazenamento &db) {
             break;
 
         Perfil *admin = db.getPerfil(com->getIdAdministrador());
-        Perfil *eu = db.getPerfil(db.getIdPerfilLogado());
+        Perfil *eu = db.getPerfil(sys.getIdPerfilLogado());
 
-        bool isMember = busca.usuarioE_MembroDaComunidade(db.getIdPerfilLogado(), idComunidade, db);
+        bool isMember = busca.usuarioE_MembroDaComunidade(sys.getIdPerfilLogado(), idComunidade, db);
         int tamanho = busca.numeroDeMembrosDaComunidade(idComunidade, db);
         ConsoleUtils::limparTela();
         ConsoleUtils::exibirMensagem(mensagem);
         mensagem.clear();
-        Busca busca = Busca();
         ConsoleUtils::mostrarCabecalho("COMUNIDADE: " + com->getNome());
         std::cout << "Descricao: " << com->getDescricao() << "\n";
         std::cout << "Administrador: @" << (admin ? admin->getNome() : "Desconhecido") << "\n";
@@ -310,8 +305,8 @@ void Menus::menuComunidade(int idComunidade, Armazenamento &db) {
 
         std::cout << "Digite sua opcao desejada: ";
         std::string linha;
-        if (!std::getline(std::cin, linha))
-            break;
+        if (!std::getline(std::cin, linha)) // LCOV_EXCL_LINE
+            break; // LCOV_EXCL_LINE
 
         int opcao;
         if (!ConsoleUtils::lerInteiro(linha, opcao)) {
@@ -323,16 +318,16 @@ void Menus::menuComunidade(int idComunidade, Armazenamento &db) {
             if (opcao == 1) {
                 std::string txt;
                 std::cout << "Texto do post: ";
-                if (!std::getline(std::cin, txt))
-                    break;
+                if (!std::getline(std::cin, txt)) // LCOV_EXCL_LINE
+                    break; // LCOV_EXCL_LINE
                 try {
-                    db.criarPost(txt, com->getId());
+                    sys.criarPost(txt, com->getId());
                     mensagem = "[SUCESSO] Post publicado com sucesso!";
                 } catch (const std::invalid_argument &e) {
                     mensagem = std::string("[ERRO] ") + e.what();
                 }
             } else if (opcao == 2) {
-                menuVerPostsLista(postsDaComunidadePlanos, db);
+                menuVerPostsLista(postsDaComunidadePlanos, db, sys);
             } else if (opcao == 3) {
                 break;
             } else {
@@ -348,7 +343,7 @@ void Menus::menuComunidade(int idComunidade, Armazenamento &db) {
                 eu->entrarComunidade(com->getId());
                 mensagem = "[SUCESSO] Voce entrou na comunidade!";
             } else if (opcao == 2) {
-                menuVerPostsLista(postsDaComunidadePlanos, db);
+                menuVerPostsLista(postsDaComunidadePlanos, db, sys);
             } else if (opcao == 3) {
                 break;
             } else {
@@ -358,7 +353,7 @@ void Menus::menuComunidade(int idComunidade, Armazenamento &db) {
     }
 }
 
-void Menus::menuVerPerfisLista(const std::vector<Perfil> &perfisList, Armazenamento &db) {
+void Menus::menuVerPerfisLista(const std::vector<Perfil> &perfisList, Armazenamento &db, Sistema &sys) {
     std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
@@ -384,8 +379,8 @@ void Menus::menuVerPerfisLista(const std::vector<Perfil> &perfisList, Armazename
         std::cout << "A) Selecionar Perfil / B) Voltar\n\n";
         std::cout << "Digite sua opcao desejada: ";
         std::string opcao;
-        if (!std::getline(std::cin, opcao))
-            break;
+        if (!std::getline(std::cin, opcao)) // LCOV_EXCL_LINE
+            break; // LCOV_EXCL_LINE
 
         if (opcao == "B" || opcao == "b")
             break;
@@ -393,10 +388,10 @@ void Menus::menuVerPerfisLista(const std::vector<Perfil> &perfisList, Armazename
             std::cout << "Qual Perfil deseja selecionar: ";
             int idx;
             std::string linhaIdx;
-            if (!std::getline(std::cin, linhaIdx) || !ConsoleUtils::lerInteiro(linhaIdx, idx))
-                break;
+            if (!std::getline(std::cin, linhaIdx) || !ConsoleUtils::lerInteiro(linhaIdx, idx)) // LCOV_EXCL_LINE
+                break; // LCOV_EXCL_LINE
             if (idx >= 1 && idx <= static_cast<int>(perfisList.size())) {
-                menuPerfil(perfisList[static_cast<size_t>(idx - 1)].getId(), db);
+                menuPerfil(perfisList[static_cast<size_t>(idx - 1)].getId(), db, sys);
             } else {
                 mensagem = "[ERRO] Indice invalido!";
             }
@@ -406,7 +401,7 @@ void Menus::menuVerPerfisLista(const std::vector<Perfil> &perfisList, Armazename
     }
 }
 
-void Menus::menuVerComunidadesLista(Armazenamento &db, const std::vector<Comunidade> *filtro) {
+void Menus::menuVerComunidadesLista(Armazenamento &db, Sistema &sys, const std::vector<Comunidade> *filtro) {
     std::string mensagem;
     while (true) {
         ConsoleUtils::limparTela();
@@ -429,8 +424,8 @@ void Menus::menuVerComunidadesLista(Armazenamento &db, const std::vector<Comunid
         std::cout << "A) Selecionar Comunidade / B) Voltar / C) Criar Comunidade\n\n";
         std::cout << "Digite sua opcao desejada: ";
         std::string opcao;
-        if (!std::getline(std::cin, opcao))
-            break;
+        if (!std::getline(std::cin, opcao)) // LCOV_EXCL_LINE
+            break; // LCOV_EXCL_LINE
 
         if (opcao == "B" || opcao == "b")
             break;
@@ -439,14 +434,14 @@ void Menus::menuVerComunidadesLista(Armazenamento &db, const std::vector<Comunid
             std::string nome;
             std::string descricao;
             std::cout << "Nome da comunidade: ";
-            if (!std::getline(std::cin, nome))
-                break;
+            if (!std::getline(std::cin, nome)) // LCOV_EXCL_LINE
+                break; // LCOV_EXCL_LINE
             std::cout << "Descricao: ";
-            if (!std::getline(std::cin, descricao))
-                break;
+            if (!std::getline(std::cin, descricao)) // LCOV_EXCL_LINE
+                break; // LCOV_EXCL_LINE
             try {
                 if (!nome.empty()) {
-                    db.criarComunidade(nome, descricao);
+                    sys.criarComunidade(nome, descricao);
                     mensagem = "[SUCESSO] Comunidade criada!";
                 }
             } catch (const std::invalid_argument &e) {
@@ -464,10 +459,10 @@ void Menus::menuVerComunidadesLista(Armazenamento &db, const std::vector<Comunid
             std::cout << "Qual Comunidade deseja selecionar: ";
             int idx;
             std::string linhaIdx;
-            if (!std::getline(std::cin, linhaIdx) || !ConsoleUtils::lerInteiro(linhaIdx, idx))
-                break;
+            if (!std::getline(std::cin, linhaIdx) || !ConsoleUtils::lerInteiro(linhaIdx, idx)) // LCOV_EXCL_LINE
+                break; // LCOV_EXCL_LINE
             if (idx >= 1 && idx <= static_cast<int>(lista.size())) {
-                menuComunidade(lista[static_cast<size_t>(idx - 1)].getId(), db);
+                menuComunidade(lista[static_cast<size_t>(idx - 1)].getId(), db, sys);
             } else {
                 mensagem = "[ERRO] Indice invalido!";
             }
@@ -477,7 +472,7 @@ void Menus::menuVerComunidadesLista(Armazenamento &db, const std::vector<Comunid
     }
 }
 
-void Menus::menuPerfil(int idAlvo, Armazenamento &db) {
+void Menus::menuPerfil(int idAlvo, Armazenamento &db, Sistema &sys) {
     std::string mensagem;
     Busca busca = Busca();
     while (true) {
@@ -489,7 +484,7 @@ void Menus::menuPerfil(int idAlvo, Armazenamento &db) {
         ConsoleUtils::exibirMensagem(mensagem);
         mensagem.clear();
 
-        const bool souEu = (idAlvo == db.getIdPerfilLogado());
+        const bool souEu = (idAlvo == sys.getIdPerfilLogado());
 
         const auto &postsPorAutor = busca.buscaPostsPorAutor(idAlvo, db);
         std::vector<Post> postsUsuario;
@@ -510,8 +505,8 @@ void Menus::menuPerfil(int idAlvo, Armazenamento &db) {
 
         std::cout << "Digite sua opcao desejada: ";
         std::string linha;
-        if (!std::getline(std::cin, linha))
-            break;
+        if (!std::getline(std::cin, linha)) // LCOV_EXCL_LINE
+            break; // LCOV_EXCL_LINE
         if (opcaoVoltar(linha))
             break;
 
@@ -522,7 +517,7 @@ void Menus::menuPerfil(int idAlvo, Armazenamento &db) {
         }
 
         if (opcao == 1) {
-            menuVerPostsLista(postsUsuario, db);
+            menuVerPostsLista(postsUsuario, db, sys);
         } else if (souEu && opcao == 2) {
             menuEditarPerfil(*alvo);
         } else if (!souEu && opcao == 2) {

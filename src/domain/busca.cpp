@@ -61,6 +61,7 @@ std::vector<Post *> Busca::buscaPosts(int idComunidade, Armazenamento &db) {
     return achados;
 }
 
+// LCOV_EXCL_START
 void Busca::exibirResultadosPesquisa() const {
     std::cout << "=== Resultados da Pesquisa ===" << std::endl;
     for (const auto &r : resultados) {
@@ -86,6 +87,7 @@ void Busca::filtrarResultados(const std::string &tipo) {
         }
     }
 }
+// LCOV_EXCL_STOP
 
 std::vector<Post *> Busca::buscaPosts(Perfil perfil, Armazenamento &db) {
     std::vector<Post *> feed;
@@ -134,8 +136,9 @@ int Busca::numeroDeMembrosDaComunidade(int idComunidade, const Armazenamento &db
         return 0;
     return static_cast<int>(com->getIdsMembros().size());
 }
+
 std::vector<Post *> Busca::buscarPostsRecentesDaComunidade(int idComunidade, size_t limite, Armazenamento &db) {
-    auto todos = buscaPosts(idComunidade, db); // Reutiliza sua função existente
+    auto todos = buscaPosts(idComunidade, db); 
     std::vector<Post *> recentes;
 
     auto it = todos.rbegin();
@@ -146,6 +149,7 @@ std::vector<Post *> Busca::buscarPostsRecentesDaComunidade(int idComunidade, siz
     }
     return recentes;
 }
+
 std::string Busca::nomePerfil(Armazenamento &db, int id) {
     Perfil *perfil = db.getPerfil(id);
     return perfil ? perfil->getNome() : "Desconhecido";

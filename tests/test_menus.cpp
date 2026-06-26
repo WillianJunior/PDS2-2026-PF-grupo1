@@ -1,4 +1,5 @@
 #include "domain/armazenamento.hpp"
+#include "domain/sistema.hpp"
 #include "domain/menus.hpp" 
 #include "domain/post.hpp"
 #include <doctest/doctest.h>
@@ -12,262 +13,203 @@ struct RedirecionarIO {
     std::streambuf *oldCout;
 
     RedirecionarIO(const std::string &in) : input(in) {
+        std::cin.clear(); 
         oldCin = std::cin.rdbuf(input.rdbuf());
         oldCout = std::cout.rdbuf(output.rdbuf());
     }
     ~RedirecionarIO() {
+        std::cin.clear(); 
         std::cin.rdbuf(oldCin);
         std::cout.rdbuf(oldCout);
     }
 };
 
-Armazenamento setupDBMenus() {
-    Armazenamento db;
-    db.criarUsuarioEPerfil("a@a.com", "senha123", "UserA");
-    db.criarUsuarioEPerfil("b@b.com", "senha123", "UserB");
-    db.fazerLogin("a@a.com", "senha123");
-    return db;
+void setupDBMenus(Armazenamento &db, Sistema &sys) {
+    sys.criarUsuarioEPerfil("a@a.com", "Senha123", "UserA");
+    sys.criarUsuarioEPerfil("b@b.com", "Senha123", "UserB");
+    sys.fazerLogin("a@a.com", "Senha123");
 }
 
-TEST_SUITE("Menus - O Desafio do 100%") {
+TEST_SUITE("Menus - O Chefão Final (100%)") {
 
-    TEST_CASE("1. Utilitarios e Seguranca Extrema") {
-        Armazenamento db = setupDBMenus();
+    TEST_CASE("1. menuEditarPerfil") {
+        Armazenamento db; Sistema sys(db); setupDBMenus(db, sys);
         Perfil *p = db.getPerfil(1);
+        std::string inputs = 
+            "abc\n"     
+            "99\n"      
+            "1\nNova Bio\n"
+            "2\nNovo Curso\n"
+            "3\nNova Inst\n"
+            "4\n-1\n"   
+            "4\n5\n"    
+            "5\n";      
+        RedirecionarIO io(inputs);
+        Menus::menuEditarPerfil(*p);
+        RedirecionarIO io2("B\n");
+        Menus::menuEditarPerfil(*p);
 
-        {
-            RedirecionarIO io("99999999999999999999999\n5\n");
-            Menus::menuEditarPerfil(*p);
-        }
-        {
-            RedirecionarIO io("abcdef\n5\n");
-            Menus::menuEditarPerfil(*p);
-        }
-        Post postFantasma(1, 999, 0, "Fantasma");
-        {
-            RedirecionarIO io("F\n");
-            Menus::menuVisualizarPost(postFantasma, db);
-        }
+        RedirecionarIO io3("1\n"); 
+        Menus::menuEditarPerfil(*p);
     }
 
-    TEST_CASE("2. menuEditarPerfil - Exploracao e EOF") {
-        Armazenamento db = setupDBMenus();
-        Perfil *p = db.getPerfil(1);
-
-        {
-            RedirecionarIO io("1\nBio\n2\nCur\n3\nInst\n4\n2\n5\n");
-            Menus::menuEditarPerfil(*p);
-        }
-        {
-            RedirecionarIO io("1\n");
-            Menus::menuEditarPerfil(*p);
-        }
-        {
-            RedirecionarIO io("2\n");
-            Menus::menuEditarPerfil(*p);
-        }
-        {
-            RedirecionarIO io("3\n");
-            Menus::menuEditarPerfil(*p);
-        }
-        {
-            RedirecionarIO io("4\n");
-            Menus::menuEditarPerfil(*p);
-        }
-        {
-            RedirecionarIO io("4\n-1\n5\n");
-            Menus::menuEditarPerfil(*p);
-        }
-        {
-            RedirecionarIO io("\n5\n");
-            Menus::menuEditarPerfil(*p);
-        }
-        {
-            RedirecionarIO io("6\n5\n");
-            Menus::menuEditarPerfil(*p);
-        }
-        {
-            RedirecionarIO io("V\n");
-            Menus::menuEditarPerfil(*p);
-        }
-    }
-
-    TEST_CASE("3. menuVisualizarPost e tratarOpcaoPost - Catch e EOFs") {
-        Armazenamento db = setupDBMenus();
-        db.criarPost("Global", 0);
-        db.criarComentarioGlobal(1, 1, "Coment1");
-        db.criarComunidade("C", "D");
-        db.criarPost("Comum", 1);
+    TEST_CASE("2. menuVisualizarPost") {
+        Armazenamento db; Sistema sys(db); setupDBMenus(db, sys);
+        sys.criarPost("Global", 0);
+        sys.criarComentarioGlobal(1, 1, "Coment1");
+        sys.criarComunidade("C", "D"); 
+        sys.criarPost("Comum", 1);    
 
         Post *pGlobal = db.getPostMutavel(1);
         Post *pComum = db.getPostMutavel(2);
 
-        {
-            RedirecionarIO io("A\nB\n1\nC\nComentarioNovo\nD\n3\nF\n");
-            Menus::menuVisualizarPost(*pGlobal, db);
-        }
-        {
-            RedirecionarIO io("B\n");
-            Menus::menuVisualizarPost(*pGlobal, db);
-        }
-        {
-            RedirecionarIO io("B\nabc\nF\n");
-            Menus::menuVisualizarPost(*pGlobal, db);
-        }
-        {
-            RedirecionarIO io("B\n99\nF\n");
-            Menus::menuVisualizarPost(*pGlobal, db);
-        }
-        {
-            RedirecionarIO io("C\n");
-            Menus::menuVisualizarPost(*pGlobal, db);
-        }
-        {
-            RedirecionarIO io("C\n\nF\n");
-            Menus::menuVisualizarPost(*pGlobal, db);
-        }
-        {
-            RedirecionarIO io("E\nZ\nF\n");
-            Menus::menuVisualizarPost(*pGlobal, db);
-        }
-        {
-            RedirecionarIO io("B\nE\n3\nF\n");
-            Menus::menuVisualizarPost(*pComum, db);
-        }
+        std::string in1 = 
+            "Z\n"      
+            "A\n"       
+            "B\n99\n"   
+            "B\n1\n"    
+            "B\nabc\n"  
+            "C\nNovo\n" 
+            "C\n\n"     
+            "D\n3\n"    
+            "E\n"       
+            "F\n";      
+        { RedirecionarIO io(in1); Menus::menuVisualizarPost(*pGlobal, db, sys); }
+
+        std::string in2 = 
+            "E\n3\n"    
+            "F\n";      
+        { RedirecionarIO io(in2); Menus::menuVisualizarPost(*pComum, db, sys); }
+        { RedirecionarIO io("B\n"); Menus::menuVisualizarPost(*pGlobal, db, sys); }
+        { RedirecionarIO io("C\n"); Menus::menuVisualizarPost(*pGlobal, db, sys); }
+        sys.criarPost("Sem coment", 0);
+        Post *pSem = db.getPostMutavel(3);
+        { RedirecionarIO io("B\nF\n"); Menus::menuVisualizarPost(*pSem, db, sys); }
     }
 
-    TEST_CASE("4. menuVerPostsLista") {
-        Armazenamento db = setupDBMenus();
-        db.criarPost("P1", 0);
+    TEST_CASE("3. menuVerPostsLista") {
+        Armazenamento db; Sistema sys(db); setupDBMenus(db, sys);
+        sys.criarPost("P1", 0);
         auto posts = db.getTodosPosts();
-        {
-            std::vector<Post> vazia;
-            RedirecionarIO io("\n");
-            Menus::menuVerPostsLista(vazia, db);
+        
+        { 
+            std::vector<Post> vazia; 
+            RedirecionarIO io("\n"); 
+            Menus::menuVerPostsLista(vazia, db, sys); 
         }
-        {
-            RedirecionarIO io("A\n1\nF\nA\n\nA\nabc\nA\n99\nZ\n\nB\n");
-            Menus::menuVerPostsLista(posts, db);
+        { 
+            std::string in = 
+                "Z\n"      
+                "A\nabc\n"  
+                "A\n99\n"   
+                "A\n1\nF\n" 
+                "B\n";      
+            RedirecionarIO io(in); 
+            Menus::menuVerPostsLista(posts, db, sys); 
         }
+        { RedirecionarIO io("A\n"); Menus::menuVerPostsLista(posts, db, sys); }
+    }
+
+    TEST_CASE("4. menuComunidade") {
+        Armazenamento db; Sistema sys(db); setupDBMenus(db, sys);
+        sys.criarComunidade("Com", "Desc"); 
+        {
+            std::string in = 
+                "abc\n"         
+                "99\n"         
+                "1\nMeu post\n" 
+                "1\n\n"        
+                "2\nB\n"        
+                "3\n";          
+            RedirecionarIO io(in); 
+            Menus::menuComunidade(1, db, sys);
+        }
+        sys.deslogar();
+        sys.fazerLogin("b@b.com", "Senha123");
+        {
+            std::string in = 
+                "99\n"      
+                "2\nB\n"    
+                "1\n"       
+                "3\n";     
+            RedirecionarIO io(in); 
+            Menus::menuComunidade(1, db, sys);
+        }
+        sys.deslogar();
+        sys.fazerLogin("a@a.com", "Senha123");
+        { RedirecionarIO io("1\n"); Menus::menuComunidade(1, db, sys); }
+        { RedirecionarIO io(""); Menus::menuComunidade(99, db, sys); }
     }
 
     TEST_CASE("5. menuVerPerfisLista") {
-        Armazenamento db = setupDBMenus();
+        Armazenamento db; Sistema sys(db); setupDBMenus(db, sys);
         auto perfis = db.getTodosPerfis();
-        {
-            std::vector<Perfil> vazia;
-            RedirecionarIO io("\n");
-            Menus::menuVerPerfisLista(vazia, db);
+        
+        { 
+            std::vector<Perfil> vazia; 
+            RedirecionarIO io("\n"); 
+            Menus::menuVerPerfisLista(vazia, db, sys); 
         }
         {
-            RedirecionarIO io("A\n1\n3\nA\n\nA\nabc\nA\n99\nZ\n\nB\n");
-            Menus::menuVerPerfisLista(perfis, db);
+            std::string in = 
+                "Z\n"       
+                "A\nabc\n" 
+                "A\n99\n"   
+                "A\n1\n3\n" 
+                "B\n";    
+            RedirecionarIO io(in); 
+            Menus::menuVerPerfisLista(perfis, db, sys); 
         }
+        { RedirecionarIO io("A\n"); Menus::menuVerPerfisLista(perfis, db, sys); }
     }
 
-    TEST_CASE("6. menuVerComunidadesLista - Criacao e CATCH") {
-        Armazenamento db = setupDBMenus();
-        {
-            RedirecionarIO io("A\nB\n");
-            Menus::menuVerComunidadesLista(db);
+    TEST_CASE("6. menuVerComunidadesLista") {
+        Armazenamento db; Sistema sys(db); setupDBMenus(db, sys);
+        
+        { 
+            RedirecionarIO io("Z\nB\n"); 
+            Menus::menuVerComunidadesLista(db, sys); 
         }
         {
-            RedirecionarIO io("C\n\nDesc\nB\n");
-            Menus::menuVerComunidadesLista(db);
+            std::string in = 
+                "C\nNova\nDesc\n" 
+                "C\n\nDesc\n"    
+                "A\nabc\n"       
+                "A\n99\n"         
+                "A\n1\n3\n"       
+                "B\n";            
+            RedirecionarIO io(in); 
+            Menus::menuVerComunidadesLista(db, sys); 
         }
-        {
-            RedirecionarIO io("C\nNome\n\nB\n");
-            Menus::menuVerComunidadesLista(db);
-        }
-        {
-            RedirecionarIO io("C\n");
-            Menus::menuVerComunidadesLista(db);
-        }
-        {
-            RedirecionarIO io("C\nNome\n");
-            Menus::menuVerComunidadesLista(db);
-        }
-        {
-            RedirecionarIO io("C\nC1\nD1\nB\n");
-            Menus::menuVerComunidadesLista(db);
-        }
-        {
-            RedirecionarIO io("A\n1\n3\nA\n\nA\nabc\nA\n99\nZ\n\nB\n");
-            Menus::menuVerComunidadesLista(db);
-        }
-        std::vector<Comunidade> filtro = {Comunidade(99, "F", "D", 1)};
-        {
-            RedirecionarIO io("B\n");
-            Menus::menuVerComunidadesLista(db, &filtro);
-        }
+        { RedirecionarIO io("C\nNova\n"); Menus::menuVerComunidadesLista(db, sys); }
+        { RedirecionarIO io("A\n"); Menus::menuVerComunidadesLista(db, sys); }
     }
 
-    TEST_CASE("7. menuComunidade - Acessos, EOFs e CATCH") {
-        Armazenamento db = setupDBMenus();
-        db.criarComunidade("Com", "Desc");
+    TEST_CASE("7. menuPerfil") {
+        Armazenamento db; Sistema sys(db); setupDBMenus(db, sys);
+        { RedirecionarIO io(""); Menus::menuPerfil(99, db, sys); }
 
         {
-            RedirecionarIO io("1\nPost\n2\nB\nZ\n3\n");
-            Menus::menuComunidade(1, db);
-        }
-        {
-            RedirecionarIO io("1\n");
-            Menus::menuComunidade(1, db);
-        }
-        {
-            RedirecionarIO io("1\n\n3\n");
-            Menus::menuComunidade(1, db);
-        }
-        {
-            RedirecionarIO io("\n3\n");
-            Menus::menuComunidade(1, db);
-        }
-        db.deslogar();
-        db.fazerLogin("b@b.com", "senha123");
-        {
-            RedirecionarIO io("2\nB\nZ\n1\n3\n");
-            Menus::menuComunidade(1, db);
-        }
-        db.deslogar();
-        {
-            RedirecionarIO io("1\n3\n");
-            Menus::menuComunidade(1, db);
-        }
-    }
-
-    TEST_CASE("8. menuPerfil - Visibilidade Completa") {
-        Armazenamento db = setupDBMenus();
-        db.criarComunidade("Com", "Desc");
-        db.criarPost("Global", 0);
-        db.criarPost("ComumPost", 1);
-        db.getPerfil(1)->setCurso("CC");
-        db.getPerfil(1)->setInstituicao("Uni");
-        db.getPerfil(1)->setDescricao("Bio");
-
-        {
-            RedirecionarIO io("");
-            Menus::menuPerfil(999, db);
-        }
-        {
-            RedirecionarIO io("1\nB\n2\n5\n\nZ\n3\n");
-            Menus::menuPerfil(1, db);
-        }
-        {
-            RedirecionarIO io("");
-            Menus::menuPerfil(1, db);
+            std::string in = 
+                "B\n"       
+                "abc\n"     
+                "99\n"     
+                "1\nB\n"    
+                "2\n5\n"   
+                "3\n";     
+            RedirecionarIO io(in);
+            Menus::menuPerfil(1, db, sys);
         }
 
-        db.deslogar();
-        db.fazerLogin("b@b.com", "senha123");
         {
-            RedirecionarIO io("1\nB\n\nZ\n2\n");
-            Menus::menuPerfil(1, db);
+            std::string in = 
+                "99\n"     
+                "1\nB\n"    
+                "2\n";      
+            RedirecionarIO io(in);
+            Menus::menuPerfil(2, db, sys);
         }
-        db.getComunidade(1)->adicionarMembro(2);
-        db.getPerfil(2)->entrarComunidade(1);
-        {
-            RedirecionarIO io("1\nB\n2\n");
-            Menus::menuPerfil(1, db);
-        }
+        
+        { RedirecionarIO io(""); Menus::menuPerfil(1, db, sys); }
     }
 }

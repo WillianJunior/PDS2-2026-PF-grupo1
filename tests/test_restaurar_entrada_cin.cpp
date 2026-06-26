@@ -1,8 +1,19 @@
-#include "restaurar_entrada_cin.hpp"
+#include "domain/restaurar_entrada_cin.hpp" 
+#include <doctest/doctest.h>
+#include <iostream>
+#include <sstream>
 
-RestaurarEntradaCin::RestaurarEntradaCin(std::streambuf *original) 
-    : original_(original) {}
+TEST_SUITE("Restaurar Entrada Cin (RAII)") {
 
-RestaurarEntradaCin::~RestaurarEntradaCin() {
-    std::cin.rdbuf(original_);
+    TEST_CASE("Garante a restauracao automatica do buffer do cin") {
+        std::streambuf* bufferOriginalReal = std::cin.rdbuf();
+        std::istringstream terminalFalso("entradas falsas");
+        
+        {
+            RestaurarEntradaCin restaurador(bufferOriginalReal);
+            std::cin.rdbuf(terminalFalso.rdbuf());
+            CHECK(std::cin.rdbuf() == terminalFalso.rdbuf());
+        }
+        CHECK(std::cin.rdbuf() == bufferOriginalReal);
+    }
 }

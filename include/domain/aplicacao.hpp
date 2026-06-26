@@ -1,7 +1,9 @@
 #ifndef APLICACAO_HPP
 #define APLICACAO_HPP
-#include "domain/armazenamento.hpp"
-#include "domain/busca.hpp"
+
+#include "armazenamento.hpp"
+#include "sistema.hpp"
+#include "busca.hpp"
 #include <string>
 
 /**
@@ -12,16 +14,17 @@
 /**
  * @class Aplicacao
  * @brief Classe orquestradora que gerencia o loop principal e as transições de tela.
- * * Controla o estado de execução (rodando ou parado), gerencia a injeção do banco
- * de dados na memória e direciona os fluxos de menu de acordo com o estado de login do usuário.
+ * * Controla o estado de execução (rodando ou parado), gerencia a inicialização do banco
+ * de dados (Armazenamento) e do motor de regras de negócio (Sistema).
  */
 class Aplicacao {
   private:
     Armazenamento db;           /**< Referência para o banco de dados em memória. */
+    Sistema sys;                /**< Motor de regras de negócio e controle de sessão. */
     Busca busca;                /**< Instância do serviço de busca. */
     bool rodando;               /**< Flag que mantém o loop principal ativo. */
-    bool modoAutomatico;        /**< Flag para rodar em modo de teste/demonstração sem pausas. */
-    std::string mensagemAlerta; /**< Buffer para exibir mensagens de sucesso ou erro no topo das telas. */
+    bool modoAutomatico;        /**< Flag para rodar em modo de teste sem pausas. */
+    std::string mensagemAlerta; /**< Buffer para exibir mensagens no topo das telas. */
 
     /** @name Fluxos de Tela */
     /** @{ */
@@ -37,9 +40,9 @@ class Aplicacao {
   public:
     /**
      * @brief Inicializa a aplicação, configurando o ambiente.
-     * @param modoAutomatico Se true, a aplicação aborta em caso de erros de entrada (usado para testes de integração).
+     * @param modoAutomatico Se true, aborta em caso de erros de entrada (testes).
      */
-    Aplicacao(bool modoAutomatico);
+    Aplicacao(bool modoAutomatico = false);
 
     /**
      * @brief Inicia o loop principal de execução e renderização da aplicação.
