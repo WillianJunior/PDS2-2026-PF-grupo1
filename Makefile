@@ -64,10 +64,10 @@ test: build
 	@-cmake -E remove_directory $(DATA_DIR)
 	@-cmake -E rename $(DATA_DIR)_backup $(DATA_DIR)
 	@echo "\n[coverage] Gerando relatorio de cobertura no terminal..."
-	@python3 -m gcovr -r . --object-directory $(BUILD_DIR) $(GCOVR_EXCLUDE) --gcov-executable gcov-9
+	@python3 -m gcovr -r . --object-directory $(BUILD_DIR) $(GCOVR_EXCLUDE) --gcov-executable gcov
 	@echo "\n[coverage] Gerando relatorio HTML..."
 	@mkdir -p coverage
-	@python3 -m gcovr -r . --object-directory $(BUILD_DIR) $(GCOVR_EXCLUDE) --gcov-executable gcov-9 --html --html-details -o coverage/coverage.html
+	@python3 -m gcovr -r . --object-directory $(BUILD_DIR) $(GCOVR_EXCLUDE) --gcov-executable gcov --html --html-details -o coverage/coverage.html
 	@echo "[sucesso] Relatorio HTML detalhado gerado na pasta 'coverage/'"
 
 ifneq ($(OS),Windows_NT)
