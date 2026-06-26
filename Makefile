@@ -7,7 +7,7 @@ APP_EXTENSION := .exe
 CMAKE_ARGS := -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
 else
 APP_EXTENSION :=
-CMAKE_ARGS := -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) -DCMAKE_CXX_FLAGS="--coverage -O0" -DCMAKE_EXE_LINKER_FLAGS="--coverage"
+CMAKE_ARGS := -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
 endif
 
 APP_PATH := $(BUILD_DIR)/bin/edu_social_backend$(APP_EXTENSION)
@@ -17,7 +17,7 @@ DEMO_INPUT ?= scripts/demo.in
 DATA_DIR := data
 DATA_CSVS := $(DATA_DIR)/usuarios.csv $(DATA_DIR)/perfis.csv $(DATA_DIR)/comunidades.csv $(DATA_DIR)/posts.csv $(DATA_DIR)/comentarios.csv
 
-GCOVR_EXCLUDE := --exclude ".*doctest\.h" --exclude ".*main\.cpp" --exclude ".*test_.*\.cpp" --exclude ".*count_commits_alunos\.cpp" 
+GCOVR_EXCLUDE := --exclude ".*doctest\.h" --exclude ".*main\.cpp" --exclude ".*test_.*\.cpp"
 
 .PHONY: all configure build run run-demo run-demo-clean test coverage docs clean help commits commits-alunos build-commits FORCE
 
@@ -49,25 +49,14 @@ run-demo-clean: build
 	@echo "[run-demo-clean] Executando demo com $(DEMO_INPUT)..."
 	@$(APP_PATH) $(DEMO_INPUT)
 
+# COMPORTAMENTO ANTIGO RESTAURADO: Executa os testes diretamente e gera a cobertura em seguida
 test: build
-	@echo "[test] Protegendo os dados reais (Backup automatico)..."
-	@-cmake -E make_directory $(DATA_DIR)
-	@-cmake -E copy_directory $(DATA_DIR) $(DATA_DIR)_backup
 	@echo "[test] Executando testes..."
-	@$(BUILD_DIR)/bin/edu_social_tests$(APP_EXTENSION) || ( \
-		echo "[test] Falha detectada! Restaurando dados do professor..."; \
-		cmake -E remove_directory $(DATA_DIR); \
-		cmake -E rename $(DATA_DIR)_backup $(DATA_DIR); \
-		exit 1 \
-	)
-	@echo "[test] Testes concluidos! Restaurando dados do professor..."
-	@-cmake -E remove_directory $(DATA_DIR)
-	@-cmake -E rename $(DATA_DIR)_backup $(DATA_DIR)
-	@echo "\n[coverage] Gerando relatorio de cobertura no terminal..."
-	@python3 -m gcovr -r . --object-directory $(BUILD_DIR) $(GCOVR_EXCLUDE) --gcov-executable gcov-9
-	@echo "\n[coverage] Gerando relatorio HTML..."
+	@$(BUILD_DIR)/bin/edu_social_tests$(APP_EXTENSION)
+	@echo "\n[coverage] Gerando relatorio de cobertura com gcovr..."
+	@gcovr -r . $(GCOVR_EXCLUDE)
 	@mkdir -p coverage
-	@python3 -m gcovr -r . --object-directory $(BUILD_DIR) $(GCOVR_EXCLUDE) --gcov-executable gcov-9 --html --html-details -o coverage/coverage.html
+	@gcovr -r . $(GCOVR_EXCLUDE) --html-details coverage/coverage.html
 	@echo "[sucesso] Relatorio HTML detalhado gerado na pasta 'coverage/'"
 
 ifneq ($(OS),Windows_NT)
@@ -92,6 +81,7 @@ clean:
 	@cmake -E remove_directory $(BUILD_DIR)
 	@rm -rf coverage/
 
+# Permite: make commits alunos
 ifneq (,$(filter commits,$(MAKECMDGOALS)))
   COMMITS_MODE := $(filter-out commits,$(MAKECMDGOALS))
   $(COMMITS_MODE):
